@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Tree {
+    // This is the underlying tree!
 
     public int size;
     public ArrayList<Vertex> vertex;
