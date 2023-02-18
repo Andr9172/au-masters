@@ -66,7 +66,7 @@ public class Tree {
         }
 
         edge.weight = weight;
-        edge.userData = 0;
+        edge.userData = null;
         edge.endpoints.add(0, left);
         edge.endpoints.add(1, right);
         edge.prev.add(0, null);
