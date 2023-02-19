@@ -2,8 +2,8 @@ public class LeafNode extends Node {
 
     Edge edge;
 
-    public LeafNode(InternalNode parent, int spineWeight, Edge edge) {
-        super(parent, spineWeight, true, false, 0);
+    public LeafNode(InternalNode parent, int spineWeight, Edge edge, int boundaryNodes) {
+        super(parent, spineWeight, true, false, boundaryNodes);
         this.edge = edge;
     }
 }

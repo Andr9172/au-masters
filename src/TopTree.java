@@ -2,11 +2,27 @@ import java.util.ArrayList;
 
 public class TopTree {
 
+    // Method just included, we don't have to do memory cleanup
+    public void freeTopTree(Node node){
 
+    }
 
     // Remove edge from tree
     public void cut(Edge edge){
+        Node node = edge.userData;
 
+        Vertex u = edge.endpoints.get(0);
+        Vertex v = edge.endpoints.get(1);
+        fullSplay(node);
+        // Now depth <= 2, and if e is a leaf edge, depth(e) <= 1
+        deleteAllAncestors(node);
+        Tree.destroyEdge(edge);
+
+        u.isExposed = true;
+        v.isExposed = true;
+
+        deExpose(u);
+        deExpose(v);
     }
 
     // Add edge to tree
@@ -16,8 +32,50 @@ public class TopTree {
         InternalNode tvNew = null;
         Edge edge = null;
 
-        tEdge = new LeafNode();
-        return null;
+        Node tu = expose(u);
+        if (tu != null && hasLeftBoundary(tu)){
+            tu.flip = !tu.flip;
+        }
+        u.isExposed = false;
+
+        Node tv = expose(v);
+        if (tv != null && hasRightBoundary(tv)){
+            tv.flip = !tv.flip;
+        }
+        v.isExposed = false;
+
+        // Create edge, values currently get overwritten later anyway
+        edge = new Edge();
+
+        // Init T_edge
+        Tree.addEdge(edge, u, v, weight);
+        tEdge = new LeafNode(null, 0, edge, (tu != null ? 1 : 0) + (tv != null ? 1 : 0));
+        Node t = (Node) tEdge;
+        recomputeSpineWeight(t);
+        edge.userData = tEdge;
+
+        if (tu != null){
+            ArrayList<Node> children = new ArrayList<>();
+            children.add(tu);
+            children.add(t);
+            tuNew = new InternalNode(null, 0, children, tv != null ? 1 : 0);
+            t.parent = tuNew;
+            tu.parent = tuNew;
+            t = tuNew;
+            recomputeSpineWeight(t);
+        }
+        if (tv != null){
+            ArrayList<Node> children = new ArrayList<>();
+            children.add(t);
+            children.add(tv);
+            tvNew = new InternalNode(null, 0, children, 0);
+            t.parent = tvNew;
+            tv.parent = tvNew;
+            t = tvNew;
+            recomputeSpineWeight(t);
+        }
+
+        return t;
     }
 
     // Deexpose vertex in underlying tree
@@ -81,13 +139,22 @@ public class TopTree {
 
     // Query for information
     public LeafNode findMaximum(Node root){
-        return  null;
+        Node node = root;
+        while (!node.isLeaf){
+            InternalNode n = (InternalNode) node;
+            if (n.children.get(0).spineWeight > n.children.get(1).spineWeight){
+                node = n.children.get(0);
+            } else {
+                node = n.children.get(1);
+            }
+        }
+        return (LeafNode) node;
     }
 
     // Find root
     public Node findRoot(Node node){
         Node tempNode = node;
-        if (tempNode.parent != null){
+        while (tempNode.parent != null){
             tempNode = tempNode.parent;
         }
         return node;
@@ -97,7 +164,7 @@ public class TopTree {
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoints = leaf_node.edge.endpoints.get(node.flip ? 1 : 0);
-            return endpoints.isExposed || !hasAtMostOneIncidentEdge(endpoints);
+            return endpoints.isExposed || !Tree.hasAtMostOneIncidentEdge(endpoints);
         } else {
             InternalNode int_node = (InternalNode) node;
             Node child = int_node.children.get(node.flip ? 1 : 0);
@@ -110,7 +177,7 @@ public class TopTree {
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoints = leaf_node.edge.endpoints.get(!node.flip ? 1 : 0);
-            return endpoints.isExposed || !hasAtMostOneIncidentEdge(endpoints);
+            return endpoints.isExposed || !Tree.hasAtMostOneIncidentEdge(endpoints);
         } else {
             InternalNode int_node = (InternalNode) node;
             Node child = int_node.children.get(!node.flip ? 1 : 0);
@@ -127,10 +194,7 @@ public class TopTree {
         boolean rightPath = isPath(int_node.children.get(!node.flip ? 1 : 0));
 
         int hasMiddle = node.numBoundary - (leftPath ? 1 : 0) - (rightPath ? 1 : 0);
-        if (hasMiddle == 1){
-            return true;
-        }
-        return false;
+        return hasMiddle == 1;
     }
 
     public Node getSibling(Node node){
@@ -256,7 +320,7 @@ public class TopTree {
     public void fullSplay(Node node){
         while (true){
             Node top = splayStep(node);
-            if (top != null){
+            if (top == null){
                 return;
             }
             splayStep(top);
@@ -271,7 +335,7 @@ public class TopTree {
         }
         Node node = start.userData;
         semiSplay(node);
-        if (hasAtMostOneIncidentEdge(vert)) {
+        if (Tree.hasAtMostOneIncidentEdge(vert)) {
             return node;
         }
 
@@ -373,22 +437,51 @@ public class TopTree {
 
     }
 
+    private void deleteAllAncestors(Node node){
+        Node parent = node.parent;
+        if (parent != null){
+            Node sibling = getSibling(node);
+            deleteAllAncestors(parent);
+            sibling.parent = null;
+
+        }
+    }
+
     private boolean isPoint(Node node) {
+        return node.numBoundary < 2;
     }
 
-
-    private void recomputeSpineWeight(Node parent) {
+    private boolean isPath(Node node) {
+        return node.numBoundary == 2;
     }
 
-    private void pushFlip(InternalNode grandParent) {
+    private void recomputeSpineWeight(Node node) {
+        if (isPoint(node)){
+            node.spineWeight = Integer.MIN_VALUE;
+        } else if (node.isLeaf){
+            LeafNode n = (LeafNode) node;
+            n.spineWeight = n.edge.weight;
+        } else {
+            InternalNode n = (InternalNode) node;
+            int spineWeight0 = n.children.get(0).spineWeight;
+            int spineWeight1 = n.children.get(1).spineWeight;
+            n.spineWeight = Math.max(spineWeight0, spineWeight1);
+        }
     }
 
-    private boolean isPath(Node child) {
-        return false;
-    }
+    private void pushFlip(InternalNode node) {
+        if (node.flip){
+            node.flip = false;
 
-    private boolean hasAtMostOneIncidentEdge(Vertex endpoints) {
-        return false;
+            Node tmp = node.children.get(0);
+
+            node.children.set(0, node.children.get(1));
+            node.children.set(1, tmp);
+
+            node.children.get(0).flip = !node.children.get(0).flip;
+            node.children.get(1).flip = !node.children.get(1).flip;
+
+        }
     }
 
 

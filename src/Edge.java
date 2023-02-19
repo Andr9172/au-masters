@@ -15,4 +15,8 @@ public class Edge {
         this.prev = prev;
         this.next = next;
     }
+
+    public Edge(){
+
+    }
 }
