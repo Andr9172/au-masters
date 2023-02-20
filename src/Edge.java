@@ -17,6 +17,10 @@ public class Edge {
     }
 
     public Edge(){
-
+        this.weight = 0;
+        this.userData = null;
+        this.endpoints = new ArrayList<>();
+        this.prev = new ArrayList<>();
+        this.next = new ArrayList<>();
     }
 }

@@ -8,7 +8,7 @@ public class TopTree {
     }
 
     // Remove edge from tree
-    public void cut(Edge edge){
+    public static void cut(Edge edge){
         Node node = edge.userData;
 
         Vertex u = edge.endpoints.get(0);
@@ -26,7 +26,7 @@ public class TopTree {
     }
 
     // Add edge to tree
-    public Node link(Vertex u, Vertex v, int weight){
+    public static Node link(Vertex u, Vertex v, int weight){
         LeafNode tEdge = null;
         InternalNode tuNew = null;
         InternalNode tvNew = null;
@@ -79,7 +79,7 @@ public class TopTree {
     }
 
     // Deexpose vertex in underlying tree
-    public Node deExpose(Vertex v){
+    public static Node deExpose(Vertex v){
         Node root = null;
         Node node = findConsumingNode(v);
         while (node != null) {
@@ -93,7 +93,7 @@ public class TopTree {
     }
 
     // Expose version 1
-    public Node expose(Vertex v){
+    public static Node expose(Vertex v){
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
             v.isExposed = true;
@@ -124,7 +124,7 @@ public class TopTree {
     }
 
     // Expose version 2 (from appendix)
-    public Node expose2(Vertex v){
+    public static Node expose2(Vertex v){
         Node consumingNode = findConsumingNode(v);
         if (consumingNode != null) {
             consumingNode = prepareExpose(consumingNode);
@@ -138,7 +138,7 @@ public class TopTree {
     }
 
     // Query for information
-    public LeafNode findMaximum(Node root){
+    public static LeafNode findMaximum(Node root){
         Node node = root;
         while (!node.isLeaf){
             InternalNode n = (InternalNode) node;
@@ -152,7 +152,7 @@ public class TopTree {
     }
 
     // Find root
-    public Node findRoot(Node node){
+    public static Node findRoot(Node node){
         Node tempNode = node;
         while (tempNode.parent != null){
             tempNode = tempNode.parent;
@@ -160,7 +160,7 @@ public class TopTree {
         return node;
     }
 
-    public boolean hasLeftBoundary(Node node){
+    public static boolean hasLeftBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoints = leaf_node.edge.endpoints.get(node.flip ? 1 : 0);
@@ -173,7 +173,7 @@ public class TopTree {
     }
 
     // This have been copied, and modified from hasLeft could contain errors
-    public boolean hasRightBoundary(Node node){
+    public static boolean hasRightBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoints = leaf_node.edge.endpoints.get(!node.flip ? 1 : 0);
@@ -185,7 +185,7 @@ public class TopTree {
         }
     }
 
-    public boolean hasMiddleBoundary(Node node){
+    public static boolean hasMiddleBoundary(Node node){
         if (node.isLeaf || node.numBoundary == 0){
             return false;
         }
@@ -197,7 +197,7 @@ public class TopTree {
         return hasMiddle == 1;
     }
 
-    public Node getSibling(Node node){
+    public static Node getSibling(Node node){
         InternalNode parent = node.parent;
         if (parent == null) {
             return null;
@@ -206,7 +206,7 @@ public class TopTree {
         return parent.children.get(j);
     }
 
-    public void rotateUp(Node node){
+    public static void rotateUp(Node node){
         InternalNode parent = node.parent;
         InternalNode grandParent = parent.parent;
         Node sibling = getSibling(node);
@@ -268,7 +268,7 @@ public class TopTree {
         uncle.parent = parent;
     }
 
-    public Node splayStep(Node node){
+    public static Node splayStep(Node node){
         while (true){
             InternalNode parent = node.parent;
             if (parent == null){
@@ -311,13 +311,13 @@ public class TopTree {
         }
     }
 
-    public void semiSplay(Node node){
+    public static void semiSplay(Node node){
         while(node != null){
             node = splayStep(node);
         }
     }
 
-    public void fullSplay(Node node){
+    public static void fullSplay(Node node){
         while (true){
             Node top = splayStep(node);
             if (top == null){
@@ -327,7 +327,7 @@ public class TopTree {
         }
     }
 
-    public Node findConsumingNode(Vertex vert){
+    public static Node findConsumingNode(Vertex vert){
         Edge start = vert.firstEdge;
 
         if (start == null){
@@ -370,7 +370,7 @@ public class TopTree {
         return lastMiddleNode;
     }
 
-    public Node prepareExpose(Node consumingNode){
+    public static Node prepareExpose(Node consumingNode){
         Node node = consumingNode;
         while (node.parent != null) {
             InternalNode parent = node.parent;
@@ -412,7 +412,7 @@ public class TopTree {
         return consumingNode;
     }
 
-    public Node exposePrepared (Node consumingNode){
+    public static Node exposePrepared(Node consumingNode){
         boolean fromLeft = false;
         boolean fromRight = false;
         Node node = consumingNode;
@@ -437,7 +437,7 @@ public class TopTree {
 
     }
 
-    private void deleteAllAncestors(Node node){
+    private static void deleteAllAncestors(Node node){
         Node parent = node.parent;
         if (parent != null){
             Node sibling = getSibling(node);
@@ -447,15 +447,15 @@ public class TopTree {
         }
     }
 
-    private boolean isPoint(Node node) {
+    private static boolean isPoint(Node node) {
         return node.numBoundary < 2;
     }
 
-    private boolean isPath(Node node) {
+    private static boolean isPath(Node node) {
         return node.numBoundary == 2;
     }
 
-    private void recomputeSpineWeight(Node node) {
+    private static void recomputeSpineWeight(Node node) {
         if (isPoint(node)){
             node.spineWeight = Integer.MIN_VALUE;
         } else if (node.isLeaf){
@@ -469,7 +469,7 @@ public class TopTree {
         }
     }
 
-    private void pushFlip(InternalNode node) {
+    private static void pushFlip(InternalNode node) {
         if (node.flip){
             node.flip = false;
 

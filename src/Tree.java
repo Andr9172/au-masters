@@ -12,12 +12,12 @@ public class Tree {
     }
 
     // Create the tree with the "correct" number of vertexes
-    public Tree createTree(int size){
-        Tree t = new Tree(size, new ArrayList<Vertex>());
-
+    public static Tree createTree(int size){
+        ArrayList<Vertex> vertices = new ArrayList<>();
         for (int i = 0; i < size; i++){
-            new Vertex(null, false);
+            vertices.add(new Vertex(null, false));
         }
+        Tree t = new Tree(size, vertices);
         return t;
     }
 
