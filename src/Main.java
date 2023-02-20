@@ -22,8 +22,8 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 5; //Integer.parseInt(args[1]);
-        int numberOfEdge = 10; //Integer.parseInt(args[2]);
+        int numberOfVertices = 500; //Integer.parseInt(args[1]);
+        int numberOfEdge = 10000; //Integer.parseInt(args[2]);
         int repeats = 0;
 
         for (int i = 0; i <= repeats; i++){
