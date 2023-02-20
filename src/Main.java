@@ -22,8 +22,8 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 10; //Integer.parseInt(args[1]);
-        int numberOfEdge = 30; //Integer.parseInt(args[2]);
+        int numberOfVertices = 20; //Integer.parseInt(args[1]);
+        int numberOfEdge = 100; //Integer.parseInt(args[2]);
         int repeats = 1;
 
         for (int i = 0; i <= repeats; i++){
@@ -47,7 +47,7 @@ public class Main {
 
         ArrayList<Kruskal.GraphEdge> edges = new ArrayList<>();
 
-        for (int i = 0; i <= numberOfEdge; i++){
+        for (int i = 0; i < numberOfEdge; i++){
             int dest = Math.abs(rnd.nextInt() % numberOfVertices);
             int source = Math.abs(rnd.nextInt() % numberOfVertices);
             if (edgeExistsAlready(source, dest, edges)){
@@ -67,7 +67,7 @@ public class Main {
         // Generate MST using top tree
         Tree t = Tree.createTree(numberOfVertices);
         System.out.println("Graph generated, and kruskal completed, now generating top tree");
-        for (int i = 0; i <= numberOfEdge; i++){
+        for (int i = 0; i < numberOfEdge; i++){
             int a = edges.get(i).src;
             int b = edges.get(i).dest;
             int weight = edges.get(i).weight;

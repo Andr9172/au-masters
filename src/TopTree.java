@@ -84,7 +84,7 @@ public class TopTree {
         Node node = findConsumingNode(v);
         while (node != null) {
             root = node;
-            root.numBoundary -= 1;
+            root.numBoundary = root.numBoundary - 1;
             recomputeSpineWeight(root);
             node = root.parent;
         }
@@ -100,13 +100,17 @@ public class TopTree {
             return null;
         }
 
+        int counter = 0;
+        ArrayList<Node> visited = new ArrayList<>();
         while (isPath(node)) { // rotateUp until consuming node is a point cluster
             InternalNode internalNode = (InternalNode) node;
             InternalNode parent = node.parent;
             pushFlip(internalNode);
             int nodeIndex = parent.children.get(1) == node ? 1 : 0;
             rotateUp(internalNode.children.get(nodeIndex));
+            visited.add(node); // delete after bugfixing TODO
             node = parent;
+            counter++;
         }
 
         fullSplay(node);
