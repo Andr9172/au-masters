@@ -61,7 +61,7 @@ public class InvariantCheck {
                 res.right = tmp;
             }
 
-            if ((res.left != null ? 0 : 1) + (res.middle == null ? 0 : 1) + (res.right == null ? 0 : 1) != node.numBoundary) {
+            if ((res.left == null ? 0 : 1) + (res.middle == null ? 0 : 1) + (res.right == null ? 0 : 1) != node.numBoundary) {
                 System.out.println("num_boundary mismatch");
             }
 

@@ -22,9 +22,9 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 1000; //Integer.parseInt(args[1]);
-        int numberOfEdge = 10000; //Integer.parseInt(args[2]);
-        int repeats = 10;
+        int numberOfVertices = 5; //Integer.parseInt(args[1]);
+        int numberOfEdge = 10; //Integer.parseInt(args[2]);
+        int repeats = 0;
 
         for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -87,12 +87,15 @@ public class Main {
             }
             TopTree.deExpose(t.vertex.get(a));
             TopTree.deExpose(t.vertex.get(b));
+            InvariantCheck.checkInvariant(root1);
+            InvariantCheck.checkInvariant(root2);
 
             if(maxEdge != null){
                 TopTree.cut(maxEdge.edge);
             }
             if(insertLink){
                 Node newRoot = TopTree.link(t.vertex.get(a), t.vertex.get(b), weight);
+                InvariantCheck.checkInvariant(newRoot);
             }
         }
 
