@@ -32,6 +32,7 @@ public class TopTree {
         InternalNode tvNew = null;
         Edge edge = null;
 
+
         Node tu = expose(u);
         if (tu != null && hasLeftBoundary(tu)){
             tu.flip = !tu.flip;
@@ -56,8 +57,8 @@ public class TopTree {
 
         if (tu != null){
             ArrayList<Node> children = new ArrayList<>();
-            children.add(tu);
-            children.add(t);
+            children.add(0, tu);
+            children.add(1, t);
             tuNew = new InternalNode(null, 0, children, tv != null ? 1 : 0);
             t.parent = tuNew;
             tu.parent = tuNew;
@@ -66,8 +67,8 @@ public class TopTree {
         }
         if (tv != null){
             ArrayList<Node> children = new ArrayList<>();
-            children.add(t);
-            children.add(tv);
+            children.add(0, t);
+            children.add(1, tv);
             tvNew = new InternalNode(null, 0, children, 0);
             t.parent = tvNew;
             tv.parent = tvNew;
@@ -119,7 +120,7 @@ public class TopTree {
         Node root = null;
         while (node != null) {
             root = node;
-            root.numBoundary += 1;
+            root.numBoundary = root.numBoundary + 1;
             recomputeSpineWeight(node);
             node = root.parent;
         }
@@ -167,8 +168,8 @@ public class TopTree {
     public static boolean hasLeftBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
-            Vertex endpoints = leaf_node.edge.endpoints.get(node.flip ? 1 : 0);
-            return endpoints.isExposed || !Tree.hasAtMostOneIncidentEdge(endpoints);
+            Vertex endpoint = leaf_node.edge.endpoints.get(node.flip ? 1 : 0);
+            return endpoint.isExposed || !Tree.hasAtMostOneIncidentEdge(endpoint);
         } else {
             InternalNode int_node = (InternalNode) node;
             Node child = int_node.children.get(node.flip ? 1 : 0);
@@ -194,8 +195,8 @@ public class TopTree {
             return false;
         }
         InternalNode int_node = (InternalNode) node;
-        boolean leftPath = isPath(int_node.children.get(node.flip ? 1 : 0));
-        boolean rightPath = isPath(int_node.children.get(!node.flip ? 1 : 0));
+        boolean leftPath = isPath(int_node.children.get(0));//node.flip ? 1 : 0));
+        boolean rightPath = isPath(int_node.children.get(1));//!node.flip ? 1 : 0));
 
         int hasMiddle = node.numBoundary - (leftPath ? 1 : 0) - (rightPath ? 1 : 0);
         return hasMiddle == 1;
@@ -251,7 +252,7 @@ public class TopTree {
                 newParentIsPath = uncleIsPath;
                 flipNewParent = false;
                 flipGrandparent = false;
-                sibling.flip = !node.flip;
+                sibling.flip = !sibling.flip;
             }
         }
 
@@ -316,7 +317,7 @@ public class TopTree {
     }
 
     public static void semiSplay(Node node){
-        while(node != null){
+        while(node == null){
             node = splayStep(node);
         }
     }

@@ -22,9 +22,9 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 20; //Integer.parseInt(args[1]);
-        int numberOfEdge = 100; //Integer.parseInt(args[2]);
-        int repeats = 1;
+        int numberOfVertices = 1000; //Integer.parseInt(args[1]);
+        int numberOfEdge = 10000; //Integer.parseInt(args[2]);
+        int repeats = 10;
 
         for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -54,11 +54,11 @@ public class Main {
                 i--;
                 continue;
             }
-            int weight = 1; //Math.abs(rnd.nextInt() % 100);
             if (dest == source) {
                 i--;
                 continue;
             }
+            int weight = Math.abs(rnd.nextInt() % 100) + 1;
             edges.add(new Kruskal.GraphEdge(source, dest, weight));
         }
 
@@ -77,7 +77,7 @@ public class Main {
 
             LeafNode maxEdge = null;
             boolean insertLink = false;
-            if (root1 != null && (root1 == root2)){
+            if (root1 != null && (root1.equals(root2))){
                 if (weight < root1.spineWeight){
                     insertLink = true;
                     maxEdge = TopTree.findMaximum(root1);
