@@ -25,7 +25,7 @@ public class Main {
         //}
 
         int numberOfVertices = 10000; //Integer.parseInt(args[1]);
-        int numberOfEdge = 100000; //Integer.parseInt(args[2]);
+        int numberOfEdge = 1000000; //Integer.parseInt(args[2]);
         int repeats = 4;
 
         for (int i = 0; i <= repeats; i++){
@@ -48,14 +48,18 @@ public class Main {
         Random rnd = new Random();
 
         ArrayList<Kruskal.GraphEdge> edges = new ArrayList<>();
-
+        int j = 0;
         for (int i = 0; i < numberOfEdge; i++){
+            if (i % (numberOfEdge/10) == 0){
+                //System.out.println(10 * j + " percent done");
+                j++;
+            }
             int dest = Math.abs(rnd.nextInt() % numberOfVertices);
             int source = Math.abs(rnd.nextInt() % numberOfVertices);
-            if (edgeExistsAlready(source, dest, edges)){
-                i--;
-                continue;
-            }
+            //if (edgeExistsAlready(source, dest, edges)){
+            //    i--;
+            //    continue;
+            //}
             if (dest == source) {
                 i--;
                 continue;
@@ -71,10 +75,10 @@ public class Main {
         // Generate MST using top tree
         Tree t = Tree.createTree(numberOfVertices);
         System.out.println("Graph generated, and kruskal completed, now generating top tree");
-        int j = 0;
+        j = 0;
         for (int i = 0; i < numberOfEdge; i++){
             if (i % (numberOfEdge/10) == 0){
-                System.out.println(10 * j + " percent done");
+                //System.out.println(10 * j + " percent done");
                 j++;
             }
             int a = edges.get(i).src;
@@ -116,6 +120,7 @@ public class Main {
         }
         topTreeTotalWeight = topTreeTotalWeight / 2;
         System.out.println("Top tree total weight is: " + topTreeTotalWeight);
+        System.out.println("Kruskals total weight is: " + kruskalResult);
         if (topTreeTotalWeight != kruskalResult) System.out.println("Something is wrong");
         return topTreeTotalWeight == kruskalResult ? 0 : 1;
     }

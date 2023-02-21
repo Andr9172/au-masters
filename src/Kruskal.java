@@ -111,7 +111,7 @@ public class Kruskal {
             minCost += results[i].weight;
         }
         //System.out.println("-----------------------------------------------");
-        System.out.println("Total cost of MST: "+minCost);
+        //System.out.println("Total cost of MST: "+minCost);
 
         return minCost;
 
