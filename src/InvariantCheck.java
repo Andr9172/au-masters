@@ -18,8 +18,8 @@ public class InvariantCheck {
 
         if (node.isLeaf){
             LeafNode leaf = (LeafNode) node;
-            Vertex leftEp = leaf.edge.endpoints.get(leaf.flip ? 1 : 0);
-            Vertex rightEp = leaf.edge.endpoints.get(!leaf.flip ? 1 : 0);
+            Vertex leftEp = leaf.edge.endpoints[leaf.flip ? 1 : 0];
+            Vertex rightEp = leaf.edge.endpoints[!leaf.flip ? 1 : 0];
             if (leftEp.isExposed || !Tree.hasAtMostOneIncidentEdge(leftEp)){
                 res.left = leftEp;
             }
@@ -82,8 +82,8 @@ public class InvariantCheck {
         Edge edge = v.firstEdge;
         while (edge != null){
             count += 1;
-            int j = edge.endpoints.get(1) == v ? 1 : 0;
-            edge = edge.next.get(j);
+            int j = edge.endpoints[1] == v ? 1 : 0;
+            edge = edge.next[j];
         }
         return count;
     }
@@ -91,7 +91,7 @@ public class InvariantCheck {
     private static int countLeavesWith(Node node, Vertex v) {
         if (node.isLeaf){
             LeafNode leaf = (LeafNode) node;
-            return (leaf.edge.endpoints.get(0) == v || leaf.edge.endpoints.get(1) == v) ? 1 : 0;
+            return (leaf.edge.endpoints[0] == v || leaf.edge.endpoints[1] == v) ? 1 : 0;
         } else {
          InternalNode internalNode = (InternalNode) node;
          return countLeavesWith(internalNode.children.get(0), v) + countLeavesWith(internalNode.children.get(1), v);

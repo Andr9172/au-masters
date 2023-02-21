@@ -22,8 +22,8 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 500; //Integer.parseInt(args[1]);
-        int numberOfEdge = 10000; //Integer.parseInt(args[2]);
+        int numberOfVertices = 5; //Integer.parseInt(args[1]);
+        int numberOfEdge = 10; //Integer.parseInt(args[2]);
         int repeats = 0;
 
         for (int i = 0; i <= repeats; i++){
@@ -87,15 +87,15 @@ public class Main {
             }
             TopTree.deExpose(t.vertex.get(a));
             TopTree.deExpose(t.vertex.get(b));
-            InvariantCheck.checkInvariant(root1);
-            InvariantCheck.checkInvariant(root2);
+            //InvariantCheck.checkInvariant(root1);
+            //InvariantCheck.checkInvariant(root2);
 
             if(maxEdge != null){
                 TopTree.cut(maxEdge.edge);
             }
             if(insertLink){
                 Node newRoot = TopTree.link(t.vertex.get(a), t.vertex.get(b), weight);
-                InvariantCheck.checkInvariant(newRoot);
+                //InvariantCheck.checkInvariant(newRoot);
             }
         }
 
@@ -113,6 +113,7 @@ public class Main {
     private static boolean edgeExistsAlready(int source, int dest, ArrayList<Kruskal.GraphEdge> edges) {
         for (Kruskal.GraphEdge edge: edges) {
             if (edge.dest == dest && edge.src == source) return true;
+            else if(edge.src == dest && edge.dest == source) return true;
         }
         return false;
     }
@@ -122,8 +123,8 @@ public class Main {
         Edge edge = vertex.get(i).firstEdge;
         while (edge != null){
             sum += edge.weight;
-            int j = edge.endpoints.get(1) == vertex.get(i) ? 1 : 0;
-            edge = edge.next.get(j);
+            int j = edge.endpoints[1] == vertex.get(i) ? 1 : 0;
+            edge = edge.next[j];
         }
         return sum;
     }

@@ -28,23 +28,23 @@ public class Tree {
 
     // Remove edge from both linked lists
     public static void destroyEdge(Edge edge){
-        destroyEdgeInner(edge.endpoints.get(0), edge.prev.get(0), edge.next.get(0));
-        destroyEdgeInner(edge.endpoints.get(1), edge.prev.get(1), edge.next.get(1));
+        destroyEdgeInner(edge.endpoints[0], edge.prev[0], edge.next[0]);
+        destroyEdgeInner(edge.endpoints[1], edge.prev[1], edge.next[1]);
     }
 
     // Remove edge from one linked list
     public static void destroyEdgeInner(Vertex v, Edge prev, Edge next){
         if (prev != null){
             // Check if v is equal to the first or second endpoint
-            int j = prev.endpoints.get(1).equals(v) ? 1 : 0;
-            prev.next.add(j, next);
+            int j = prev.endpoints[1].equals(v) ? 1 : 0;
+            prev.next[j] =  next;
         } else {
             v.firstEdge = next;
         }
         if (next != null){
             // Check if v is equal to the first or second endpoint
-            int j = next.endpoints.get(1).equals(v) ? 1 : 0;
-            next.prev.add(j, prev);
+            int j = next.endpoints[1].equals(v) ? 1 : 0;
+            next.prev[j] = prev;
         }
     }
 
@@ -55,31 +55,31 @@ public class Tree {
 
         left.firstEdge = edge;
         if (tempLeft != null){
-            int j = tempLeft.endpoints.get(1) == left ? 1 : 0;
-            tempLeft.prev.add(j, edge);
+            int j = tempLeft.endpoints[1] == left ? 1 : 0;
+            tempLeft.prev[j] = edge;
         }
 
         right.firstEdge = edge;
         if (tempRight != null){
-            int j = tempRight.endpoints.get(1) == right ? 1 : 0;
-            tempRight.prev.add(j, edge);
+            int j = tempRight.endpoints[1] == right ? 1 : 0;
+            tempRight.prev[j] = edge;
         }
 
         edge.weight = weight;
         edge.userData = null;
-        edge.endpoints.add(0, left);
-        edge.endpoints.add(1, right);
-        edge.prev.add(0, null);
-        edge.prev.add(1, null);
-        edge.next.add(0, tempLeft);
-        edge.next.add(1, tempRight);
+        edge.endpoints[0] = left;
+        edge.endpoints[1] = right;
+        edge.prev[0] = null;
+        edge.prev[1] = null;
+        edge.next[0] = tempLeft;
+        edge.next[1] = tempRight;
     }
 
     public static boolean hasAtMostOneIncidentEdge(Vertex vertex){
         Edge firstEdge = vertex.firstEdge;
         if (firstEdge != null) {
-            int j = firstEdge.endpoints.get(1) == vertex ? 1 : 0;
-            return firstEdge.next.get(j) == null;
+            int j = firstEdge.endpoints[1] == vertex ? 1 : 0;
+            return firstEdge.next[j] == null;
         } else {
             return true;
         }

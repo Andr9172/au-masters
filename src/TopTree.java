@@ -11,8 +11,8 @@ public class TopTree {
     public static void cut(Edge edge){
         Node node = edge.userData;
 
-        Vertex u = edge.endpoints.get(0);
-        Vertex v = edge.endpoints.get(1);
+        Vertex u = edge.endpoints[0];
+        Vertex v = edge.endpoints[1];
         fullSplay(node);
         // Now depth <= 2, and if e is a leaf edge, depth(e) <= 1
         deleteAllAncestors(node);
@@ -120,6 +120,9 @@ public class TopTree {
         Node root = null;
         while (node != null) {
             root = node;
+            if (root.numBoundary == 2){
+                System.out.println("Trying to increase numBoundary beyond 2 :)");
+            }
             root.numBoundary = root.numBoundary + 1;
             recomputeSpineWeight(node);
             node = root.parent;
@@ -168,7 +171,7 @@ public class TopTree {
     public static boolean hasLeftBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
-            Vertex endpoint = leaf_node.edge.endpoints.get(node.flip ? 1 : 0);
+            Vertex endpoint = leaf_node.edge.endpoints[node.flip ? 1 : 0];
             return endpoint.isExposed || !Tree.hasAtMostOneIncidentEdge(endpoint);
         } else {
             InternalNode int_node = (InternalNode) node;
@@ -181,7 +184,7 @@ public class TopTree {
     public static boolean hasRightBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
-            Vertex endpoints = leaf_node.edge.endpoints.get(!node.flip ? 1 : 0);
+            Vertex endpoints = leaf_node.edge.endpoints[!node.flip ? 1 : 0];
             return endpoints.isExposed || !Tree.hasAtMostOneIncidentEdge(endpoints);
         } else {
             InternalNode int_node = (InternalNode) node;
@@ -199,6 +202,10 @@ public class TopTree {
         boolean rightPath = isPath(int_node.children.get(1));//!node.flip ? 1 : 0));
 
         int hasMiddle = node.numBoundary - (leftPath ? 1 : 0) - (rightPath ? 1 : 0);
+        if (node.numBoundary == 3){
+            System.out.println("Something is wrong???");
+            System.out.println("For break point");
+        }
         return hasMiddle == 1;
     }
 
@@ -259,7 +266,7 @@ public class TopTree {
         parent.children.set(uncleIsLeftChild ? 1 : 0, sibling);
         parent.children.set(!uncleIsLeftChild ? 1 : 0, uncle);
         parent.flip = flipNewParent;
-        parent.numBoundary = (newParentIsPath ? 1 : 0) + 1;
+        parent.numBoundary = (newParentIsPath ? 2 : 1);
 
         grandParent.children.set(uncleIsLeftChild ? 1 : 0, node);
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
@@ -317,8 +324,9 @@ public class TopTree {
     }
 
     public static void semiSplay(Node node){
-        while(node == null){
-            node = splayStep(node);
+        Node top = node;
+        while(top != null){
+            top = splayStep(top);
         }
     }
 
@@ -344,9 +352,9 @@ public class TopTree {
             return node;
         }
 
-        boolean isLeft = (start.endpoints.get(0) == vert) != node.flip;
+        boolean isLeft = (start.endpoints[0] == vert) != node.flip;
         boolean isMiddle = false;
-        boolean isRight = (start.endpoints.get(1) == vert) != node.flip;
+        boolean isRight = (start.endpoints[1] == vert) != node.flip;
         Node lastMiddleNode = null;
 
         while(node.parent != null){
@@ -423,6 +431,9 @@ public class TopTree {
         Node node = consumingNode;
 
         while(true){
+            if (node.numBoundary == 2){
+                System.out.println("Trying to increase the number of boundary beyond 2");
+            }
             node.numBoundary += 1;
             recomputeSpineWeight(node);
             InternalNode parent = node.parent;
