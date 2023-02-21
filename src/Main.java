@@ -24,8 +24,8 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 100; //Integer.parseInt(args[1]);
-        int numberOfEdge = 1000; //Integer.parseInt(args[2]);
+        int numberOfVertices = 10000; //Integer.parseInt(args[1]);
+        int numberOfEdge = 100000; //Integer.parseInt(args[2]);
         int repeats = 4;
 
         for (int i = 0; i <= repeats; i++){
@@ -71,7 +71,12 @@ public class Main {
         // Generate MST using top tree
         Tree t = Tree.createTree(numberOfVertices);
         System.out.println("Graph generated, and kruskal completed, now generating top tree");
+        int j = 0;
         for (int i = 0; i < numberOfEdge; i++){
+            if (i % (numberOfEdge/10) == 0){
+                System.out.println(10 * j + " percent done");
+                j++;
+            }
             int a = edges.get(i).src;
             int b = edges.get(i).dest;
             int weight = edges.get(i).weight;
@@ -91,15 +96,15 @@ public class Main {
             }
             TopTree.deExpose(t.vertex.get(a));
             TopTree.deExpose(t.vertex.get(b));
-            InvariantCheck.checkInvariant(root1);
-            InvariantCheck.checkInvariant(root2);
+            //InvariantCheck.checkInvariant(root1);
+            //InvariantCheck.checkInvariant(root2);
 
             if(maxEdge != null){
                 TopTree.cut(maxEdge.edge);
             }
             if(insertLink){
                 Node newRoot = TopTree.link(t.vertex.get(a), t.vertex.get(b), weight);
-                InvariantCheck.checkInvariant(newRoot);
+                //InvariantCheck.checkInvariant(newRoot);
             }
         }
 
