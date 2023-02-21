@@ -64,6 +64,14 @@ public class Kruskal {
 
 
     public static int kruskals(int V, List<GraphEdge> edges) {
+        // Step 1: sort the edges in non-decreasing order
+        edges.sort(new Comparator<Kruskal.GraphEdge>() {
+            @Override
+            public int compare(Kruskal.GraphEdge o1, Kruskal.GraphEdge o2) {
+                return o1.weight - o2.weight;
+            }
+        });
+
         int j = 0;
         int noOfEdges = 0;
         // Allocate memory for creating V subsets

@@ -2,6 +2,8 @@
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class Main {
@@ -22,9 +24,9 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 5; //Integer.parseInt(args[1]);
-        int numberOfEdge = 10; //Integer.parseInt(args[2]);
-        int repeats = 0;
+        int numberOfVertices = 100; //Integer.parseInt(args[1]);
+        int numberOfEdge = 1000; //Integer.parseInt(args[2]);
+        int repeats = 4;
 
         for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -64,6 +66,8 @@ public class Main {
 
         int kruskalResult = Kruskal.kruskals(numberOfVertices, edges);
 
+        Collections.shuffle(edges);
+
         // Generate MST using top tree
         Tree t = Tree.createTree(numberOfVertices);
         System.out.println("Graph generated, and kruskal completed, now generating top tree");
@@ -87,15 +91,15 @@ public class Main {
             }
             TopTree.deExpose(t.vertex.get(a));
             TopTree.deExpose(t.vertex.get(b));
-            //InvariantCheck.checkInvariant(root1);
-            //InvariantCheck.checkInvariant(root2);
+            InvariantCheck.checkInvariant(root1);
+            InvariantCheck.checkInvariant(root2);
 
             if(maxEdge != null){
                 TopTree.cut(maxEdge.edge);
             }
             if(insertLink){
                 Node newRoot = TopTree.link(t.vertex.get(a), t.vertex.get(b), weight);
-                //InvariantCheck.checkInvariant(newRoot);
+                InvariantCheck.checkInvariant(newRoot);
             }
         }
 
