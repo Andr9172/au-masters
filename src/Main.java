@@ -116,7 +116,8 @@ public class Main {
         }
         topTreeTotalWeight = topTreeTotalWeight / 2;
         System.out.println("Top tree total weight is: " + topTreeTotalWeight);
-        return 0;
+        if (topTreeTotalWeight != kruskalResult) System.out.println("Something is wrong");
+        return topTreeTotalWeight == kruskalResult ? 0 : 1;
     }
 
     private static boolean edgeExistsAlready(int source, int dest, ArrayList<Kruskal.GraphEdge> edges) {
