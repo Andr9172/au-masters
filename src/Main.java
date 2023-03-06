@@ -33,7 +33,66 @@ public class Main {
             if (res != 0) System.out.println("Error in compare mode");
         }
 
+        testSizeTopTree(numberOfVertices, numberOfEdge);
+
         System.out.println("Unknown arguments?");
+
+    }
+
+    private static void testSizeTopTree(int numberOfVertices, int numberOfEdge) {
+        Random rnd = new Random();
+
+        ArrayList<Kruskal.GraphEdge> edges = new ArrayList<>();
+        int j = 0;
+        for (int i = 0; i < numberOfEdge; i++){
+            if (i % (numberOfEdge/10) == 0){
+                //System.out.println(10 * j + " percent done");
+                j++;
+            }
+            int dest = Math.abs(rnd.nextInt() % numberOfVertices);
+            int source = Math.abs(rnd.nextInt() % numberOfVertices);
+            //if (edgeExistsAlready(source, dest, edges)){
+            //    i--;
+            //    continue;
+            //}
+            if (dest == source) {
+                i--;
+                continue;
+            }
+            int weight = Math.abs(rnd.nextInt() % 100) + 1;
+            edges.add(new Kruskal.GraphEdge(source, dest, weight));
+        }
+        Tree t = Tree.createTree(numberOfVertices);
+        SizeTopTree topTree = new SizeTopTree();
+
+        for (int i = 0; i < numberOfEdge; i++) {
+            if (i % (numberOfEdge / 10) == 0) {
+                //System.out.println(10 * j + " percent done");
+                j++;
+            }
+            int a = edges.get(i).src;
+            int b = edges.get(i).dest;
+            int weight = edges.get(i).weight;
+            Node root1 = topTree.expose(t.vertex.get(a));
+            Node root2 = topTree.expose(t.vertex.get(b));
+
+            LeafNode maxEdge = null;
+            boolean insertLink = false;
+            if (root1 != null && (root1.equals(root2))){
+                // Skip edge
+            } else {
+                insertLink = true;
+            }
+            topTree.deExpose(t.vertex.get(a));
+            topTree.deExpose(t.vertex.get(b));
+            if(insertLink){
+                Node newRoot = topTree.link(t.vertex.get(a), t.vertex.get(b), weight);
+                //InvariantCheck.checkInvariant(newRoot);
+            }
+        }
+        SizeUserInfo userInfo = (SizeUserInfo) topTree.findRoot(t.vertex.get(0).firstEdge.userData).userInfo;
+        int size = userInfo.size;
+        System.out.println("Size of spanning tree is: " + size);
 
     }
 

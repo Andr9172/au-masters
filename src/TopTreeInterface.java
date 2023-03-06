@@ -14,7 +14,7 @@ public interface TopTreeInterface {
         while (tempNode.parent != null){
             tempNode = tempNode.parent;
         }
-        return node;
+        return tempNode;
     }
 
 
