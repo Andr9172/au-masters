@@ -1,14 +1,25 @@
 import java.util.ArrayList;
 
-public class TopTree {
+public interface TopTreeInterface {
 
-    // Method just included, we don't have to do memory cleanup
-    public void freeTopTree(Node node){
+    public void combine(Node t);
 
+    public Node search(Node root);
+
+    public UserInfo newUserInfo();
+
+    // Find root
+    public default Node findRoot(Node node){
+        Node tempNode = node;
+        while (tempNode.parent != null){
+            tempNode = tempNode.parent;
+        }
+        return node;
     }
 
+
     // Remove edge from tree
-    public static void cut(Edge edge){
+     public default void cut(Edge edge){
         Node node = edge.userData;
 
         Vertex u = edge.endpoints[0];
@@ -26,7 +37,7 @@ public class TopTree {
     }
 
     // Add edge to tree
-    public static Node link(Vertex u, Vertex v, int weight){
+    public default Node link(Vertex u, Vertex v, int weight){
         LeafNode tEdge = null;
         InternalNode tuNew = null;
         InternalNode tvNew = null;
@@ -50,43 +61,44 @@ public class TopTree {
 
         // Init T_edge
         Tree.addEdge(edge, u, v, weight);
-        tEdge = new LeafNode(null, null, edge, (tu != null ? 1 : 0) + (tv != null ? 1 : 0));
+        tEdge = new LeafNode(null, newUserInfo(), edge, (tu != null ? 1 : 0) + (tv != null ? 1 : 0));
         Node t = (Node) tEdge;
-        recomputeSpineWeight(t);
+        combine(t);
         edge.userData = tEdge;
 
         if (tu != null){
             ArrayList<Node> children = new ArrayList<>();
             children.add(0, tu);
             children.add(1, t);
-            tuNew = new InternalNode(null, null, children, tv != null ? 1 : 0);
+            tuNew = new InternalNode(null, newUserInfo(), children, tv != null ? 1 : 0);
             t.parent = tuNew;
             tu.parent = tuNew;
             t = tuNew;
-            recomputeSpineWeight(t);
+            combine(t);
         }
         if (tv != null){
             ArrayList<Node> children = new ArrayList<>();
             children.add(0, t);
             children.add(1, tv);
-            tvNew = new InternalNode(null, null, children, 0);
+            tvNew = new InternalNode(null, newUserInfo(), children, 0);
             t.parent = tvNew;
             tv.parent = tvNew;
             t = tvNew;
-            recomputeSpineWeight(t);
+            combine(t);
+            //(t);
         }
 
         return t;
     }
 
     // Deexpose vertex in underlying tree
-    public static Node deExpose(Vertex v){
+    public default Node deExpose(Vertex v){
         Node root = null;
         Node node = findConsumingNode(v);
         while (node != null) {
             root = node;
             root.numBoundary = root.numBoundary - 1;
-            recomputeSpineWeight(root);
+            combine(root);
             node = root.parent;
         }
         v.isExposed = false;
@@ -94,7 +106,7 @@ public class TopTree {
     }
 
     // Expose version 1
-    public static Node expose(Vertex v){
+    public default Node expose(Vertex v){
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
             v.isExposed = true;
@@ -120,7 +132,7 @@ public class TopTree {
                 System.out.println("Trying to increase numBoundary beyond 2 :)");
             }
             root.numBoundary = root.numBoundary + 1;
-            recomputeSpineWeight(node);
+            combine(node);
             node = root.parent;
         }
         v.isExposed = true;
@@ -128,7 +140,7 @@ public class TopTree {
     }
 
     // Expose version 2 (from appendix)
-    public static Node expose2(Vertex v){
+    public default Node expose2(Vertex v){
         Node consumingNode = findConsumingNode(v);
         if (consumingNode != null) {
             consumingNode = prepareExpose(consumingNode);
@@ -141,30 +153,9 @@ public class TopTree {
         }
     }
 
-    // Query for information
-    public static LeafNode findMaximum(Node root){
-        Node node = root;
-        while (!node.isLeaf){
-            InternalNode n = (InternalNode) node;
-            if (n.children.get(0).spineWeight > n.children.get(1).spineWeight){
-                node = n.children.get(0);
-            } else {
-                node = n.children.get(1);
-            }
-        }
-        return (LeafNode) node;
-    }
 
-    // Find root
-    public static Node findRoot(Node node){
-        Node tempNode = node;
-        while (tempNode.parent != null){
-            tempNode = tempNode.parent;
-        }
-        return node;
-    }
 
-    public static boolean hasLeftBoundary(Node node){
+    public default boolean hasLeftBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoint = leaf_node.edge.endpoints[node.flip ? 1 : 0];
@@ -177,7 +168,7 @@ public class TopTree {
     }
 
     // This have been copied, and modified from hasLeft could contain errors
-    public static boolean hasRightBoundary(Node node){
+    public default boolean hasRightBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoints = leaf_node.edge.endpoints[!node.flip ? 1 : 0];
@@ -189,7 +180,7 @@ public class TopTree {
         }
     }
 
-    public static boolean hasMiddleBoundary(Node node){
+    public default boolean hasMiddleBoundary(Node node){
         if (node.isLeaf || node.numBoundary == 0){
             return false;
         }
@@ -205,7 +196,7 @@ public class TopTree {
         return hasMiddle == 1;
     }
 
-    public static Node getSibling(Node node){
+    public default Node getSibling(Node node){
         InternalNode parent = node.parent;
         if (parent == null) {
             return null;
@@ -214,7 +205,7 @@ public class TopTree {
         return parent.children.get(j);
     }
 
-    public static void rotateUp(Node node){
+    public default void rotateUp(Node node){
         InternalNode parent = node.parent;
         InternalNode grandParent = parent.parent;
         Node sibling = getSibling(node);
@@ -268,15 +259,14 @@ public class TopTree {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
-        // This is done why?
-        recomputeSpineWeight(parent);
-        recomputeSpineWeight(grandParent);
+        combine(parent);
+        combine(grandParent);
 
         node.parent = grandParent;
         uncle.parent = parent;
     }
 
-    public static Node splayStep(Node node){
+    public default Node splayStep(Node node){
         while (true){
             InternalNode parent = node.parent;
             if (parent == null){
@@ -319,14 +309,14 @@ public class TopTree {
         }
     }
 
-    public static void semiSplay(Node node){
+    public default void semiSplay(Node node){
         Node top = node;
         while(top != null){
             top = splayStep(top);
         }
     }
 
-    public static void fullSplay(Node node){
+    public default void fullSplay(Node node){
         while (true){
             Node top = splayStep(node);
             if (top == null){
@@ -336,7 +326,7 @@ public class TopTree {
         }
     }
 
-    public static Node findConsumingNode(Vertex vert){
+    public default Node findConsumingNode(Vertex vert){
         Edge start = vert.firstEdge;
 
         if (start == null){
@@ -379,7 +369,7 @@ public class TopTree {
         return lastMiddleNode;
     }
 
-    public static Node prepareExpose(Node consumingNode){
+    public default Node prepareExpose(Node consumingNode){
         Node node = consumingNode;
         while (node.parent != null) {
             InternalNode parent = node.parent;
@@ -421,7 +411,7 @@ public class TopTree {
         return consumingNode;
     }
 
-    public static Node exposePrepared(Node consumingNode){
+    public default Node exposePrepared(Node consumingNode){
         boolean fromLeft = false;
         boolean fromRight = false;
         Node node = consumingNode;
@@ -431,7 +421,7 @@ public class TopTree {
                 System.out.println("Trying to increase the number of boundary beyond 2");
             }
             node.numBoundary += 1;
-            recomputeSpineWeight(node);
+            combine(node);
             InternalNode parent = node.parent;
             if(parent == null){
                 return node;
@@ -449,7 +439,7 @@ public class TopTree {
 
     }
 
-    private static void deleteAllAncestors(Node node){
+    default void deleteAllAncestors(Node node){
         Node parent = node.parent;
         if (parent != null){
             Node sibling = getSibling(node);
@@ -459,29 +449,16 @@ public class TopTree {
         }
     }
 
-    private static boolean isPoint(Node node) {
+    default boolean isPoint(Node node) {
         return node.numBoundary < 2;
     }
 
-    private static boolean isPath(Node node) {
+    default boolean isPath(Node node) {
         return node.numBoundary == 2;
     }
 
-    private static void recomputeSpineWeight(Node node) {
-        if (isPoint(node)){
-            node.spineWeight = Integer.MIN_VALUE;
-        } else if (node.isLeaf){
-            LeafNode n = (LeafNode) node;
-            n.spineWeight = n.edge.weight;
-        } else {
-            InternalNode n = (InternalNode) node;
-            int spineWeight0 = n.children.get(0).spineWeight;
-            int spineWeight1 = n.children.get(1).spineWeight;
-            n.spineWeight = Math.max(spineWeight0, spineWeight1);
-        }
-    }
 
-    private static void pushFlip(InternalNode node) {
+    default void pushFlip(InternalNode node) {
         if (node.flip){
             node.flip = false;
 
@@ -492,7 +469,6 @@ public class TopTree {
 
             node.children.get(0).flip = !node.children.get(0).flip;
             node.children.get(1).flip = !node.children.get(1).flip;
-
         }
     }
 

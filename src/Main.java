@@ -72,10 +72,13 @@ public class Main {
 
         Collections.shuffle(edges);
 
+
+
         // Generate MST using top tree
         Tree t = Tree.createTree(numberOfVertices);
         System.out.println("Graph generated, and kruskal completed, now generating top tree");
         j = 0;
+        MinimumSpanningTopTree topTree = new MinimumSpanningTopTree();
         for (int i = 0; i < numberOfEdge; i++){
             if (i % (numberOfEdge/10) == 0){
                 //System.out.println(10 * j + " percent done");
@@ -85,29 +88,30 @@ public class Main {
             int b = edges.get(i).dest;
             int weight = edges.get(i).weight;
 
-            Node root1 = TopTree.expose(t.vertex.get(a));
-            Node root2 = TopTree.expose(t.vertex.get(b));
+            Node root1 = topTree.expose(t.vertex.get(a));
+            Node root2 = topTree.expose(t.vertex.get(b));
 
             LeafNode maxEdge = null;
             boolean insertLink = false;
             if (root1 != null && (root1.equals(root2))){
-                if (weight < root1.spineWeight){
+                MinimumSpanningTreeUserInfo userInfo = (MinimumSpanningTreeUserInfo) root1.userInfo;
+                if (weight < userInfo.spineWeight){
                     insertLink = true;
-                    maxEdge = TopTree.findMaximum(root1);
+                    maxEdge = topTree.findMaximum(root1);
                 }
             } else {
                 insertLink = true;
             }
-            TopTree.deExpose(t.vertex.get(a));
-            TopTree.deExpose(t.vertex.get(b));
+            topTree.deExpose(t.vertex.get(a));
+            topTree.deExpose(t.vertex.get(b));
             //InvariantCheck.checkInvariant(root1);
             //InvariantCheck.checkInvariant(root2);
 
             if(maxEdge != null){
-                TopTree.cut(maxEdge.edge);
+                topTree.cut(maxEdge.edge);
             }
             if(insertLink){
-                Node newRoot = TopTree.link(t.vertex.get(a), t.vertex.get(b), weight);
+                Node newRoot = topTree.link(t.vertex.get(a), t.vertex.get(b), weight);
                 //InvariantCheck.checkInvariant(newRoot);
             }
         }
