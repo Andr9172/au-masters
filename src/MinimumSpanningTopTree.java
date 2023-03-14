@@ -42,7 +42,7 @@ public class MinimumSpanningTopTree implements TopTreeInterface{
                 node = n.children.get(1);
             }
         }
-        return (LeafNode) node;
+        return node;
     }
 
     public LeafNode findMaximum(Node root){

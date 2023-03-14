@@ -17,13 +17,7 @@ public class Tree {
         for (int i = 0; i < size; i++){
             vertices.add(new Vertex(null, false));
         }
-        Tree t = new Tree(size, vertices);
-        return t;
-    }
-
-    // Method temporarily included, we don't have to do explicit memory handling in java
-    // This was used for clean up in the c-code
-    public void destroyTree(){
+        return new Tree(size, vertices);
     }
 
     // Remove edge from both linked lists

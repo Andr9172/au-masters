@@ -2,16 +2,16 @@ import java.util.ArrayList;
 
 public interface TopTreeInterface {
 
-    public void combine(Node t);
+    void combine(Node t);
 
-    public UserInfo computeCombine(Node t);
+    UserInfo computeCombine(Node t);
 
-    public Node search(Node root);
+    Node search(Node root);
 
-    public UserInfo newUserInfo();
+    UserInfo newUserInfo();
 
     // Find root
-    public default Node findRoot(Node node){
+    default Node findRoot(Node node){
         Node tempNode = node;
         while (tempNode.parent != null){
             tempNode = tempNode.parent;
@@ -21,7 +21,7 @@ public interface TopTreeInterface {
 
 
     // Remove edge from tree
-     public default void cut(Edge edge){
+     default void cut(Edge edge){
         Node node = edge.userData;
 
         Vertex u = edge.endpoints[0];
@@ -39,11 +39,11 @@ public interface TopTreeInterface {
     }
 
     // Add edge to tree
-    public default Node link(Vertex u, Vertex v, int weight){
-        LeafNode tEdge = null;
-        InternalNode tuNew = null;
-        InternalNode tvNew = null;
-        Edge edge = null;
+    default Node link(Vertex u, Vertex v, int weight){
+        LeafNode tEdge;
+        InternalNode tuNew;
+        InternalNode tvNew;
+        Edge edge;
 
 
         Node tu = expose(u);
@@ -64,7 +64,7 @@ public interface TopTreeInterface {
         // Init T_edge
         Tree.addEdge(edge, u, v, weight);
         tEdge = new LeafNode(null, newUserInfo(), edge, (tu != null ? 1 : 0) + (tv != null ? 1 : 0));
-        Node t = (Node) tEdge;
+        Node t = tEdge;
         combine(t);
         edge.userData = tEdge;
 
@@ -94,7 +94,7 @@ public interface TopTreeInterface {
     }
 
     // Deexpose vertex in underlying tree
-    public default Node deExpose(Vertex v){
+    default Node deExpose(Vertex v){
         Node root = null;
         Node node = findConsumingNode(v);
         while (node != null) {
@@ -108,7 +108,7 @@ public interface TopTreeInterface {
     }
 
     // Expose version 1
-    public default Node expose(Vertex v){
+    default Node expose(Vertex v){
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
             v.isExposed = true;
@@ -142,7 +142,7 @@ public interface TopTreeInterface {
     }
 
     // Expose version 2 (from appendix)
-    public default Node expose2(Vertex v){
+    default Node expose2(Vertex v){
         Node consumingNode = findConsumingNode(v);
         if (consumingNode != null) {
             consumingNode = prepareExpose(consumingNode);
@@ -157,7 +157,7 @@ public interface TopTreeInterface {
 
 
 
-    public default boolean hasLeftBoundary(Node node){
+    default boolean hasLeftBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoint = leaf_node.edge.endpoints[node.flip ? 1 : 0];
@@ -170,7 +170,7 @@ public interface TopTreeInterface {
     }
 
     // This have been copied, and modified from hasLeft could contain errors
-    public default boolean hasRightBoundary(Node node){
+    default boolean hasRightBoundary(Node node){
         if (node.isLeaf){
             LeafNode leaf_node = (LeafNode) node;
             Vertex endpoints = leaf_node.edge.endpoints[!node.flip ? 1 : 0];
@@ -182,7 +182,7 @@ public interface TopTreeInterface {
         }
     }
 
-    public default boolean hasMiddleBoundary(Node node){
+    default boolean hasMiddleBoundary(Node node){
         if (node.isLeaf || node.numBoundary == 0){
             return false;
         }
@@ -198,7 +198,7 @@ public interface TopTreeInterface {
         return hasMiddle == 1;
     }
 
-    public default Node getSibling(Node node){
+    default Node getSibling(Node node){
         InternalNode parent = node.parent;
         if (parent == null) {
             return null;
@@ -207,7 +207,7 @@ public interface TopTreeInterface {
         return parent.children.get(j);
     }
 
-    public default void rotateUp(Node node){
+    default void rotateUp(Node node){
         InternalNode parent = node.parent;
         InternalNode grandParent = parent.parent;
         Node sibling = getSibling(node);
@@ -268,7 +268,7 @@ public interface TopTreeInterface {
         uncle.parent = parent;
     }
 
-    public default Node splayStep(Node node){
+    default Node splayStep(Node node){
         while (true){
             InternalNode parent = node.parent;
             if (parent == null){
@@ -311,14 +311,14 @@ public interface TopTreeInterface {
         }
     }
 
-    public default void semiSplay(Node node){
+    default void semiSplay(Node node){
         Node top = node;
         while(top != null){
             top = splayStep(top);
         }
     }
 
-    public default void fullSplay(Node node){
+    default void fullSplay(Node node){
         while (true){
             Node top = splayStep(node);
             if (top == null){
@@ -328,7 +328,7 @@ public interface TopTreeInterface {
         }
     }
 
-    public default Node findConsumingNode(Vertex vert){
+    default Node findConsumingNode(Vertex vert){
         Edge start = vert.firstEdge;
 
         if (start == null){
@@ -371,7 +371,7 @@ public interface TopTreeInterface {
         return lastMiddleNode;
     }
 
-    public default Node prepareExpose(Node consumingNode){
+    default Node prepareExpose(Node consumingNode){
         Node node = consumingNode;
         while (node.parent != null) {
             InternalNode parent = node.parent;
@@ -413,7 +413,7 @@ public interface TopTreeInterface {
         return consumingNode;
     }
 
-    public default Node exposePrepared(Node consumingNode){
+    default Node exposePrepared(Node consumingNode){
         boolean fromLeft = false;
         boolean fromRight = false;
         Node node = consumingNode;
