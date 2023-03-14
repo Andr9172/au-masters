@@ -4,6 +4,8 @@ public interface TopTreeInterface {
 
     public void combine(Node t);
 
+    public UserInfo computeCombine(Node t);
+
     public Node search(Node root);
 
     public UserInfo newUserInfo();
@@ -472,5 +474,29 @@ public interface TopTreeInterface {
         }
     }
 
+    /*
+    Checks that all userInfos are correct
+    Some may be checked multiple times
+     */
+    default void checkCombine(Node v) {
+        UserInfo userInfo = computeCombine(v);
+        if (v.userInfo.equals(userInfo)){
+            System.out.println("There was a userinfo that wasn't the same??");
+        }
+        if (v.parent != null){
+            checkCombine(v);
+        }
+    }
 
+    default void checkCombineFromRoot(Node v) {
+        UserInfo userInfo = computeCombine(v);
+        if (!(v.userInfo.equals(userInfo))){
+            System.out.println("There was a userinfo that wasn't the same??");
+        }
+        if (v instanceof InternalNode){
+            ArrayList<Node> children = ((InternalNode) v).children;
+            checkCombineFromRoot(children.get(0));
+            checkCombineFromRoot(children.get(1));
+        }
+    }
 }

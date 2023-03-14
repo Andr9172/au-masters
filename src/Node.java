@@ -5,7 +5,6 @@ public class Node {
     public boolean isLeaf;
     public boolean flip;
     public int numBoundary;
-    public int spineWeight;
 
     public Node(InternalNode parent, UserInfo userInfo, boolean isLeaf, boolean flip, int numBoundary) {
         this.parent = parent;

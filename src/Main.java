@@ -1,9 +1,7 @@
 // Method for creating a top tree and testing it
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
 
 public class Main {
@@ -174,6 +172,10 @@ public class Main {
                 //InvariantCheck.checkInvariant(newRoot);
             }
         }
+
+        // Check that the userInfo is correct
+        Node v = t.vertex.get(0).firstEdge.userData;
+        topTree.checkCombineFromRoot(topTree.findRoot(v));
 
         // Top tree should now have been built such that we can retrieve the minimum spanning tree!
 

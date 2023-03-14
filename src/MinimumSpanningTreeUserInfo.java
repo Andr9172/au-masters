@@ -6,4 +6,12 @@ public class MinimumSpanningTreeUserInfo implements UserInfo {
         this.spineWeight = spineWeight;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof MinimumSpanningTreeUserInfo){
+            return this.spineWeight == ((MinimumSpanningTreeUserInfo) o).spineWeight;
+        }
+        return false;
+    }
+
 }
