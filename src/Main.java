@@ -7,23 +7,9 @@ import java.util.Random;
 public class Main {
 
     public static void main(String[] args) {
-        //if (args.length < 1) {
-        //    System.out.println("Missing arguments");
-        //    return;
-        //}
 
-        //if (args[0].equals("command")){
-        //    runCommandMode();
-        //}
-
-        //if (args[0].equals("compare")){
-        //    if (args.length <= 3) {
-        //        System.out.println("Missing arguements for compare mode");
-        //    }
-        //}
-
-        int numberOfVertices = 10000; //Integer.parseInt(args[1]);
-        int numberOfEdge = 1000000; //Integer.parseInt(args[2]);
+        int numberOfVertices = 10000;
+        int numberOfEdge = 1000000;
         int repeats = 4;
 
         for (int i = 0; i <= repeats; i++){
@@ -209,7 +195,11 @@ public class Main {
         return sum;
     }
 
-    private static void runCommandMode() {
+
+    private static void testTwoEdgeConnectivity(){
+
+
+
     }
 
 }
