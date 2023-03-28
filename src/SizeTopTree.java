@@ -30,4 +30,9 @@ public class SizeTopTree implements TopTreeInterface {
     public UserInfo newUserInfo() {
         return new SizeUserInfo(0);
     }
+
+    @Override
+    public int combineCost(Node node) {
+        return ((SizeUserInfo) node.userInfo).size;
+    }
 }

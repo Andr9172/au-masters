@@ -10,6 +10,8 @@ public interface TopTreeInterface {
 
     UserInfo newUserInfo();
 
+    Size fullSplaySize = new Size(0);
+
     // Find root
     default Node findRoot(Node node){
         Node tempNode = node;
@@ -262,11 +264,14 @@ public interface TopTreeInterface {
         grandParent.flip = flipGrandparent;
 
         combine(parent);
-        combine(grandParent);
+        //combine(grandParent); //TODO is this actually needed
+        fullSplaySize.fullSplayCombineCost += combineCost(parent);
 
         node.parent = grandParent;
         uncle.parent = parent;
     }
+
+    int combineCost(Node grandParent);
 
     default Node splayStep(Node node){
         while (true){
@@ -312,16 +317,27 @@ public interface TopTreeInterface {
     }
 
     default void semiSplay(Node node){
+        fullSplaySize.fullSplayCombineCost = 0;
         Node top = node;
         while(top != null){
             top = splayStep(top);
         }
+        fullSplaySize.updateSemi(fullSplaySize.fullSplayCombineCost);
+        //System.out.println("The cost of the most recent semiSplay was " + fullSplaySize.fullSplayCombineCost);
+        //System.out.println("The combineCost of the root is " + combineCost(findRoot(node)));
+        fullSplaySize.fullSplayCombineCost = 0;
+
     }
 
     default void fullSplay(Node node){
+        fullSplaySize.fullSplayCombineCost = 0;
         while (true){
             Node top = splayStep(node);
             if (top == null){
+                fullSplaySize.updateFull(fullSplaySize.fullSplayCombineCost);
+                //System.out.println("The cost of the most recent fullSplay was " + fullSplaySize.fullSplayCombineCost);
+                //System.out.println("The combineCost of the root is " + combineCost(findRoot(node)));
+                fullSplaySize.fullSplayCombineCost = 0;
                 return;
             }
             splayStep(top);
@@ -499,4 +515,10 @@ public interface TopTreeInterface {
             checkCombineFromRoot(children.get(1));
         }
     }
+
+    default void testSplay(){
+        fullSplaySize.test();
+    }
+
+
 }

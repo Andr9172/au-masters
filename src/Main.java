@@ -22,18 +22,18 @@ public class Main {
         //    }
         //}
 
-        int numberOfVertices = 10000; //Integer.parseInt(args[1]);
+        int numberOfVertices = 100000; //Integer.parseInt(args[1]);
         int numberOfEdge = 1000000; //Integer.parseInt(args[2]);
         int repeats = 4;
 
-        for (int i = 0; i <= repeats; i++){
+        /*for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
             if (res != 0) System.out.println("Error in compare mode");
-        }
+        }*/
 
         testSizeTopTree(numberOfVertices, numberOfEdge);
 
-        System.out.println("Unknown arguments?");
+        //System.out.println("Unknown arguments?");
 
     }
 
@@ -91,6 +91,7 @@ public class Main {
         SizeUserInfo userInfo = (SizeUserInfo) topTree.findRoot(t.vertex.get(0).firstEdge.userData).userInfo;
         int size = userInfo.size;
         System.out.println("Size of spanning tree is: " + size);
+        topTree.testSplay();
 
     }
 
@@ -161,15 +162,15 @@ public class Main {
             }
             topTree.deExpose(t.vertex.get(a));
             topTree.deExpose(t.vertex.get(b));
-            //InvariantCheck.checkInvariant(root1);
-            //InvariantCheck.checkInvariant(root2);
+            InvariantCheck.checkInvariant(root1);
+            InvariantCheck.checkInvariant(root2);
 
             if(maxEdge != null){
                 topTree.cut(maxEdge.edge);
             }
             if(insertLink){
                 Node newRoot = topTree.link(t.vertex.get(a), t.vertex.get(b), weight);
-                //InvariantCheck.checkInvariant(newRoot);
+                InvariantCheck.checkInvariant(newRoot);
             }
         }
 

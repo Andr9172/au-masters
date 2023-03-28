@@ -53,4 +53,9 @@ public class MinimumSpanningTopTree implements TopTreeInterface{
     public UserInfo newUserInfo() {
         return new MinimumSpanningTreeUserInfo(0) ;
     }
+
+    @Override
+    public int combineCost(Node grandParent) {
+        return 0;
+    }
 }
