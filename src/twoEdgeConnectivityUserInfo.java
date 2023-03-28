@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class twoEdgeConnectivityUserInfo implements UserInfo {
 
@@ -7,13 +8,15 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
     public int coverCMinus;
 
     public Edge coverEdgeC;
+    public Edge coverEdgeCPlus;
+
+    public ArrayList<Node> boundaryVertices;
 
 
     // Size
-    public ArrayList<Integer> size;
+    public HashMap<Node, ArrayList<ArrayList<Integer>>> size;
     // Incident
-    public ArrayList<Integer> incident;
-
+    public HashMap<Node, ArrayList<ArrayList<Integer>>> incident;
 
 
 }
