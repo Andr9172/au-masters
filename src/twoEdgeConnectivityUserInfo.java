@@ -10,13 +10,20 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
     public Edge coverEdgeC;
     public Edge coverEdgeCPlus;
 
-    public ArrayList<Node> boundaryVertices;
+    public ArrayList<Vertex> boundaryVertices;
+
+
+
 
 
     // Size
-    public HashMap<Node, ArrayList<ArrayList<Integer>>> size;
+    public HashMap<Vertex, ArrayList<Integer>> size2;
+    public HashMap<Vertex, ArrayList<Integer>> size3;
+    public HashMap<Vertex, ArrayList<ArrayList<Integer>>> size4;
     // Incident
-    public HashMap<Node, ArrayList<ArrayList<Integer>>> incident;
+    public HashMap<Vertex, ArrayList<Integer>> incident2;
+    public HashMap<Vertex, ArrayList<Integer>> incident3;
+    public HashMap<Vertex, ArrayList<ArrayList<Integer>>> incident4;
 
 
 }
