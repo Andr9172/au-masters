@@ -15,7 +15,7 @@ public class Tree {
     public static Tree createTree(int size){
         ArrayList<Vertex> vertices = new ArrayList<>();
         for (int i = 0; i < size; i++){
-            vertices.add(new Vertex(null, false));
+            vertices.add(new Vertex(null, false, new twoEdgeVertexUserInfo()));
         }
         return new Tree(size, vertices);
     }

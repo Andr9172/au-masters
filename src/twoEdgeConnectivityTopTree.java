@@ -23,6 +23,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         ArrayList<Node> children = n.children;
 
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
+        // TODO update such that size2 and incident2 is from the vertex info instead
         // update boundary vertices
         if (isPath(t)){
             if (isPath(children.get(0)) && isPath(children.get(1))){
@@ -438,6 +439,42 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         info.coverCPlus = -1;
         info.coverCMinus = -1;
         info.coverEdgeCPlus = null;
+    }
+
+    // Query for result
+    public boolean twoEdgeConnected(Vertex u, Vertex v){
+        expose(u);
+        expose(v);
+        Node root = findRoot(u.firstEdge.userData);
+        twoEdgeConnectivityUserInfo userinfo = (twoEdgeConnectivityUserInfo) root.userInfo;
+        boolean result = userinfo.coverC >= 0;
+        deExpose(u);
+        deExpose(v);
+        return result;
+    }
+
+
+    public void coverReal(Vertex u, Vertex v, int i){
+        // The implementations of cover on page 66
+        // https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
+        expose(u);
+        expose(v);
+        Node root = findRoot(u.firstEdge.userData);
+        // TODO this call needs to edge, how do we get that
+        // cover(root, i);
+        deExpose(u);
+        deExpose(v);
+    }
+
+    public void uncoverReal(Vertex u, Vertex v, int i){
+        // The implementations of uncover on page 66
+        // https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
+        expose(u);
+        expose(v);
+        Node root = findRoot(u.firstEdge.userData);
+        uncover(root, i);
+        deExpose(u);
+        deExpose(v);
     }
 
 }
