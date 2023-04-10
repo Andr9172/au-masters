@@ -1,4 +1,4 @@
 # au-masters
 
-Big parts of the top tree code is translated from https://gitlab.com/aliceryhl/toptree-c-example
+Top tree is a java implementation of https://gitlab.com/aliceryhl/toptree-c-example
 
