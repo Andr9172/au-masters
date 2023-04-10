@@ -29,6 +29,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             return;
         }
+
+        // Handle internal nodes as described on page 67 of https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
         InternalNode n = (InternalNode) t;
         ArrayList<Node> children = n.children;
 
@@ -74,6 +76,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             }
         }
 
+        // update counters
         if (isPath(t)){
             // Boundary vertices a from 0'th, b from 1st c is the shared one
             Vertex a;
