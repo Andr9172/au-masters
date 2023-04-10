@@ -1,8 +1,12 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
+
+    public HashMap<Integer, Graph> graphs;
+
 
     int numberOfVertices = 0;
     int maxLevel = 0;
@@ -10,6 +14,12 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     public twoEdgeConnectivityTopTree(int numberOfVertices) {
         this.numberOfVertices = numberOfVertices;
         this.maxLevel = (int) Math.ceil(Math.log(numberOfVertices));
+
+        // Instantiate the graphs, and make sure they are there so we can add/remove from them
+        graphs = new HashMap<>();
+        for (int i = 0; i <= maxLevel; i++){
+            graphs.put(i, new Graph());
+        }
     }
 
     @Override
@@ -23,18 +33,16 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         ArrayList<Node> children = n.children;
 
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
-        // TODO update such that size2 and incident2 is from the vertex info instead
         // update boundary vertices
         if (isPath(t)){
             if (isPath(children.get(0)) && isPath(children.get(1))){
                 // Boundary vertices belong to different clusters, and needs to be without the shared one
-                ArrayList<Vertex> boundaries = new ArrayList<>();
                 twoEdgeConnectivityUserInfo c0 =  (twoEdgeConnectivityUserInfo)children.get(0).userInfo;
                 twoEdgeConnectivityUserInfo c1 =  (twoEdgeConnectivityUserInfo)children.get(1).userInfo;
                 // Is the shared vertex located on the first or second index of c1.boundaryvertices
                 boolean index0 = c0.boundaryVertices.contains(c1.boundaryVertices.get(0));
                 // Add all the boundary vertices of c0
-                boundaries.addAll(c0.boundaryVertices);
+                ArrayList<Vertex> boundaries = new ArrayList<>(c0.boundaryVertices);
                 if (index0) {
                     // Remove the shared vertex, and add the other boundary
                     boundaries.remove(c1.boundaryVertices.get(0));
@@ -44,7 +52,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     boundaries.remove(c1.boundaryVertices.get(1));
                     boundaries.add(c1.boundaryVertices.get(0));
                 }
-
+                userInfo.boundaryVertices = boundaries;
 
             } else if (isPath(children.get(0)) && isPoint(children.get(1))) {
                 // All boundary vertices belong to the path cluster
@@ -167,9 +175,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                         int tempSize = child0UserInfo.size4.get(a).get(i).get(j);
                         int tempIncident = child0UserInfo.incident4.get(a).get(i).get(j);
                         if (userInfo.coverC >= i){
-                            tempSize += child1UserInfo.size2.get(c).get(j);
+                            twoEdgeVertexUserInfo info = (twoEdgeVertexUserInfo) c.userInfo;
+
+                            tempSize += info.size2.get(j);
+                            tempIncident += info.incident2.get(j);
                             tempSize += child1UserInfo.size4.get(c).get(i).get(j);
-                            tempIncident += child1UserInfo.incident2.get(c).get(j);
                             tempIncident += child1UserInfo.incident4.get(c).get(i).get(j);
                         }
                         tempSizeList.add(j, tempSize);
@@ -248,9 +258,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                         int tempSize = child1UserInfo.size4.get(b).get(i).get(j);
                         int tempIncident = child1UserInfo.incident4.get(b).get(i).get(j);
                         if (userInfo.coverC >= i){
-                            tempSize += child0UserInfo.size2.get(c).get(j);
+                            twoEdgeVertexUserInfo info = (twoEdgeVertexUserInfo) c.userInfo;
+
+                            tempSize += info.size2.get(j);
+                            tempIncident += info.incident2.get(j);
                             tempSize += child0UserInfo.size4.get(c).get(i).get(j);
-                            tempIncident += child0UserInfo.incident2.get(c).get(j);
                             tempIncident += child0UserInfo.incident4.get(c).get(i).get(j);
                         }
                         tempSizeList.add(j, tempSize);
@@ -277,9 +289,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     int tempIncident = child0UserInfo.incident4.get(boundary).get(j).get(j);
                     if (child0UserInfo.coverC >= j){
                         Vertex tempVertex = child1UserInfo.boundaryVertices.get(0);
-                        tempSize += child1UserInfo.size2.get(tempVertex).get(j);
+                        twoEdgeVertexUserInfo info = (twoEdgeVertexUserInfo) tempVertex.userInfo;
+
+                        tempSize += info.size2.get(j);
+                        tempIncident += info.incident2.get(j);
                         tempSize += child1UserInfo.size3.get(tempVertex).get(j);
-                        tempIncident += child1UserInfo.incident2.get(tempVertex).get(j);
                         tempIncident += child1UserInfo.incident3.get(tempVertex).get(j);
                     }
                     size.add(tempSize);
@@ -297,9 +311,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     int tempIncident = child1UserInfo.incident4.get(boundary).get(j).get(j);
                     if (child1UserInfo.coverC >= j){
                         Vertex tempVertex = child0UserInfo.boundaryVertices.get(0);
-                        tempSize += child0UserInfo.size2.get(tempVertex).get(j);
+                        twoEdgeVertexUserInfo info = (twoEdgeVertexUserInfo) tempVertex.userInfo;
+
+                        tempSize += info.size2.get(j);
+                        tempIncident += info.incident2.get(j);
                         tempSize += child0UserInfo.size3.get(tempVertex).get(j);
-                        tempIncident += child0UserInfo.incident2.get(tempVertex).get(j);
                         tempIncident += child0UserInfo.incident3.get(tempVertex).get(j);
                     }
                     size.add(tempSize);
@@ -460,7 +476,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         expose(u);
         expose(v);
         Node root = findRoot(u.firstEdge.userData);
-        // TODO this call needs to edge, how do we get that
+        // TODO this call needs the edge, how do we get that
         // cover(root, i);
         deExpose(u);
         deExpose(v);

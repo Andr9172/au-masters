@@ -4,8 +4,8 @@ import java.util.HashMap;
 public class twoEdgeVertexUserInfo implements VertexUserInfo{
 
 
-    public HashMap<Vertex, ArrayList<Integer>> size2;
-    public HashMap<Vertex, ArrayList<Integer>> incident2;
+    public ArrayList<Integer> size2;
+    public ArrayList<Integer> incident2;
 
 
 }
