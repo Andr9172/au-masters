@@ -1,13 +1,31 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Graph {
 
-    // TODO undirected or directed graphs?
-    public HashMap<Integer, HashMap<Integer, Vertex>> adjacencyList;
+    int numberOfVertices;
 
-    public Graph(){
-        adjacencyList = new HashMap<>();
+    public Edge[][] adjacencyList;
+
+    public Graph(int numberOfVertices){
+        this.numberOfVertices = numberOfVertices;
+
+        adjacencyList = new Edge[numberOfVertices][numberOfVertices];
+    }
+
+    public void addEdge(Edge e){
+        int i = e.endpoints[0].id;
+        int j = e.endpoints[1].id;
+        adjacencyList[i][j] = e;
+        adjacencyList[j][i] = e;
+    }
+
+    public void removeEdge(Edge e){
+        int i = e.endpoints[0].id;
+        int j = e.endpoints[1].id;
+        adjacencyList[i][j] = null;
+        adjacencyList[j][i] = null;
     }
 
 

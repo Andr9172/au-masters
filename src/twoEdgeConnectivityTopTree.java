@@ -16,7 +16,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // Instantiate the graphs, and make sure they are there so we can add/remove from them
         graphs = new HashMap<>();
         for (int i = 0; i <= maxLevel; i++){
-            graphs.put(i, new Graph());
+            graphs.put(i, new Graph(numberOfVertices));
         }
     }
 
@@ -441,12 +441,13 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         // For X in {size, incident} and for all ...
-        for (int j = -1; j <= i; j++){
-            for (int k = -1; k <= maxLevel; k++){
+        // TODO using 0 instead of -1 for reasons
+        for (int j = 0; j <= i; j++){
+            for (int k = 0; k <= maxLevel; k++){
                 // For v in boundary nodes
                 for (Vertex v : info.boundaryVertices){
-                    info.size4.get(v).get(j).set(k, info.size4.get(v).get(-1).get(k));
-                    info.incident4.get(v).get(j).set(k, info.incident4.get(v).get(-1).get(k));
+                    info.size4.get(v).get(j).set(k, info.size4.get(v).get(0).get(k));
+                    info.incident4.get(v).get(j).set(k, info.incident4.get(v).get(0).get(k));
                 }
             }
         }
@@ -469,8 +470,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         // For X in {size, incident} and for all ...
-        for (int j = -1; j <= i; j++){
-            for (int k = -1; k <= maxLevel; k++){
+        // TODO using 0 instead of -1 for reasons
+        for (int j = 0; j <= i; j++){
+            for (int k = 0; k <= maxLevel; k++){
                 // For v in boundary nodes
                 for (Vertex v : info.boundaryVertices){
                     info.size4.get(v).get(j).set(k, info.size4.get(v).get(i+1).get(k));
@@ -478,18 +480,173 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 }
             }
         }
+    }
 
+    private Edge find(Vertex u, Node c, int i){
+        twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
+        if (uinfo.incident2.get(i) > 0){
+            return findIncidentEdge(u, c, i);
+        } else {
+            clean(c);
+            InternalNode internalNode = (InternalNode) c;
+            ArrayList<Node> children = internalNode.children;
+
+            twoEdgeConnectivityUserInfo c0 = (twoEdgeConnectivityUserInfo) children.get(0).userInfo;
+            twoEdgeConnectivityUserInfo c1 = (twoEdgeConnectivityUserInfo) children.get(1).userInfo;
+
+            // TODO a bit unsure on this part?
+            if (c0.boundaryVertices.contains(u)){
+                // Child 0 contains u as boundary
+                if (children.get(0).isLeaf){
+                    // child 0 is leaf
+                    if (c0.incident3.get(u).get(i) > 0){
+                        return find(u, children.get(0), i);
+                    }
+                } else {
+                    // child 0 is path
+                    if (c0.incident4.get(u).get(0).get(i) > 0){
+                        return find(u, children.get(0), i);
+                    }
+                }
+                // Find (b, B, i)
+                Vertex v = findNearestBoundary(u, c, i);
+                return find (v, children.get(1), i);
+            } else {
+                // child 1 contains u as boundary
+                if (children.get(1).isLeaf){
+                    // child 1 is leaf
+                    if (c1.incident3.get(u).get(i) > 0){
+                        return find(u, children.get(1), i);
+                    }
+                } else {
+                    // child 1 is path
+                    if (c1.incident4.get(u).get(0).get(i) > 0){
+                        return find(u, children.get(1), i);
+                    }
+                }
+                // Find (b, B, i)
+                Vertex v = findNearestBoundary(u, c, i);
+                return find (v, children.get(0), i);
+            }
+        }
+    }
+
+    private Vertex findNearestBoundary(Vertex u, Node c, int i) {
+        InternalNode internalNode = (InternalNode) c;
+        ArrayList<Node> children = internalNode.children;
+
+        twoEdgeConnectivityUserInfo c0 = (twoEdgeConnectivityUserInfo) children.get(0).userInfo;
+        twoEdgeConnectivityUserInfo c1 = (twoEdgeConnectivityUserInfo) children.get(1).userInfo;
+
+        if (c0.boundaryVertices.contains(u) && c1.boundaryVertices.contains(u)){
+            if (c0.boundaryVertices.size() > 1){
+                // c0 have two boundaries
+                int index = c0.boundaryVertices.lastIndexOf(u);
+                return c0.boundaryVertices.get(1-index);
+            } else {
+                // c1 have two boundaries
+                int index = c1.boundaryVertices.lastIndexOf(u);
+                return c1.boundaryVertices.get(1-index);
+            }
+        } else if (c0.boundaryVertices.contains(u)) {
+            // get boundary vertex from c1
+            // c0 have two boundaries, get the shared vertex
+            int index = c0.boundaryVertices.lastIndexOf(u);
+            return c0.boundaryVertices.get(1-index);
+        } else {
+            // get boundary vertex from c0
+            // c1 have two boundaries, get the shared vertex
+            int index = c1.boundaryVertices.lastIndexOf(u);
+            return c1.boundaryVertices.get(1-index);
+        }
+
+    }
+
+    private Edge findIncidentEdge(Vertex u, Node c, int i) {
+        // TODO
+
+        return null;
+    }
+
+    private void recoverInner(Vertex v, Vertex w, Vertex u, int i){
+        // Expose v, w and retrieve the root
+        expose(v);
+        expose(w);
+        Node c = findRoot(v.firstEdge.userData);
+        twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
+        twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
+        // deExpose, so we can expose new vertices in the while loop
+        deExpose(v);
+        deExpose(w);
+        boolean notStopped = true;
+        while (cinfo.incident4.get(u).get(0).get(i) + uinfo.incident2.get(i) > 0 && notStopped){
+            Edge e = find(u, c, i);
+
+            Vertex q = e.endpoints[0];
+            Vertex r = e.endpoints[1];
+
+            expose(q);
+            expose(r);
+            Node d = findRoot(e.userData);
+            twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
+
+            if (dinfo.size4.get(q).get(0).get(i) + 2 > numberOfVertices/(2^i)){
+                cover(d, i, e);
+                notStopped = false;
+            } else {
+                twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) q.userInfo;
+                twoEdgeVertexUserInfo rinfo = (twoEdgeVertexUserInfo) r.userInfo;
+
+                // TODO set level (q,r) to i + 1
+                increaseLevel(e, i, i+1);
+
+                // This may be the wrong counter getting changed
+                qinfo.incident2.add(i, qinfo.incident2.get(i) - 1);
+                qinfo.incident2.add(i + 1, qinfo.incident2.get(i + 1) + 1);
+
+                rinfo.incident2.add(i, rinfo.incident2.get(i) - 1);
+                rinfo.incident2.add(i + 1, rinfo.incident2.get(i + 1) + 1);
+
+                cover(d, i + 1, e);
+            }
+
+            deExpose(q);
+            deExpose(r);
+
+            // ???
+            expose(v);
+            expose(w);
+            deExpose(w);
+            deExpose(v);
+        }
+
+    }
+
+    /*
+    * Method to change the level of edges, and update the graphs
+    */
+    private void increaseLevel(Edge e, int levelFrom, int levelTo) {
+        for (int i = levelFrom; i <= levelTo; i++){
+            graphs.get(i).addEdge(e);
+        }
     }
 
     private void recover(Vertex v, Vertex w, int i){
-
+        recoverInner(v, w, v, i);
+        recoverInner(v, w, w, i);
     }
 
     private void swap(){
-        // ???
+        // TODO
+
+
+
     }
 
     public void insert(){
+        // TODO
+
+
 
     }
 
