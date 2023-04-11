@@ -1,6 +1,4 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
@@ -22,11 +20,111 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
     }
 
+    private void updateBoundaries(Node t){
+        // update boundary vertices
+        twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
+
+        if (t.isLeaf){
+            LeafNode leaf = (LeafNode) t;
+            Edge e = leaf.edge;
+            ArrayList<Vertex> boundaryVertices = new ArrayList<>();
+            for (Vertex v : e.endpoints){
+                if (Tree.hasAtMostOneIncidentEdge(v)){
+                    continue;
+                } else {
+                 boundaryVertices.add(v);
+                }
+            }
+            userInfo.boundaryVertices = boundaryVertices;
+
+        } else {
+            InternalNode n = (InternalNode) t;
+            ArrayList<Node> children = n.children;
+
+            if (isPath(t)){
+                if (isPath(children.get(0)) && isPath(children.get(1))){
+                    // Boundary vertices belong to different clusters, and needs to be without the shared one
+                    twoEdgeConnectivityUserInfo c0 =  (twoEdgeConnectivityUserInfo)children.get(0).userInfo;
+                    twoEdgeConnectivityUserInfo c1 =  (twoEdgeConnectivityUserInfo)children.get(1).userInfo;
+                    // Is the shared vertex located on the first or second index of c1.boundaryvertices
+                    boolean index0 = c0.boundaryVertices.contains(c1.boundaryVertices.get(0));
+                    // Add all the boundary vertices of c0
+                    ArrayList<Vertex> boundaries = new ArrayList<>(c0.boundaryVertices);
+                    if (index0) {
+                        // Remove the shared vertex, and add the other boundary
+                        boundaries.remove(c1.boundaryVertices.get(0));
+                        boundaries.add(c1.boundaryVertices.get(1));
+                    } else {
+                        // Remove the shared vertex, and add the other boundary
+                        boundaries.remove(c1.boundaryVertices.get(1));
+                        boundaries.add(c1.boundaryVertices.get(0));
+                    }
+                    userInfo.boundaryVertices = boundaries;
+
+                } else if (isPath(children.get(0)) && isPoint(children.get(1))) {
+                    // All boundary vertices belong to the path cluster
+                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices;
+                } else if (isPoint(children.get(0)) && isPath(children.get(1))) {
+                    // All boundary vertices belong to the path cluster
+                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices;
+                }
+            } else if (isPoint(t)) {
+                if (isPath(children.get(0)) && isPoint(children.get(1))) {
+                    // All boundary vertices belong to the path cluster, minus the shared vertex
+                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices;
+                    userInfo.boundaryVertices.remove(((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices.get(0));
+                } else if (isPoint(children.get(0)) && isPath(children.get(1))) {
+                    // All boundary vertices belong to the path cluster, minus the shared vertex
+                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices;
+                    userInfo.boundaryVertices.remove(((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices.get(0));
+
+                }
+            }
+        }
+
+
+    }
+
     @Override
     public void combine(Node t) {
-        if (t.isLeaf){
-            // TODO What to do when t is a leaf node?
+        updateBoundaries(t);
 
+        if (t.isLeaf){
+            // TODO I think this is the desired values, but may have to be redone
+            twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
+            ArrayList<Vertex> boundary = userInfo.boundaryVertices;
+
+            if (isPath(t)){
+                twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) boundary.get(0).userInfo;
+                twoEdgeVertexUserInfo b1 = (twoEdgeVertexUserInfo) boundary.get(1).userInfo;
+                for (Vertex v: userInfo.boundaryVertices){
+                    ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
+                    ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
+                    for (int i = 0; i <= maxLevel; i++){
+                        ArrayList<Integer> tempSizeList = new ArrayList<>();
+                        ArrayList<Integer> tempIncidentList = new ArrayList<>();
+                        for (int j = 0; j <= maxLevel; j++){
+                            tempSizeList.add(b0.size2.get(i) + b1.size2.get(i)); // Unsure if this should be i
+                            tempIncidentList.add(b0.incident2.get(i) + b1.incident2.get(i)); // Unsure if this should be i
+                        }
+                        sizeList.add(tempSizeList);
+                        incidentList.add(tempIncidentList);
+                    }
+                    userInfo.size4.put(v, sizeList);
+                    userInfo.incident4.put(v, incidentList);
+                }
+            } else {
+                twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) boundary.get(0).userInfo;
+                ArrayList<Integer> sizeList = new ArrayList();
+                ArrayList<Integer> incidentList = new ArrayList();
+                for (int i = 0; i <= maxLevel; i++){
+                    sizeList.add(b0.size2.get(i)); // Should the other endpoint also be added?
+                    incidentList.add(b0.incident2.get(i)); // Should the other endpoint also be added?
+
+                }
+                userInfo.size3.put(boundary.get(0), sizeList);
+                userInfo.incident3.put(boundary.get(0), incidentList);
+            }
             return;
         }
 
@@ -35,46 +133,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         ArrayList<Node> children = n.children;
 
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
-        // update boundary vertices
-        if (isPath(t)){
-            if (isPath(children.get(0)) && isPath(children.get(1))){
-                // Boundary vertices belong to different clusters, and needs to be without the shared one
-                twoEdgeConnectivityUserInfo c0 =  (twoEdgeConnectivityUserInfo)children.get(0).userInfo;
-                twoEdgeConnectivityUserInfo c1 =  (twoEdgeConnectivityUserInfo)children.get(1).userInfo;
-                // Is the shared vertex located on the first or second index of c1.boundaryvertices
-                boolean index0 = c0.boundaryVertices.contains(c1.boundaryVertices.get(0));
-                // Add all the boundary vertices of c0
-                ArrayList<Vertex> boundaries = new ArrayList<>(c0.boundaryVertices);
-                if (index0) {
-                    // Remove the shared vertex, and add the other boundary
-                    boundaries.remove(c1.boundaryVertices.get(0));
-                    boundaries.add(c1.boundaryVertices.get(1));
-                } else {
-                    // Remove the shared vertex, and add the other boundary
-                    boundaries.remove(c1.boundaryVertices.get(1));
-                    boundaries.add(c1.boundaryVertices.get(0));
-                }
-                userInfo.boundaryVertices = boundaries;
-
-            } else if (isPath(children.get(0)) && isPoint(children.get(1))) {
-                // All boundary vertices belong to the path cluster
-                userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices;
-            } else if (isPoint(children.get(0)) && isPath(children.get(1))) {
-                // All boundary vertices belong to the path cluster
-                userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices;
-            }
-        } else if (isPoint(t)) {
-            if (isPath(children.get(0)) && isPoint(children.get(1))) {
-                // All boundary vertices belong to the path cluster, minus the shared vertex
-                userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices;
-                userInfo.boundaryVertices.remove(((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices.get(0));
-            } else if (isPoint(children.get(0)) && isPath(children.get(1))) {
-                // All boundary vertices belong to the path cluster, minus the shared vertex
-                userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices;
-                userInfo.boundaryVertices.remove(((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices.get(0));
-
-            }
-        }
 
         // update counters
         if (isPath(t)){
