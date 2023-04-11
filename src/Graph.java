@@ -28,5 +28,9 @@ public class Graph {
         adjacencyList[j][i] = null;
     }
 
+    public Edge getEdge(Vertex u, Vertex v){
+        return adjacencyList[u.id][v.id];
+    }
+
 
 }

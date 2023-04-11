@@ -1,5 +1,6 @@
 // Method for creating a top tree and testing it
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -16,18 +17,18 @@ public class Main {
         //    runCommandMode();
         //}
 
-        int numberOfVertices = 10000;
-        int numberOfEdge = 1000000;
+        int numberOfVertices = 5;
+        int numberOfEdge = 10;
         int repeats = 4;
 
-        for (int i = 0; i <= repeats; i++){
+        /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
             if (res != 0) System.out.println("Error in compare mode");
-        }
+        } */
 
-        testSizeTopTree(numberOfVertices, numberOfEdge);
+        //testSizeTopTree(numberOfVertices, numberOfEdge);
 
-        System.out.println("Unknown arguments?");
+        testTwoEdgeConnectivity(numberOfVertices, numberOfEdge);
 
     }
 
@@ -205,8 +206,58 @@ public class Main {
     }
 
 
-    private static void testTwoEdgeConnectivity(){
+    private static void testTwoEdgeConnectivity(int numberOfVertices, int numberOfEdge){
 
+// Create graphs given in above diagrams
+        System.out.println("Bridges in first graph ");
+
+        twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices);
+
+        // Generate GraphEdges and Vertices
+        System.out.println("Generating random graph with desired number of vertices and edges");
+        if (numberOfEdge > (numberOfVertices * (numberOfVertices - 1)/2)){
+            System.out.println("Trying to generate a graph with more edges than exists");
+        }
+
+        Random rnd = new Random();
+
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+        int j = 0;
+        for (int i = 0; i < numberOfEdge; i++){
+            if (i % (numberOfEdge/10) == 0){
+                //System.out.println(10 * j + " percent done");
+                j++;
+            }
+            int dest = Math.abs(rnd.nextInt() % numberOfVertices);
+            int source = Math.abs(rnd.nextInt() % numberOfVertices);
+            //if (edgeExistsAlready(source, dest, edges)){
+            //    i--;
+            //    continue;
+            //}
+            if (dest == source) {
+                i--;
+                continue;
+            }
+            int weight = Math.abs(rnd.nextInt() % 100) + 1;
+            ArrayList<Integer> tempList = new ArrayList<>();
+            tempList.add(source);
+            tempList.add(dest);
+            edges.add(tempList);
+            System.out.println("Edge " + i + " is from " + source + " to " + dest);
+        }
+        for (ArrayList<Integer> list : edges){
+            g1.addEdge(list.get(0), list.get(1));
+        }
+
+        g1.bridge();
+        if (g1.count == 0) {
+            System.out.println(
+                    "Given graph is 2-edge connected:");
+        }
+        else {
+            System.out.println(
+                    "Given graph is not 2-edge connected:");
+        }
 
 
     }

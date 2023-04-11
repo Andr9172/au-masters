@@ -694,8 +694,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         expose(u);
         expose(v);
         Node root = findRoot(u.firstEdge.userData);
-        // TODO this call needs the edge, how do we get that
-        // cover(root, i);
+        // A bit scuffed way of getting the edge
+        cover(root, i, graphs.get(0).getEdge(u,v));
         deExpose(u);
         deExpose(v);
     }
