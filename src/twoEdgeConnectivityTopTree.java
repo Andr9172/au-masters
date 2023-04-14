@@ -152,7 +152,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             }
             return;
         }
-
+        t.userInfo = new twoEdgeConnectivityUserInfo();
+        updateBoundaries(t);
         // Handle internal nodes as described on page 67 of https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
         InternalNode n = (InternalNode) t;
         ArrayList<Node> children = n.children;
@@ -457,7 +458,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     private void cover(Node n, int i, Edge e){
         twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
 
-        if (info.coverC <= i){
+        if (info.coverC < i){
             info.coverC = i;
             info.coverEdgeC = e;
         }
@@ -745,9 +746,28 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Node root = findRoot(u.firstEdge.userData);
         // A bit scuffed way of getting the edge
         cover(root, i, graphs.get(0).getEdge(u,v));
-        clean(root);
+        pushDownInfo(root);
+        //clean(root);
         deExpose(u);
         deExpose(v);
+    }
+
+    private void pushDownInfo(Node n) {
+        twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
+        if (n.isLeaf){
+            return;
+        }
+        InternalNode internalNode = (InternalNode) n;
+
+        ArrayList<Node> children = internalNode.children;
+
+        for(int i = 0; i < 2; i++){
+            if (isPath(children.get(i))){
+                uncover(children.get(i), info.coverCMinus);
+                cover(children.get(i), info.coverCPlus, info.coverEdgeCPlus);
+            }
+            pushDownInfo(children.get(i));
+        }
     }
 
     public void uncoverReal(Vertex u, Vertex v, int i){

@@ -27,6 +27,8 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
         incident3 = new HashMap<>();
         incident4 = new HashMap<>();
         coverC = -1;
+        coverCPlus = -1;
+        coverCMinus = -1;
     }
 
 

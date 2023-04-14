@@ -267,14 +267,17 @@ public class Main {
         Tree t = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
 
+        j = 0;
         for (ArrayList<Integer> list : edges){
-
+            if (j == 7 || j == 9){
+                continue;
+            }
             int a = list.get(0);
             int b = list.get(1);
             int weight = 1;
 
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
-
+            j++;
         }
 
 
@@ -292,9 +295,14 @@ public class Main {
         Node root = topTree.findRoot(test.firstEdge.userData);
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) root.userInfo;
         if (userInfo.coverC >= 0) {
-            System.out.println("Top tree say they are 2 edge connected!");
+            System.out.println("Manual method says Top tree are 2 edge connected!");
         } else {
-            System.out.println("Top tree say it is not 2 edge connected!");
+            System.out.println("Manual method says Top tree are it is not 2 edge connected!");
+        };
+        if (topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(2))){
+            System.out.println("Automatic method says Top tree are 2 edge connected!");
+        } else {
+            System.out.println("Automatic method says Top tree are it is not 2 edge connected!");
         };
 
 
