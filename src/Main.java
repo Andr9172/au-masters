@@ -3,6 +3,7 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
 
 public class Main {
@@ -208,7 +209,7 @@ public class Main {
 
     private static void testTwoEdgeConnectivity(int numberOfVertices, int numberOfEdge){
 
-// Create graphs given in above diagrams
+        // Create graphs given in above diagrams
         System.out.println("Bridges in first graph ");
 
         twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices);
@@ -220,14 +221,16 @@ public class Main {
         }
 
         Random rnd = new Random();
+        //rnd.setSeed(3); // connected
+        rnd.setSeed(1); // not connected
 
         ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
         int j = 0;
         for (int i = 0; i < numberOfEdge; i++){
-            if (i % (numberOfEdge/10) == 0){
+            //if (i % (numberOfEdge/10) == 0){
                 //System.out.println(10 * j + " percent done");
-                j++;
-            }
+                //j++;
+            //}
             int dest = Math.abs(rnd.nextInt() % numberOfVertices);
             int source = Math.abs(rnd.nextInt() % numberOfVertices);
             //if (edgeExistsAlready(source, dest, edges)){
@@ -258,6 +261,43 @@ public class Main {
             System.out.println(
                     "Given graph is not 2-edge connected:");
         }
+
+
+        // Test of 2-edge connectivity top tree
+        Tree t = Tree.createTree(numberOfVertices);
+        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
+
+        for (ArrayList<Integer> list : edges){
+
+            int a = list.get(0);
+            int b = list.get(1);
+            int weight = 1;
+
+            topTree.insert(t.vertex.get(a),t.vertex.get(b));
+
+        }
+
+
+        //Vertex test = t.vertex.get(0);
+        //Node root = topTree.findRoot(test.firstEdge.userData);
+        //twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) root.userInfo;
+        HashSet<Node> roots = new HashSet<>();
+        for (int i = 0; i < numberOfVertices; i++){
+            roots.add(topTree.findRoot(t.vertex.get(i).firstEdge.userData));
+        }
+        if (roots.size() >= 2){
+            System.out.println("There is more than 1 top tree, this is why top Tree disagree");
+        }
+        Vertex test = t.vertex.get(0);
+        Node root = topTree.findRoot(test.firstEdge.userData);
+        twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) root.userInfo;
+        if (userInfo.coverC >= 0) {
+            System.out.println("Top tree say they are 2 edge connected!");
+        } else {
+            System.out.println("Top tree say it is not 2 edge connected!");
+        };
+
+
 
 
     }

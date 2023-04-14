@@ -1,3 +1,5 @@
+// Code taken from https://www.geeksforgeeks.org/check-if-a-given-graph-is-2-edge-connected-or-not/
+
 // A Java program to find bridges in a given undirected
 // graph
 import java.io.*;

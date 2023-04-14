@@ -264,7 +264,7 @@ public interface TopTreeInterface {
         grandParent.flip = flipGrandparent;
 
         combine(parent);
-        //combine(grandParent); //TODO is this actually needed
+        combine(grandParent); //TODO is this actually needed
         fullSplaySize.fullSplayCombineCost += combineCost(parent);
 
         node.parent = grandParent;
