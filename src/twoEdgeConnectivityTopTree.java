@@ -670,7 +670,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         recoverInner(v, w, w, i);
     }
 
-    private void swap(){
+    private void swap(Vertex u, Vertex v){
         // TODO
 
 
@@ -690,9 +690,55 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         } else {
             link(u,v,1);
         }
+    }
+
+    public void delete(Vertex u, Vertex v, Tree t){
+        Edge e = null;
+
+        if (Tree.adjacencyList[u.id][v.id] != null) {
+            e = Tree.adjacencyList[u.id][v.id];
+        } else {
+            // (u,v) is not in the spanning tree
+            int i = findLevel(u, v);
+            uncoverReal(u, v, i);
+            for (int j = 0; j <= i; j++){
+                graphs.get(j).removeEdge(u.id, v.id);
+            }
+            return;
+        }
+
+        // Check if (u,v) is tree edge
+        LeafNode c = (LeafNode) e.userData;
+        twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) c.userInfo;
 
 
+        // If tree edge, and bridge remove it
+        if (userInfo.coverC == -1){
+            // if coverC == -1, we have no edges covering us and we can safely remove it
+            cut(c.edge);
+        } else {
+            int i = userInfo.coverC;
+            // It is not a bridge
+            // swap, uncover, recover, finally delete the edge
+            swap(u, v);
+            uncoverReal(u, v, i);
+            deleteEdge(u, v);
+            recover(u, v, i);
+        }
 
+
+    }
+
+    private int findLevel(Vertex u, Vertex v) {
+        for (int i = maxLevel; i >= 0; i--){
+            if (graphs.get(i).containEdge(u.id, v.id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void deleteEdge(Vertex u, Vertex v) {
     }
 
     public void delete(Node n){

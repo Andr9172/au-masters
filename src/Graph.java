@@ -28,9 +28,17 @@ public class Graph {
         adjacencyList[j][i] = null;
     }
 
+    public void removeEdge(int i, int j){
+        adjacencyList[i][j] = null;
+        adjacencyList[j][i] = null;
+    }
+
     public Edge getEdge(Vertex u, Vertex v){
         return adjacencyList[u.id][v.id];
     }
 
 
+    public boolean containEdge(int i, int j) {
+        return adjacencyList[i][j] != null;
+    }
 }

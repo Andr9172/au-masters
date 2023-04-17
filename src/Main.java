@@ -18,9 +18,9 @@ public class Main {
         //    runCommandMode();
         //}
 
-        int numberOfVertices = 10;
-        int numberOfEdge = 20;
-        int repeats = 4;
+        int numberOfVertices = 5;
+        int numberOfEdge = 5;
+        int repeats = 1;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -29,7 +29,7 @@ public class Main {
 
         //testSizeTopTree(numberOfVertices, numberOfEdge);
 
-        for (int i = 0; i <= repeats; i++){
+        for (int i = 0; i < repeats; i++){
             testTwoEdgeConnectivity(numberOfVertices, numberOfEdge);
         }
 
@@ -217,7 +217,7 @@ public class Main {
         twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices);
 
         // Generate GraphEdges and Vertices
-        System.out.println("Generating random graph with desired number of vertices and edges");
+        //System.out.println("Generating random graph with desired number of vertices and edges");
         if (numberOfEdge > (numberOfVertices * (numberOfVertices - 1)/2)){
             System.out.println("Trying to generate a graph with more edges than exists");
         }
@@ -231,7 +231,7 @@ public class Main {
         ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge);
 
         for (ArrayList<Integer> edge: edges) {
-            System.out.println("Edge from " + edge.get(0) + " to " + edge.get(1) );
+            //System.out.println("Edge from " + edge.get(0) + " to " + edge.get(1) );
         }
 
         for (ArrayList<Integer> list : edges){
@@ -254,6 +254,7 @@ public class Main {
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
 
         for (ArrayList<Integer> list : edges){
+            System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
 
             int a = list.get(0);
             int b = list.get(1);
@@ -261,7 +262,7 @@ public class Main {
 
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
         }
-
+        topTree.delete(t.vertex.get(edges.get(edges.size() - 1).get(0)), t.vertex.get(edges.get(edges.size() - 1).get(1)), t);
 
         //Vertex test = t.vertex.get(0);
         //Node root = topTree.findRoot(test.firstEdge.userData);
@@ -287,7 +288,7 @@ public class Main {
             System.out.println("Automatic method says Top tree are it is not 2 edge connected!");
         }*/
 
-        if (g1.count == 0 && topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))) {
+        if ((g1.count == 0 & topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))) || ((!(g1.count == 0)) & (!topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))))) {
             System.out.println("Agreement");
         } else {
             System.out.println("Something went wrong");
