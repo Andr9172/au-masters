@@ -18,8 +18,8 @@ public class Main {
         //    runCommandMode();
         //}
 
-        int numberOfVertices = 5;
-        int numberOfEdge = 10;
+        int numberOfVertices = 10;
+        int numberOfEdge = 20;
         int repeats = 4;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -29,7 +29,9 @@ public class Main {
 
         //testSizeTopTree(numberOfVertices, numberOfEdge);
 
-        testTwoEdgeConnectivity(numberOfVertices, numberOfEdge);
+        for (int i = 0; i <= repeats; i++){
+            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge);
+        }
 
     }
 
@@ -210,7 +212,7 @@ public class Main {
     private static void testTwoEdgeConnectivity(int numberOfVertices, int numberOfEdge){
 
         // Create graphs given in above diagrams
-        System.out.println("Bridges in first graph ");
+        //System.out.println("Bridges in first graph ");
 
         twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices);
 
@@ -220,71 +222,51 @@ public class Main {
             System.out.println("Trying to generate a graph with more edges than exists");
         }
 
-        Random rnd = new Random();
+        //Random rnd = new Random();
         //rnd.setSeed(3); // connected
-        rnd.setSeed(1); // not connected
+        //rnd.setSeed(1); // not connected
 
-        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
-        int j = 0;
-        for (int i = 0; i < numberOfEdge; i++){
-            //if (i % (numberOfEdge/10) == 0){
-                //System.out.println(10 * j + " percent done");
-                //j++;
-            //}
-            int dest = Math.abs(rnd.nextInt() % numberOfVertices);
-            int source = Math.abs(rnd.nextInt() % numberOfVertices);
-            //if (edgeExistsAlready(source, dest, edges)){
-            //    i--;
-            //    continue;
-            //}
-            if (dest == source) {
-                i--;
-                continue;
-            }
-            int weight = Math.abs(rnd.nextInt() % 100) + 1;
-            ArrayList<Integer> tempList = new ArrayList<>();
-            tempList.add(source);
-            tempList.add(dest);
-            edges.add(tempList);
-            System.out.println("Edge " + i + " is from " + source + " to " + dest);
+
+
+        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge);
+
+        for (ArrayList<Integer> edge: edges) {
+            System.out.println("Edge from " + edge.get(0) + " to " + edge.get(1) );
         }
+
         for (ArrayList<Integer> list : edges){
             g1.addEdge(list.get(0), list.get(1));
         }
 
         g1.bridge();
-        if (g1.count == 0) {
+        /*if (g1.count == 0) {
             System.out.println(
                     "Given graph is 2-edge connected:");
         }
         else {
             System.out.println(
                     "Given graph is not 2-edge connected:");
-        }
+        }*/
 
 
         // Test of 2-edge connectivity top tree
         Tree t = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
 
-        j = 0;
         for (ArrayList<Integer> list : edges){
-            if (j == 7 || j == 9){
-                continue;
-            }
+
             int a = list.get(0);
             int b = list.get(1);
             int weight = 1;
 
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
-            j++;
         }
 
 
         //Vertex test = t.vertex.get(0);
         //Node root = topTree.findRoot(test.firstEdge.userData);
         //twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) root.userInfo;
-        HashSet<Node> roots = new HashSet<>();
+        /*HashSet<Node> roots = new HashSet<>();
         for (int i = 0; i < numberOfVertices; i++){
             roots.add(topTree.findRoot(t.vertex.get(i).firstEdge.userData));
         }
@@ -299,15 +281,49 @@ public class Main {
         } else {
             System.out.println("Manual method says Top tree are it is not 2 edge connected!");
         };
-        if (topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(2))){
+        if (topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))){
             System.out.println("Automatic method says Top tree are 2 edge connected!");
         } else {
             System.out.println("Automatic method says Top tree are it is not 2 edge connected!");
-        };
+        }*/
+
+        if (g1.count == 0 && topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))) {
+            System.out.println("Agreement");
+        } else {
+            System.out.println("Something went wrong");
+        }
 
 
+    }
 
+    private static ArrayList<ArrayList<Integer>> generateEdges(int numberOfVertices, int numberOfEdge) {
+        Random rnd = new Random();
+        //rnd.setSeed(1);
 
+        ArrayList<ArrayList<Integer>> allEdges = new ArrayList<>();
+        for (int i = 0; i < numberOfVertices; i++){
+            for (int j = 0; j < numberOfVertices; j++){
+                if (j <= i) {
+                    continue;
+                } else {
+                    ArrayList<Integer> edge = new ArrayList<>();
+                    edge.add(i);
+                    edge.add(j);
+                    allEdges.add(edge);
+                }
+            }
+        }
+        //System.out.println("All edges size " + allEdges.size());
+        Collections.shuffle(allEdges);
+
+        // Select the edges
+        ArrayList<ArrayList<Integer>> chosenEdges = new ArrayList<>();
+        for (int i = 0; i < numberOfEdge; i++){
+            int index = rnd.nextInt(allEdges.size());
+            chosenEdges.add(allEdges.get(index));
+            allEdges.remove(index);
+        }
+        return chosenEdges;
     }
 
 }

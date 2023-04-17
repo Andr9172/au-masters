@@ -107,8 +107,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // TODO TEMP
         if (!t.isLeaf){
             InternalNode temp = (InternalNode) t;
-            combine(temp.children.get(0));
-            combine(temp.children.get(1));
+            //combine(temp.children.get(0));
+            //combine(temp.children.get(1));
         }
 
         if (t.isLeaf){
@@ -730,7 +730,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         expose(v);
         Node root = findRoot(u.firstEdge.userData);
         twoEdgeConnectivityUserInfo userinfo = (twoEdgeConnectivityUserInfo) root.userInfo;
-        //recursiveCombine(root);
         boolean result = userinfo.coverC >= 0;
         deExpose(u);
         deExpose(v);
@@ -746,7 +745,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Node root = findRoot(u.firstEdge.userData);
         // A bit scuffed way of getting the edge
         cover(root, i, graphs.get(0).getEdge(u,v));
-        pushDownInfo(root);
+        pushDownInfo(root); // This makes it work, but likely breaks the runtime too
         //clean(root);
         deExpose(u);
         deExpose(v);
@@ -765,8 +764,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             if (isPath(children.get(i))){
                 uncover(children.get(i), info.coverCMinus);
                 cover(children.get(i), info.coverCPlus, info.coverEdgeCPlus);
+                pushDownInfo(children.get(i));
             }
-            pushDownInfo(children.get(i));
         }
     }
 
@@ -781,16 +780,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         deExpose(v);
     }
 
-    private void recursiveCombine (Node n){
-        if (n.isLeaf){
-            combine(n);
-        } else {
-            InternalNode internalNode = (InternalNode) n;
-            recursiveCombine(internalNode.children.get(0));
-            recursiveCombine(internalNode.children.get(1));
-            combine(n);
-        }
 
-    }
 
 }

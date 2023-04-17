@@ -79,6 +79,9 @@ public interface TopTreeInterface {
             tu.parent = tuNew;
             t = tuNew;
             combine(t);
+
+            // TODO TEMP
+            combine(tu);
         }
         if (tv != null){
             ArrayList<Node> children = new ArrayList<>();
@@ -89,7 +92,9 @@ public interface TopTreeInterface {
             tv.parent = tvNew;
             t = tvNew;
             combine(t);
-            //(t);
+
+            // TODO TEMP
+            combine(tv);
         }
 
         return t;
