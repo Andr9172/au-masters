@@ -722,7 +722,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             // swap, uncover, recover, finally delete the edge
             swap(u, v);
             uncoverReal(u, v, i);
-            deleteEdge(u, v);
+            deleteEdge(u, v, i);
             recover(u, v, i);
         }
 
@@ -738,7 +738,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         return -1;
     }
 
-    private void deleteEdge(Vertex u, Vertex v) {
+    private void deleteEdge(Vertex u, Vertex v, int i) {
+        for (int j = 0; j <= i; j++){
+            graphs.get(j).removeEdge(u.id, v.id);
+        }
     }
 
     public void delete(Node n){
