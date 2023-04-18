@@ -19,7 +19,7 @@ public class Main {
         //}
 
         int numberOfVertices = 5;
-        int numberOfEdge = 5;
+        int numberOfEdge = 10;
         int repeats = 1;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -262,7 +262,21 @@ public class Main {
 
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
         }
-        topTree.delete(t.vertex.get(edges.get(edges.size() - 1).get(0)), t.vertex.get(edges.get(edges.size() - 1).get(1)), t);
+        topTree.computeAllCombine(t.vertex.get(0).firstEdge.userData);
+
+
+        topTree.delete(t.vertex.get(edges.get(0).get(0)), t.vertex.get(edges.get(0).get(1)));
+        topTree.delete(t.vertex.get(edges.get(1).get(0)), t.vertex.get(edges.get(1).get(1)));
+        topTree.delete(t.vertex.get(edges.get(2).get(0)), t.vertex.get(edges.get(2).get(1)));
+        topTree.delete(t.vertex.get(edges.get(3).get(0)), t.vertex.get(edges.get(3).get(1)));
+
+
+
+        g1.removeEdge(t.vertex.get(edges.get(0).get(0)).id, t.vertex.get(edges.get(0).get(1)).id);
+        g1.removeEdge(t.vertex.get(edges.get(1).get(0)).id, t.vertex.get(edges.get(1).get(1)).id);
+        g1.removeEdge(t.vertex.get(edges.get(2).get(0)).id, t.vertex.get(edges.get(2).get(1)).id);
+        g1.removeEdge(t.vertex.get(edges.get(3).get(0)).id, t.vertex.get(edges.get(3).get(1)).id);
+
 
         //Vertex test = t.vertex.get(0);
         //Node root = topTree.findRoot(test.firstEdge.userData);
@@ -287,8 +301,10 @@ public class Main {
         } else {
             System.out.println("Automatic method says Top tree are it is not 2 edge connected!");
         }*/
+        g1.bridge();
 
-        if ((g1.count == 0 & topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))) || ((!(g1.count == 0)) & (!topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))))) {
+        if ((g1.count == 0 & topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0)))
+            || ((!(g1.count == 0)) & (!topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))))) {
             System.out.println("Agreement");
         } else {
             System.out.println("Something went wrong");
@@ -299,7 +315,7 @@ public class Main {
 
     private static ArrayList<ArrayList<Integer>> generateEdges(int numberOfVertices, int numberOfEdge) {
         Random rnd = new Random();
-        //rnd.setSeed(1);
+        rnd.setSeed(1);
 
         ArrayList<ArrayList<Integer>> allEdges = new ArrayList<>();
         for (int i = 0; i < numberOfVertices; i++){
@@ -315,7 +331,8 @@ public class Main {
             }
         }
         //System.out.println("All edges size " + allEdges.size());
-        Collections.shuffle(allEdges);
+        Collections.shuffle(allEdges, rnd);
+
 
         // Select the edges
         ArrayList<ArrayList<Integer>> chosenEdges = new ArrayList<>();

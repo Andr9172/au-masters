@@ -31,6 +31,11 @@ public class twoEdgeComparison {
         adj[w].add(v); // Add v to w's list
     }
 
+    void removeEdge(int v, int w){
+        adj[v].removeFirstOccurrence(w); // Remove w to v's list.
+        adj[w].removeFirstOccurrence(v); // Remove v to w's list
+    }
+
     // A recursive function that finds and prints bridges
     // using DFS traversal
     // u --> The vertex to be visited next

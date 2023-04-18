@@ -41,4 +41,14 @@ public class Graph {
     public boolean containEdge(int i, int j) {
         return adjacencyList[i][j] != null;
     }
+
+    public Edge incidentEdge(int id) {
+        for (int i = 0; i < numberOfVertices; i++){
+            if (adjacencyList[id][i] != null){
+                return adjacencyList[id][i];
+            }
+        }
+        return null;
+    }
+
 }

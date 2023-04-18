@@ -16,7 +16,7 @@ public class twoEdgeVertexUserInfo implements VertexUserInfo{
 
         for (int i = 0; i <= maxLevel; i++){
             size2.add(i, 1);
-            incident2.add(i, 1);
+            incident2.add(i, 0);
         }
     }
 
