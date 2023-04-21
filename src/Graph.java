@@ -21,6 +21,12 @@ public class Graph {
         adjacencyList[j][i] = e;
     }
 
+    public void addEdge(int i, int j){
+        Edge e = new Edge();
+        adjacencyList[i][j] = e;
+        adjacencyList[j][i] = e;
+    }
+
     public void removeEdge(Edge e){
         int i = e.endpoints[0].id;
         int j = e.endpoints[1].id;
@@ -43,7 +49,7 @@ public class Graph {
     }
 
     public Edge incidentEdge(int id) {
-        for (int i = 0; i < numberOfVertices; i++){
+        for (int i = numberOfVertices-1; i >= 0; i--){
             if (adjacencyList[id][i] != null){
                 return adjacencyList[id][i];
             }

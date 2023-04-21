@@ -266,9 +266,13 @@ public class Main {
 
 
         topTree.delete(t.vertex.get(edges.get(0).get(0)), t.vertex.get(edges.get(0).get(1)));
+        toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
         topTree.delete(t.vertex.get(edges.get(1).get(0)), t.vertex.get(edges.get(1).get(1)));
+        toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
         topTree.delete(t.vertex.get(edges.get(2).get(0)), t.vertex.get(edges.get(2).get(1)));
+        toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
         topTree.delete(t.vertex.get(edges.get(3).get(0)), t.vertex.get(edges.get(3).get(1)));
+        toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
 
 
 
@@ -303,20 +307,29 @@ public class Main {
         }*/
         g1.bridge();
 
-        if ((g1.count == 0 & topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0)))
-            || ((!(g1.count == 0)) & (!topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))))) {
+        boolean topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+
+        if ((g1.count == 0 & topTreeConnected)
+            || ((!(g1.count == 0)) & (!topTreeConnected))) {
             System.out.println("Agreement");
         } else {
             System.out.println("Something went wrong");
         }
 
+    }
 
+    private static void toptreeConnected(boolean twoEdgeConnected) {
+        if (twoEdgeConnected){
+            System.out.println("Connected");
+        } else {
+            System.out.println("Not connected");
+        }
     }
 
     private static ArrayList<ArrayList<Integer>> generateEdges(int numberOfVertices, int numberOfEdge) {
         Random rnd = new Random();
-        rnd.setSeed(1);
-
+        //rnd.setSeed(1);
+        rnd.setSeed(2);
         ArrayList<ArrayList<Integer>> allEdges = new ArrayList<>();
         for (int i = 0; i < numberOfVertices; i++){
             for (int j = 0; j < numberOfVertices; j++){
