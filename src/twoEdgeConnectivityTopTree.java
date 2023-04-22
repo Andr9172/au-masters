@@ -120,33 +120,37 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) boundary.get(0).userInfo;
                 twoEdgeVertexUserInfo b1 = (twoEdgeVertexUserInfo) boundary.get(1).userInfo;
                 for (Vertex v: userInfo.boundaryVertices){
-                    ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
-                    ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
-                    for (int i = 0; i <= maxLevel; i++){
-                        ArrayList<Integer> tempSizeList = new ArrayList<>();
-                        ArrayList<Integer> tempIncidentList = new ArrayList<>();
-                        for (int j = 0; j <= maxLevel; j++){
-                            tempSizeList.add(b0.size2.get(i) + b1.size2.get(i)); // Unsure if this should be i
-                            tempIncidentList.add(b0.incident2.get(i) + b1.incident2.get(i)); // Unsure if this should be i
+                    HashMap<Integer, HashMap<Integer, Integer >> sizeList = new HashMap<>();
+                    HashMap<Integer, HashMap<Integer, Integer >> incidentList = new HashMap<>();
+
+                    //ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
+                    //ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
+                    for (int i = -1; i <= maxLevel; i++){
+                        HashMap<Integer, Integer> tempSizeList = new HashMap<>();
+                        HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
+                        for (int j = -1; j <= maxLevel; j++){
+                            tempSizeList.put(j, b0.size2.get(i) + b1.size2.get(i)); // Unsure if this should be i
+                            tempIncidentList.put(j, b0.incident2.get(i) + b1.incident2.get(i)); // Unsure if this should be i
                         }
-                        sizeList.add(tempSizeList);
-                        incidentList.add(tempIncidentList);
+                        sizeList.put(i, tempSizeList);
+                        incidentList.put(i, tempIncidentList);
                     }
                     userInfo.size4.put(v, sizeList);
                     userInfo.incident4.put(v, incidentList);
                 }
             } else if (boundary.size() == 1){
                 twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) boundary.get(0).userInfo;
-                ArrayList<Integer> sizeList = new ArrayList();
-                ArrayList<Integer> incidentList = new ArrayList();
-                for (int i = 0; i <= maxLevel; i++){
-                    sizeList.add(b0.size2.get(i)); // Should the other endpoint also be added?
-                    incidentList.add(b0.incident2.get(i)); // Should the other endpoint also be added?
+                HashMap<Integer, Integer> sizeList = new HashMap<>();
+                HashMap<Integer, Integer> incidentList = new HashMap<>();
+                for (int i = -1; i <= maxLevel; i++){
+                    sizeList.put(i, b0.size2.get(i)); // Should the other endpoint also be added?
+                    incidentList.put(i, b0.incident2.get(i)); // Should the other endpoint also be added?
 
                 }
                 userInfo.size3.put(boundary.get(0), sizeList);
                 userInfo.incident3.put(boundary.get(0), incidentList);
             } else {
+                //System.out.println("Does this happen?");
                 // TODO
                 // It will do nothing for now
             }
@@ -208,19 +212,19 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 // Point cluster, so the only boundary is a
                 a = child0UserInfo.boundaryVertices.get(0);
 
-                ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
-                ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
-                for (int i = 0; i <= maxLevel; i++){
-                    ArrayList<Integer> tempSizeList = new ArrayList<>();
-                    ArrayList<Integer> tempIncidentList = new ArrayList<>();
-                    for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, HashMap<Integer, Integer>> sizeList = new HashMap<>();
+                HashMap<Integer, HashMap<Integer, Integer>> incidentList = new HashMap<>();
+                for (int i = -1; i <= maxLevel; i++){
+                    HashMap<Integer, Integer> tempSizeList = new HashMap<>();
+                    HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
+                    for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child0UserInfo.size3.get(a).get(j) + child1UserInfo.size4.get(a).get(i).get(j);
                         int tempIncident = child0UserInfo.incident3.get(a).get(j) + child1UserInfo.incident4.get(a).get(i).get(j);
-                        tempSizeList.add(j, tempSize);
-                        tempIncidentList.add(j, tempIncident);
+                        tempSizeList.put(j, tempSize);
+                        tempIncidentList.put(j, tempIncident);
                     }
-                    sizeList.add(i, tempSizeList);
-                    incidentList.add(i, tempIncidentList);
+                    sizeList.put(i, tempSizeList);
+                    incidentList.put(i, tempIncidentList);
                 }
                 userInfo.size4.put(a, sizeList);
                 userInfo.incident4.put(a, incidentList);
@@ -233,23 +237,23 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     a = child0UserInfo.boundaryVertices.get(0);
                 }
 
-                ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
-                ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
-                for (int i = 0; i <= maxLevel; i++){
-                    ArrayList<Integer> tempSizeList = new ArrayList<>();
-                    ArrayList<Integer> tempIncidentList = new ArrayList<>();
-                    for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, HashMap<Integer, Integer>> sizeList = new HashMap<>();
+                HashMap<Integer, HashMap<Integer, Integer>> incidentList = new HashMap<>();
+                for (int i = -1; i <= maxLevel; i++){
+                    HashMap<Integer, Integer> tempSizeList = new HashMap<>();
+                    HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
+                    for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child0UserInfo.size4.get(a).get(i).get(j);
                         int tempIncident = child0UserInfo.incident4.get(a).get(i).get(j);
                         if (userInfo.coverC >= i){
                             tempSize += child1UserInfo.size3.get(c).get(j);
                             tempIncident += child1UserInfo.incident3.get(c).get(j);
                         }
-                        tempSizeList.add(j, tempSize);
-                        tempIncidentList.add(j, tempIncident);
+                        tempSizeList.put(j, tempSize);
+                        tempIncidentList.put(j, tempIncident);
                     }
-                    sizeList.add(i, tempSizeList);
-                    incidentList.add(i, tempIncidentList);
+                    sizeList.put(i, tempSizeList);
+                    incidentList.put(i, tempIncidentList);
                 }
                 userInfo.size4.put(a, sizeList);
                 userInfo.incident4.put(a, incidentList);
@@ -262,12 +266,12 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     a = child0UserInfo.boundaryVertices.get(0);
                 }
 
-                ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
-                ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
-                for (int i = 0; i <= maxLevel; i++){
-                    ArrayList<Integer> tempSizeList = new ArrayList<>();
-                    ArrayList<Integer> tempIncidentList = new ArrayList<>();
-                    for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, HashMap<Integer, Integer>> sizeList = new HashMap<>();
+                HashMap<Integer, HashMap<Integer, Integer>> incidentList = new HashMap<>();
+                for (int i = -1; i <= maxLevel; i++){
+                    HashMap<Integer, Integer> tempSizeList = new HashMap<>();
+                    HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
+                    for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child0UserInfo.size4.get(a).get(i).get(j);
                         int tempIncident = child0UserInfo.incident4.get(a).get(i).get(j);
                         if (userInfo.coverC >= i){
@@ -278,11 +282,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                             tempSize += child1UserInfo.size4.get(c).get(i).get(j);
                             tempIncident += child1UserInfo.incident4.get(c).get(i).get(j);
                         }
-                        tempSizeList.add(j, tempSize);
-                        tempIncidentList.add(j, tempIncident);
+                        tempSizeList.put(j, tempSize);
+                        tempIncidentList.put(j, tempIncident);
                     }
-                    sizeList.add(i, tempSizeList);
-                    incidentList.add(i, tempIncidentList);
+                    sizeList.put(i, tempSizeList);
+                    incidentList.put(i, tempIncidentList);
                 }
                 userInfo.size4.put(a, sizeList);
                 userInfo.incident4.put(a, incidentList);
@@ -292,19 +296,19 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 // Point cluster, so the only boundary is b
                 b = child1UserInfo.boundaryVertices.get(0);
 
-                ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
-                ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
-                for (int i = 0; i <= maxLevel; i++){
-                    ArrayList<Integer> tempSizeList = new ArrayList<>();
-                    ArrayList<Integer> tempIncidentList = new ArrayList<>();
-                    for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, HashMap<Integer, Integer>> sizeList = new HashMap<>();
+                HashMap<Integer, HashMap<Integer, Integer>> incidentList = new HashMap<>();
+                for (int i = -1; i <= maxLevel; i++){
+                    HashMap<Integer, Integer> tempSizeList = new HashMap<>();
+                    HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
+                    for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child1UserInfo.size3.get(b).get(j) + child0UserInfo.size4.get(b).get(i).get(j);
                         int tempIncident = child1UserInfo.incident3.get(b).get(j) + child0UserInfo.incident4.get(b).get(i).get(j);
-                        tempSizeList.add(j, tempSize);
-                        tempIncidentList.add(j, tempIncident);
+                        tempSizeList.put(j, tempSize);
+                        tempIncidentList.put(j, tempIncident);
                     }
-                    sizeList.add(i, tempSizeList);
-                    incidentList.add(i, tempIncidentList);
+                    sizeList.put(i, tempSizeList);
+                    incidentList.put(i, tempIncidentList);
                 }
                 userInfo.size4.put(b, sizeList);
                 userInfo.incident4.put(b, incidentList);
@@ -316,23 +320,23 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 } else {
                     b = child1UserInfo.boundaryVertices.get(0);
                 }
-                ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
-                ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
-                for (int i = 0; i <= maxLevel; i++){
-                    ArrayList<Integer> tempSizeList = new ArrayList<>();
-                    ArrayList<Integer> tempIncidentList = new ArrayList<>();
-                    for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, HashMap<Integer, Integer>> sizeList = new HashMap<>();
+                HashMap<Integer, HashMap<Integer, Integer>> incidentList = new HashMap<>();
+                for (int i = -1; i <= maxLevel; i++){
+                    HashMap<Integer, Integer> tempSizeList = new HashMap<>();
+                    HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
+                    for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child1UserInfo.size4.get(b).get(i).get(j);
                         int tempIncident = child1UserInfo.incident4.get(b).get(i).get(j);
                         if (userInfo.coverC >= i){
                             tempSize += child0UserInfo.size3.get(c).get(j);
                             tempIncident += child0UserInfo.incident3.get(c).get(j);
                         }
-                        tempSizeList.add(j, tempSize);
-                        tempIncidentList.add(j, tempIncident);
+                        tempSizeList.put(j, tempSize);
+                        tempIncidentList.put(j, tempIncident);
                     }
-                    sizeList.add(i, tempSizeList);
-                    incidentList.add(i, tempIncidentList);
+                    sizeList.put(i, tempSizeList);
+                    incidentList.put(i, tempIncidentList);
                 }
                 userInfo.size4.put(b, sizeList);
                 userInfo.incident4.put(b, incidentList);
@@ -345,12 +349,12 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     b = child1UserInfo.boundaryVertices.get(0);
                 }
 
-                ArrayList<ArrayList<Integer>> sizeList = new ArrayList();
-                ArrayList<ArrayList<Integer>> incidentList = new ArrayList();
-                for (int i = 0; i <= maxLevel; i++){
-                    ArrayList<Integer> tempSizeList = new ArrayList<>();
-                    ArrayList<Integer> tempIncidentList = new ArrayList<>();
-                    for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, HashMap<Integer, Integer>> sizeList = new HashMap<>();
+                HashMap<Integer, HashMap<Integer, Integer>> incidentList = new HashMap<>();
+                for (int i = -1; i <= maxLevel; i++){
+                    HashMap<Integer, Integer> tempSizeList = new HashMap<>();
+                    HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
+                    for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child1UserInfo.size4.get(b).get(i).get(j);
                         int tempIncident = child1UserInfo.incident4.get(b).get(i).get(j);
                         if (userInfo.coverC >= i){
@@ -361,11 +365,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                             tempSize += child0UserInfo.size4.get(c).get(i).get(j);
                             tempIncident += child0UserInfo.incident4.get(c).get(i).get(j);
                         }
-                        tempSizeList.add(j, tempSize);
-                        tempIncidentList.add(j, tempIncident);
+                        tempSizeList.put(j, tempSize);
+                        tempIncidentList.put(j, tempIncident);
                     }
-                    sizeList.add(i, tempSizeList);
-                    incidentList.add(i, tempIncidentList);
+                    sizeList.put(i, tempSizeList);
+                    incidentList.put(i, tempIncidentList);
                 }
                 userInfo.size4.put(b, sizeList);
                 userInfo.incident4.put(b, incidentList);
@@ -378,9 +382,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Vertex boundary = userInfo.boundaryVertices.get(0);
 
             if (children.get(0).numBoundary == 2) {
-                ArrayList<Integer> size = new ArrayList<>();
-                ArrayList<Integer> incident = new ArrayList<>();
-                for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, Integer> size = new HashMap<>();
+                HashMap<Integer, Integer> incident = new HashMap<>();
+                for (int j = -1; j <= maxLevel; j++){
                     int tempSize = child0UserInfo.size4.get(boundary).get(j).get(j);
                     int tempIncident = child0UserInfo.incident4.get(boundary).get(j).get(j);
                     if (child0UserInfo.coverC >= j){
@@ -392,17 +396,17 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                         tempSize += child1UserInfo.size3.get(tempVertex).get(j);
                         tempIncident += child1UserInfo.incident3.get(tempVertex).get(j);
                     }
-                    size.add(tempSize);
-                    incident.add(tempIncident);
+                    size.put(j, tempSize);
+                    incident.put(j, tempIncident);
                 }
                 userInfo.size3.put(boundary, size);
                 userInfo.incident3.put(boundary, incident);
 
             } else if (children.get(1).numBoundary == 2) {
                 // Copied from the above, might contain mistakes
-                ArrayList<Integer> size = new ArrayList<>();
-                ArrayList<Integer> incident = new ArrayList<>();
-                for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, Integer> size = new HashMap<>();
+                HashMap<Integer, Integer> incident = new HashMap<>();
+                for (int j = -1; j <= maxLevel; j++){
                     int tempSize = child1UserInfo.size4.get(boundary).get(j).get(j);
                     int tempIncident = child1UserInfo.incident4.get(boundary).get(j).get(j);
                     if (child1UserInfo.coverC >= j){
@@ -414,19 +418,19 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                         tempSize += child0UserInfo.size3.get(tempVertex).get(j);
                         tempIncident += child0UserInfo.incident3.get(tempVertex).get(j);
                     }
-                    size.add(tempSize);
-                    incident.add(tempIncident);
+                    size.put(j, tempSize);
+                    incident.put(j, tempIncident);
                 }
                 userInfo.size3.put(boundary, size);
                 userInfo.incident3.put(boundary, incident);
             } else {
-                ArrayList<Integer> size = new ArrayList<>();
-                ArrayList<Integer> incident = new ArrayList<>();
-                for (int j = 0; j <= maxLevel; j++){
+                HashMap<Integer, Integer> size = new HashMap<>();
+                HashMap<Integer, Integer> incident = new HashMap<>();
+                for (int j = -1; j <= maxLevel; j++){
                     int tempSize = child0UserInfo.size3.get(boundary).get(j) + child1UserInfo.size3.get(boundary).get(j);
                     int tempIncident = child0UserInfo.incident3.get(boundary).get(j) + child1UserInfo.incident3.get(boundary).get(j);
-                    size.add(tempSize);
-                    incident.add(tempIncident);
+                    size.put(j, tempSize);
+                    incident.put(j, tempIncident);
                 }
                 userInfo.size3.put(boundary, size);
                 userInfo.incident3.put(boundary, incident);
@@ -477,12 +481,12 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
         // For X in {size, incident} and for all ...
         // TODO using 0 instead of -1 for reasons
-        for (int j = 0; j <= i; j++){
-            for (int k = 0; k <= maxLevel; k++){
+        for (int j = -1; j <= i; j++){
+            for (int k = -1; k <= maxLevel; k++){
                 // For v in boundary nodes
                 for (Vertex v : info.boundaryVertices){
-                    info.size4.get(v).get(j).set(k, info.size4.get(v).get(0).get(k));
-                    info.incident4.get(v).get(j).set(k, info.incident4.get(v).get(0).get(k));
+                    info.size4.get(v).get(j).put(k, info.size4.get(v).get(-1).get(k));
+                    info.incident4.get(v).get(j).put(k, info.incident4.get(v).get(-1).get(k));
                 }
             }
         }
@@ -506,12 +510,12 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
         // For X in {size, incident} and for all ...
         // TODO using 0 instead of -1 for reasons
-        for (int j = 0; j <= i; j++){
-            for (int k = 0; k <= maxLevel; k++){
+        for (int j = -1; j <= i; j++){
+            for (int k = -1; k <= maxLevel; k++){
                 // For v in boundary nodes
                 for (Vertex v : info.boundaryVertices){
-                    info.size4.get(v).get(j).set(k, info.size4.get(v).get(i+1).get(k));
-                    info.incident4.get(v).get(j).set(k, info.incident4.get(v).get(i+1).get(k));
+                    info.size4.get(v).get(j).put(k, info.size4.get(v).get(i+1).get(k));
+                    info.incident4.get(v).get(j).put(k, info.incident4.get(v).get(i+1).get(k));
                 }
             }
         }
@@ -638,7 +642,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Node d = findRoot(q.firstEdge.userData);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
 
-            if (dinfo.size4.get(q).get(0).get(i) + 2 > numberOfVertices/(2^i)){
+            if (dinfo.size4.get(q).get(-1).get(i) + 2 > numberOfVertices/(2^i)){
                 cover(d, i, e);
                 pushDownInfo(d);
                 notStopped = false;
@@ -649,11 +653,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 increaseLevel(e, i, i+1);
 
                 // This may be the wrong counter getting changed
-                qinfo.incident2.add(i, qinfo.incident2.get(i) - 1);
-                qinfo.incident2.add(i + 1, qinfo.incident2.get(i + 1) + 1);
+                qinfo.incident2.put(i, qinfo.incident2.get(i) - 1);
+                qinfo.incident2.put(i + 1, qinfo.incident2.get(i + 1) + 1);
 
-                rinfo.incident2.add(i, rinfo.incident2.get(i) - 1);
-                rinfo.incident2.add(i + 1, rinfo.incident2.get(i + 1) + 1);
+                rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
+                rinfo.incident2.put(i + 1, rinfo.incident2.get(i + 1) + 1);
 
                 cover(d, i + 1, e);
             }
@@ -702,13 +706,13 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 // Update incident numbers
                 twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
                 twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
-                uinfo.incident2.set(i, uinfo.incident2.get(i) + 1);
-                vinfo.incident2.set(i, vinfo.incident2.get(i) + 1);
+                uinfo.incident2.put(i, uinfo.incident2.get(i) + 1);
+                vinfo.incident2.put(i, vinfo.incident2.get(i) + 1);
 
                 twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[0].userInfo;
                 twoEdgeVertexUserInfo rinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[1].userInfo;
-                qinfo.incident2.set(i, qinfo.incident2.get(i) - 1);
-                rinfo.incident2.set(i, rinfo.incident2.get(i) - 1);
+                qinfo.incident2.put(i, qinfo.incident2.get(i) - 1);
+                rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
 
             }
             Edge e = Tree.adjacencyList[u.id][v.id];
@@ -733,8 +737,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
             twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
-            vinfo.incident2.set(0, vinfo.incident2.get(0) + 1);
-            uinfo.incident2.set(0, uinfo.incident2.get(0) + 1);
+            vinfo.incident2.put(0, vinfo.incident2.get(0) + 1);
+            uinfo.incident2.put(0, uinfo.incident2.get(0) + 1);
 
         } else {
             link(u,v,1);
@@ -791,8 +795,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             graphs.get(j).removeEdge(u.id, v.id);
             twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
             twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
-            uinfo.incident2.set(i, uinfo.incident2.get(i) - 1);
-            vinfo.incident2.set(i, vinfo.incident2.get(i) - 1);
+            uinfo.incident2.put(i, uinfo.incident2.get(i) - 1);
+            vinfo.incident2.put(i, vinfo.incident2.get(i) - 1);
         }
     }
 

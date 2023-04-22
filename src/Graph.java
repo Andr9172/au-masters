@@ -49,7 +49,7 @@ public class Graph {
     }
 
     public Edge incidentEdge(int id) {
-        for (int i = numberOfVertices-1; i >= 0; i--){
+        for (int i = 0; i < numberOfVertices; i++){
             if (adjacencyList[id][i] != null){
                 return adjacencyList[id][i];
             }

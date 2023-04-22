@@ -14,12 +14,12 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
 
     // Size
     //public HashMap<Vertex, ArrayList<Integer>> size2;
-    public HashMap<Vertex, ArrayList<Integer>> size3;
-    public HashMap<Vertex, ArrayList<ArrayList<Integer>>> size4;
+    public HashMap<Vertex, HashMap<Integer, Integer>> size3;
+    public HashMap<Vertex, HashMap<Integer, HashMap<Integer, Integer>>> size4;
     // Incident
     //public HashMap<Vertex, ArrayList<Integer>> incident2;
-    public HashMap<Vertex, ArrayList<Integer>> incident3;
-    public HashMap<Vertex, ArrayList<ArrayList<Integer>>> incident4;
+    public HashMap<Vertex, HashMap<Integer, Integer>> incident3;
+    public HashMap<Vertex, HashMap<Integer, HashMap<Integer, Integer>>> incident4;
 
     public twoEdgeConnectivityUserInfo(){
         size3 = new HashMap<>();

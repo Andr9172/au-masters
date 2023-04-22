@@ -4,19 +4,19 @@ import java.util.HashMap;
 public class twoEdgeVertexUserInfo implements VertexUserInfo{
 
 
-    public ArrayList<Integer> size2;
-    public ArrayList<Integer> incident2;
+    public HashMap<Integer, Integer> size2;
+    public HashMap<Integer, Integer> incident2;
     private int maxLevel;
 
     public twoEdgeVertexUserInfo(int size){
-        size2 = new ArrayList<>();
-        incident2 = new ArrayList<>();
+        size2 = new HashMap<>();
+        incident2 = new HashMap<>();
         this.maxLevel = (int) Math.ceil(Math.log(size));
 
 
-        for (int i = 0; i <= maxLevel; i++){
-            size2.add(i, 1);
-            incident2.add(i, 0);
+        for (int i = -1; i <= maxLevel; i++){
+            size2.put(i, 1);
+            incident2.put(i, 0);
         }
     }
 
