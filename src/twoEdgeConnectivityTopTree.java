@@ -673,6 +673,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         boolean notStopped = true;
         while (cinfo.incident4.get(u).get(0).get(i) + uinfo.incident2.get(i) > 0 && notStopped){
             Edge e = find(u, c, i);
+            System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover");
             deExpose(v);
             deExpose(w);
 
