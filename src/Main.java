@@ -18,8 +18,9 @@ public class Main {
         //    runCommandMode();
         //}
 
-        int numberOfVertices = 5;
-        int numberOfEdge = 10;
+        int numberOfVertices = 10;
+        int numberOfEdge = 20;
+        int seed = 15;
         int repeats = 1;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -30,7 +31,8 @@ public class Main {
         //testSizeTopTree(numberOfVertices, numberOfEdge);
 
         for (int i = 0; i < repeats; i++){
-            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge);
+            System.out.println("interation " + i);
+            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, seed, 0, 1);
         }
 
     }
@@ -209,7 +211,7 @@ public class Main {
     }
 
 
-    private static void testTwoEdgeConnectivity(int numberOfVertices, int numberOfEdge){
+    private static void testTwoEdgeConnectivity(int numberOfVertices, int numberOfEdge, int seed, int v1, int v2){
 
         // Create graphs given in above diagrams
         //System.out.println("Bridges in first graph ");
@@ -228,7 +230,7 @@ public class Main {
 
 
 
-        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge);
+        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge, seed);
 
         for (ArrayList<Integer> edge: edges) {
             //System.out.println("Edge from " + edge.get(0) + " to " + edge.get(1) );
@@ -307,7 +309,7 @@ public class Main {
         }*/
         g1.bridge();
 
-        boolean topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+        boolean topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(v1), t.vertex.get(v2));
 
         if ((g1.count == 0 & topTreeConnected)
             || ((!(g1.count == 0)) & (!topTreeConnected))) {
@@ -326,12 +328,12 @@ public class Main {
         }
     }
 
-    private static ArrayList<ArrayList<Integer>> generateEdges(int numberOfVertices, int numberOfEdge) {
+    private static ArrayList<ArrayList<Integer>> generateEdges(int numberOfVertices, int numberOfEdge, int seed) {
         Random rnd = new Random();
         //rnd.setSeed(1); // Not connected
         //rnd.setSeed(2); // Connected
 
-        rnd.setSeed(12);
+        rnd.setSeed(seed);
         ArrayList<ArrayList<Integer>> allEdges = new ArrayList<>();
         for (int i = 0; i < numberOfVertices; i++){
             for (int j = 0; j < numberOfVertices; j++){

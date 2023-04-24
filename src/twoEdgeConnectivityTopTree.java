@@ -546,6 +546,14 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             if (c0.boundaryVertices.contains(u) && c1.boundaryVertices.contains(u)) {
                 // u is boundary of both clusters
+                if (isPoint(children.get(0)) && isPoint(children.get(1))){
+                    if (c0.incident3.get(u).get(i) > 0) {
+                        return find(u, children.get(0), i);
+                    }
+                    if (c1.incident3.get(u).get(i) > 0) {
+                        return find(u, children.get(1), i);
+                    }
+                }
                 if (isPoint(children.get(0))) {
                     // c0 is a point cluster
                     if (c0.incident3.get(u).get(i) > 0) {
@@ -556,9 +564,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     return find(v, children.get(1), i);
                 } else {
                     // c1 is a point cluster
-                    if (c1.incident3.get(u).get(i) > 0) {
-                        return find(u, children.get(1), i);
-                    }
+
                     // Find (b, B, i)
                     Vertex v = findNearestBoundary(u, c, i);
                     return find(v, children.get(0), i);
@@ -582,6 +588,18 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
     }
 
+    private boolean bothIncidentZero(Vertex u, Node c, int i) {
+        LeafNode leaf = (LeafNode) c;
+        twoEdgeVertexUserInfo e0 = (twoEdgeVertexUserInfo) leaf.edge.endpoints[0].userInfo;
+        twoEdgeVertexUserInfo e1 = (twoEdgeVertexUserInfo) leaf.edge.endpoints[0].userInfo;
+
+        if (e0.incident2.get(i) <= 0 && e1.incident2.get(i) <= 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private Vertex findOtherBoundary(Vertex u, Node c) {
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         int i = userInfo.boundaryVertices.lastIndexOf(u);
@@ -598,11 +616,20 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private Vertex findNearestBoundary(Vertex u, Node c, int i) {
+        /*if (isPoint(c)){
+            // Retrieve the sibling cluster
+            InternalNode parent = c.parent;
+            Node sibling = parent.children.get(1 - parent.children.indexOf(c));
+            c = sibling;
+        }*/
+
         InternalNode internalNode = (InternalNode) c;
         ArrayList<Node> children = internalNode.children;
 
         twoEdgeConnectivityUserInfo c0 = (twoEdgeConnectivityUserInfo) children.get(0).userInfo;
         twoEdgeConnectivityUserInfo c1 = (twoEdgeConnectivityUserInfo) children.get(1).userInfo;
+
+
 
         if (c0.boundaryVertices.contains(u) && c1.boundaryVertices.contains(u)){
             if (c0.boundaryVertices.size() > 1){
@@ -900,8 +927,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     public void uncoverReal(Vertex u, Vertex v, int i){
         // The implementations of uncover on page 66
         // https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
-        expose(u);
-        expose(v);
+        Node root1 = expose(u);
+        Node root2 = expose(v);
+        if (root1 != root2){
+            System.out.println("u and v are not in the same tree");
+        }
         Node root = findRoot(u.firstEdge.userData);
         uncover(root, i);
         pushDownInfo(root); // TEMP
