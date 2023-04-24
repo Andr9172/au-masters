@@ -254,7 +254,7 @@ public class Main {
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
 
         for (ArrayList<Integer> list : edges){
-            System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
+            //System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
 
             int a = list.get(0);
             int b = list.get(1);
@@ -328,8 +328,10 @@ public class Main {
 
     private static ArrayList<ArrayList<Integer>> generateEdges(int numberOfVertices, int numberOfEdge) {
         Random rnd = new Random();
-        //rnd.setSeed(1);
-        rnd.setSeed(2);
+        //rnd.setSeed(1); // Not connected
+        //rnd.setSeed(2); // Connected
+
+        rnd.setSeed(12);
         ArrayList<ArrayList<Integer>> allEdges = new ArrayList<>();
         for (int i = 0; i < numberOfVertices; i++){
             for (int j = 0; j < numberOfVertices; j++){

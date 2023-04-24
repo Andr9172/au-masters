@@ -70,8 +70,11 @@ public class twoEdgeComparison {
                 // If the lowest vertex reachable from
                 // subtree under v is below u in DFS tree,
                 // then u-v is a bridge
-                if (low[v] > disc[u])
+                if (low[v] > disc[u]){
                     count++;
+                    System.out.println("id " + u + " id " + v + " is a bridge ");
+                }
+
             }
 
             // Update low value of u for parent function

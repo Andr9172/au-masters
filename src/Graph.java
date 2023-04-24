@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Graph {
@@ -49,6 +50,8 @@ public class Graph {
     }
 
     public Edge incidentEdge(int id) {
+        //System.out.println("Find edge incident to " + id);
+        //System.out.println("Possible edges: " + Arrays.toString(adjacencyList[id]));
         for (int i = 0; i < numberOfVertices; i++){
             if (adjacencyList[id][i] != null){
                 return adjacencyList[id][i];

@@ -78,10 +78,11 @@ public interface TopTreeInterface {
             t.parent = tuNew;
             tu.parent = tuNew;
             t = tuNew;
-            combine(t);
 
             // TODO TEMP
             combine(tu);
+
+            combine(t);
         }
         if (tv != null){
             ArrayList<Node> children = new ArrayList<>();
@@ -91,10 +92,11 @@ public interface TopTreeInterface {
             t.parent = tvNew;
             tv.parent = tvNew;
             t = tvNew;
-            combine(t);
 
             // TODO TEMP
             combine(tv);
+
+            combine(t);
         }
 
         return t;
@@ -215,10 +217,17 @@ public interface TopTreeInterface {
     }
 
     default void rotateUp(Node node){
+
         InternalNode parent = node.parent;
         InternalNode grandParent = parent.parent;
         Node sibling = getSibling(node);
         Node uncle = getSibling(parent);
+
+        //TODO temp
+        split(grandParent);
+        split(parent);
+        split(uncle);
+        //System.out.println("Split called");
 
         pushFlip(grandParent);
         pushFlip(parent);
@@ -526,4 +535,7 @@ public interface TopTreeInterface {
     }
 
 
-}
+    void split(Node n);
+
+
+    }

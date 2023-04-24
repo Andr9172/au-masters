@@ -58,4 +58,9 @@ public class MinimumSpanningTopTree implements TopTreeInterface{
     public int combineCost(Node grandParent) {
         return 0;
     }
+
+    @Override
+    public void split(Node n) {
+
+    }
 }
