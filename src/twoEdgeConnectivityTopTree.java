@@ -34,18 +34,23 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     boundaryVertices.add(v);
                 }
                 userInfo.boundaryVertices = boundaryVertices;
+                if (t.numBoundary != boundaryVertices.size()){
+                    throw new RuntimeException();
+                }
                 return;
             }
             ArrayList<Vertex> boundaryVertices = new ArrayList<>();
             for (Vertex v : e.endpoints){
-                if (Tree.hasAtMostOneIncidentEdge(v)){
+                if (Tree.hasAtMostOneIncidentEdge(v) && !v.isExposed){
                     continue;
                 } else {
                  boundaryVertices.add(v);
                 }
             }
             userInfo.boundaryVertices = boundaryVertices;
-
+            if (t.numBoundary != boundaryVertices.size()){
+                throw new RuntimeException("expected " + t.numBoundary + " found " + boundaryVertices.size() );
+            }
         } else {
             InternalNode n = (InternalNode) t;
             ArrayList<Node> children = n.children;
@@ -132,6 +137,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                         for (int j = -1; j <= maxLevel; j++){
                             tempSizeList.put(j, b0.size2.get(i) + b1.size2.get(i)); // Unsure if this should be i
                             tempIncidentList.put(j, b0.incident2.get(i) + b1.incident2.get(i)); // Unsure if this should be i
+                            tempSizeList.put(j, 0); // This is a test
+                            tempIncidentList.put(j, 0); // This is also part of said test
                         }
                         sizeList.put(i, tempSizeList);
                         incidentList.put(i, tempIncidentList);
@@ -140,18 +147,24 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     userInfo.incident4.put(v, incidentList);
                 }
             } else if (boundary.size() == 1){
-                //twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) boundary.get(0).userInfo;
-                twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) leaf.edge.endpoints[0].userInfo;
-                twoEdgeVertexUserInfo b1 = (twoEdgeVertexUserInfo) leaf.edge.endpoints[1].userInfo;
+                //twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) leaf.edge.endpoints[0].userInfo;
+                //twoEdgeVertexUserInfo b1 = (twoEdgeVertexUserInfo) leaf.edge.endpoints[1].userInfo;
+                Vertex b = findOtherEndpoint(boundary.get(0), t);
+                twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) b.userInfo;
 
                 HashMap<Integer, Integer> sizeList = new HashMap<>();
                 HashMap<Integer, Integer> incidentList = new HashMap<>();
 
                 for (int i = -1; i <= maxLevel; i++){
-                    //sizeList.put(i, b0.size2.get(i)); // Should the other endpoint also be added?
-                    //incidentList.put(i, b0.incident2.get(i)); // Should the other endpoint also be added?
-                    sizeList.put(i, b0.size2.get(i) + b1.size2.get(i));
-                    incidentList.put(i,b0.incident2.get(i) + b1.incident2.get(i));
+                    if (userInfo.coverC >= i) {
+                        sizeList.put(i, b0.size2.get(i)); // Should the other endpoint also be added?
+                        incidentList.put(i, b0.incident2.get(i)); // Should the other endpoint also be added?
+                        //sizeList.put(i, b0.size2.get(i) + b1.size2.get(i));
+                        //incidentList.put(i,b0.incident2.get(i) + b1.incident2.get(i));
+                    } else {
+                        sizeList.put(i, 0); // Should the other endpoint also be added?
+                        incidentList.put(i, 0);
+                    }
                 }
                 userInfo.size3.put(boundary.get(0), sizeList);
                 userInfo.incident3.put(boundary.get(0), incidentList);
@@ -564,7 +577,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     return find(v, children.get(1), i);
                 } else {
                     // c1 is a point cluster
-
+                    if (c1.incident3.get(u).get(i) > 0) {
+                        return find(u, children.get(1), i);
+                    }
                     // Find (b, B, i)
                     Vertex v = findNearestBoundary(u, c, i);
                     return find(v, children.get(0), i);
@@ -707,7 +722,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             }
             Node da = findRoot(q.firstEdge.userData);
-
             deExpose(q);
             deExpose(r);
 
@@ -783,7 +797,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             graphs.get(0).addEdge(e);
 
             coverReal(u, v, 0);
-
+            //TODO should combine be called on all parents of this?
             twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
             twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
             vinfo.incident2.put(0, vinfo.incident2.get(0) + 1);

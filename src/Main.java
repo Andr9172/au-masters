@@ -18,9 +18,15 @@ public class Main {
         //    runCommandMode();
         //}
 
-        int numberOfVertices = 10;
-        int numberOfEdge = 20;
-        int seed = 15;
+        // Fail infinite loop
+        //int numberOfVertices = 10;
+        //int numberOfEdge = 20;
+        //int seed = 15;
+        //int repeats = 1;
+
+        int numberOfVertices = 5;
+        int numberOfEdge = 10;
+        int seed = 8;
         int repeats = 1;
 
         /* for (int i = 0; i <= repeats; i++){

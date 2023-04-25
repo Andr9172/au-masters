@@ -106,13 +106,14 @@ public interface TopTreeInterface {
     default Node deExpose(Vertex v){
         Node root = null;
         Node node = findConsumingNode(v);
+        v.isExposed = false;
+
         while (node != null) {
             root = node;
             root.numBoundary = root.numBoundary - 1;
             combine(root);
             node = root.parent;
         }
-        v.isExposed = false;
         return root;
     }
 
@@ -136,6 +137,8 @@ public interface TopTreeInterface {
         fullSplay(node);
 
         // Now depth(node) <= 1, and node is the consuming point cluster
+        v.isExposed = true;
+
         Node root = null;
         while (node != null) {
             root = node;
@@ -146,7 +149,6 @@ public interface TopTreeInterface {
             combine(node);
             node = root.parent;
         }
-        v.isExposed = true;
         return root;
     }
 
