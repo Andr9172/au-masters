@@ -81,24 +81,24 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
                 } else if (isPath(children.get(0)) && isPoint(children.get(1))) {
                     // All boundary vertices belong to the path cluster
-                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices;
+                    userInfo.boundaryVertices = new ArrayList<>(((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices);
                 } else if (isPoint(children.get(0)) && isPath(children.get(1))) {
                     // All boundary vertices belong to the path cluster
-                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices;
+                    userInfo.boundaryVertices = new ArrayList<>(((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices);
                 }
             } else if (isPoint(t)) {
                 if (isPath(children.get(0)) && isPoint(children.get(1))) {
                     // All boundary vertices belong to the path cluster, minus the shared vertex
-                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices;
+                    userInfo.boundaryVertices = new ArrayList<>(((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices);
                     userInfo.boundaryVertices.remove(((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices.get(0));
                 } else if (isPoint(children.get(0)) && isPath(children.get(1))) {
                     // All boundary vertices belong to the path cluster, minus the shared vertex
-                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices;
+                    userInfo.boundaryVertices = new ArrayList<>(((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices);
                     userInfo.boundaryVertices.remove(((twoEdgeConnectivityUserInfo)children.get(0).userInfo).boundaryVertices.get(0));
 
                 } else {
                     // Both children are point clusters, but their shared vertex is a middle boundary vertex
-                    userInfo.boundaryVertices = ((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices;
+                    userInfo.boundaryVertices = new ArrayList<>(((twoEdgeConnectivityUserInfo)children.get(1).userInfo).boundaryVertices);
                 }
             }
         }

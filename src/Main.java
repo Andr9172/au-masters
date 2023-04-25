@@ -26,8 +26,8 @@ public class Main {
 
         int numberOfVertices = 5;
         int numberOfEdge = 10;
-        int seed = 8;
-        int repeats = 1;
+        int seed = 218;
+        int repeats = 1000;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -37,8 +37,8 @@ public class Main {
         //testSizeTopTree(numberOfVertices, numberOfEdge);
 
         for (int i = 0; i < repeats; i++){
-            System.out.println("interation " + i);
-            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, seed, 0, 1);
+            System.out.println("iteration " + i);
+            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, i, 0, 1);
         }
 
     }
