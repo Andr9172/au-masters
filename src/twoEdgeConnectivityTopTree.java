@@ -899,8 +899,14 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     // Query for result
     public boolean twoEdgeConnected(Vertex u, Vertex v){
-        expose(u);
-        expose(v);
+        Node a = expose(u);
+        Node b = expose(v);
+
+        if (a == null || b == null){
+            deExpose(u);
+            deExpose(v);
+            return false;
+        }
         Node root = findRoot(u.firstEdge.userData);
         twoEdgeConnectivityUserInfo userinfo = (twoEdgeConnectivityUserInfo) root.userInfo;
         boolean result = userinfo.coverC >= 0;
