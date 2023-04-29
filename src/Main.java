@@ -24,10 +24,10 @@ public class Main {
         //int seed = 15;
         //int repeats = 1;
 
-        int numberOfVertices = 5;
-        int numberOfEdge = 10;
-        int seed = 218;
-        int repeats = 1000;
+        int numberOfVertices = 1000;
+        int numberOfEdge = 5000;
+        int seed = 0;
+        int repeats = 1;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -261,6 +261,7 @@ public class Main {
         Tree t = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
 
+        int i = 0;
         for (ArrayList<Integer> list : edges){
             //System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
 
@@ -268,7 +269,9 @@ public class Main {
             int b = list.get(1);
             int weight = 1;
 
+            System.out.print("Edge " + i + " ");
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
+            i++;
         }
         topTree.computeAllCombine(t.vertex.get(0).firstEdge.userData);
 

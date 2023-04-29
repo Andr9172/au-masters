@@ -589,6 +589,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 if (c0.incident4.get(u).get(-1).get(i) > 0) {
                     return find(u, children.get(0), i);
                 }
+                // Find (b, B, i)
                 Vertex v = findNearestBoundary(u, c, i);
                 return find(v, children.get(1), i);
             } else {
@@ -686,9 +687,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
         boolean notStopped = true;
-        while (cinfo.incident4.get(u).get(0).get(i) + uinfo.incident2.get(i) > 0 && notStopped){
+        while (cinfo.incident4.get(u).get(-1).get(i) + uinfo.incident2.get(i) > 0 && notStopped){
+            combine(c);
             Edge e = find(u, c, i);
-            System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover");
+            //System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover");
             deExpose(v);
             deExpose(w);
 
@@ -704,6 +706,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 cover(d, i, e);
                 pushDownInfo(d);
                 notStopped = false;
+                System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover without increase");
+
             } else {
                 twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) q.userInfo;
                 twoEdgeVertexUserInfo rinfo = (twoEdgeVertexUserInfo) r.userInfo;
@@ -719,6 +723,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
                 cover(d, i + 1, e);
                 pushDownInfo(d);
+                System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
+                computeAllCombine(d);
 
             }
             Node da = findRoot(q.firstEdge.userData);
@@ -729,6 +735,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             expose(v);
             expose(w);
             c = findRoot(v.firstEdge.userData);
+            cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
             pushDownInfo(c);
         }
         deExpose(v);
@@ -739,14 +746,19 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     * Method to change the level of edges, and update the graphs
     */
     private void increaseLevel(Edge e, int levelFrom, int levelTo) {
-        for (int i = levelFrom; i <= levelTo; i++){
+        graphs.get(levelFrom).removeEdge(e);
+        graphs.get(levelTo).addEdge(e);
+        /* for (int i = levelFrom; i <= levelTo; i++){
             graphs.get(i).addEdge(e);
-        }
+        } */
     }
 
     private void recover(Vertex v, Vertex w, int i){
         recoverInner(v, w, v, i);
         recoverInner(v, w, w, i);
+        if (i >= 0) {
+            recover(v, w, i - 1);
+        }
     }
 
     private void swap(Vertex u, Vertex v){
@@ -860,8 +872,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             graphs.get(j).removeEdge(u.id, v.id);
             twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
             twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
-            uinfo.incident2.put(i, uinfo.incident2.get(i) - 1);
-            vinfo.incident2.put(i, vinfo.incident2.get(i) - 1);
+            uinfo.incident2.put(j, uinfo.incident2.get(j) - 1);
+            vinfo.incident2.put(j, vinfo.incident2.get(j) - 1);
         }
     }
 
@@ -879,7 +891,13 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         if (n.isLeaf){
             return;
         }
+
+
         twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
+
+        if (info.coverCMinus == -1 && info.coverCPlus == -1){
+            return;
+        }
 
         InternalNode internalNode = (InternalNode) n;
 
