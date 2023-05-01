@@ -8,6 +8,8 @@ import java.util.Random;
 
 public class Main {
 
+    private static  boolean debug = false;
+
     public static void main(String[] args) {
         //if (args.length < 1) {
         //    System.out.println("Missing arguments");
@@ -24,10 +26,10 @@ public class Main {
         //int seed = 15;
         //int repeats = 1;
 
-        int numberOfVertices = 10;
-        int numberOfEdge = 20;
+        int numberOfVertices = 8;
+        int numberOfEdge = 16;
         int seed = 0;
-        int repeats = 1000;
+        int repeats = 10000000;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -260,6 +262,7 @@ public class Main {
         // Test of 2-edge connectivity top tree
         Tree t = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
+        debug = topTree.debug;
 
         int i = 0;
         for (ArrayList<Integer> list : edges){
@@ -269,11 +272,13 @@ public class Main {
             int b = list.get(1);
             int weight = 1;
 
-            System.out.print("Edge " + i + " ");
+            if (topTree.debug){
+                System.out.print("Edge " + i + " ");
+            }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
             i++;
         }
-        topTree.computeAllCombine(t.vertex.get(0).firstEdge.userData);
+        //topTree.computeAllCombine(t.vertex.get(0).firstEdge.userData);
 
 
         topTree.delete(t.vertex.get(edges.get(0).get(0)), t.vertex.get(edges.get(0).get(1)));
@@ -331,9 +336,13 @@ public class Main {
 
     private static void toptreeConnected(boolean twoEdgeConnected) {
         if (twoEdgeConnected){
-            System.out.println("Connected");
+            if (debug){
+                System.out.println("Connected");
+            }
         } else {
-            System.out.println("Not connected");
+            if (debug){
+                System.out.println("Not connected");
+            }
         }
     }
 

@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public HashMap<Integer, Graph> graphs;
-
+    public boolean debug = false;
 
     int numberOfVertices = 0;
     int maxLevel = 0;
@@ -683,7 +683,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         expose(v);
         expose(w);
         Node c = findRoot(v.firstEdge.userData);
-        computeAllCombine(c);
+        //computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
@@ -707,7 +707,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 cover(d, i, e);
                 pushDownInfo(d);
                 notStopped = false;
-                System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover without increase");
+                if (debug){
+                    System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover without increase");
+                }
 
             } else {
                 twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) q.userInfo;
@@ -724,7 +726,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
                 cover(d, i + 1, e);
                 pushDownInfo(d);
-                System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
+                if (debug){
+                    System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
+                }
                 //computeAllCombine(d);
 
             }
@@ -794,7 +798,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             cut(e);
             //System.out.println("Swapping edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
             link(userInfo.coverEdgeC.endpoints[0], userInfo.coverEdgeC.endpoints[1], 1);
-            System.out.println("Swapped edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
+            if (debug){
+                System.out.println("Swapped edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
+            }
         }
 
 
@@ -815,11 +821,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
             vinfo.incident2.put(0, vinfo.incident2.get(0) + 1);
             uinfo.incident2.put(0, uinfo.incident2.get(0) + 1);
-            System.out.println("Insterted " + u.id + " " +  v.id + " into the cover edges");
+            if (debug){
+                System.out.println("Insterted " + u.id + " " +  v.id + " into the cover edges");
+            }
 
         } else {
             link(u,v,1);
-            System.out.println("Insterted " + u.id + " " + v.id + " into the spanning tree");
+            if (debug){
+                System.out.println("Insterted " + u.id + " " + v.id + " into the spanning tree");
+            }
         }
     }
 
