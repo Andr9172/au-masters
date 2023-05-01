@@ -481,6 +481,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     private void cover(Node n, int i, Edge e){
         twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
 
+        // TODO should be <= maybe?
         if (info.coverC < i){
             info.coverC = i;
             info.coverEdgeC = e;
