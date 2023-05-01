@@ -24,10 +24,10 @@ public class Main {
         //int seed = 15;
         //int repeats = 1;
 
-        int numberOfVertices = 1000;
-        int numberOfEdge = 5000;
+        int numberOfVertices = 10;
+        int numberOfEdge = 20;
         int seed = 0;
-        int repeats = 1;
+        int repeats = 1000;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -38,7 +38,7 @@ public class Main {
 
         for (int i = 0; i < repeats; i++){
             System.out.println("iteration " + i);
-            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, i, 0, 1);
+            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, i , 0, 1);
         }
 
     }

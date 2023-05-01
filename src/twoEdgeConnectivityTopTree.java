@@ -54,9 +54,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         } else {
             InternalNode n = (InternalNode) t;
             ArrayList<Node> children = n.children;
+
             // TODO Temporarily
-            updateBoundaries(children.get(0));
-            updateBoundaries(children.get(1));
+            // updateBoundaries(children.get(0));
+            // updateBoundaries(children.get(1));
 
             if (isPath(t)){
                 if (isPath(children.get(0)) && isPath(children.get(1))){
@@ -109,12 +110,13 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     @Override
     public void combine(Node t) {
         updateBoundaries(t);
+
         // TODO TEMP
-        if (!t.isLeaf){
-            InternalNode temp = (InternalNode) t;
+        //if (!t.isLeaf){
+            //InternalNode temp = (InternalNode) t;
             //combine(temp.children.get(0));
             //combine(temp.children.get(1));
-        }
+        //}
 
         if (t.isLeaf){
             // TODO I think this is the desired values, but may have to be redone
@@ -500,7 +502,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         // For X in {size, incident} and for all ...
-        // TODO using 0 instead of -1 for reasons
         for (int j = -1; j <= i; j++){
             for (int k = -1; k <= maxLevel; k++){
                 // For v in boundary nodes
@@ -529,7 +530,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         // For X in {size, incident} and for all ...
-        // TODO using 0 instead of -1 for reasons
         for (int j = -1; j <= i; j++){
             for (int k = -1; k <= maxLevel; k++){
                 // For v in boundary nodes
@@ -725,7 +725,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 cover(d, i + 1, e);
                 pushDownInfo(d);
                 System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
-                computeAllCombine(d);
+                //computeAllCombine(d);
 
             }
             Node da = findRoot(q.firstEdge.userData);
@@ -737,7 +737,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             expose(w);
             c = findRoot(v.firstEdge.userData);
             cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
-            pushDownInfo(c);
+            //pushDownInfo(c);
         }
         deExpose(v);
         deExpose(w);
@@ -815,11 +815,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
             vinfo.incident2.put(0, vinfo.incident2.get(0) + 1);
             uinfo.incident2.put(0, uinfo.incident2.get(0) + 1);
-            System.out.println("Insterted " + u.id + v.id + " into the cover edges");
+            System.out.println("Insterted " + u.id + " " +  v.id + " into the cover edges");
 
         } else {
             link(u,v,1);
-            System.out.println("Insterted " + u.id + v.id + " into the spanning tree");
+            System.out.println("Insterted " + u.id + " " + v.id + " into the spanning tree");
         }
     }
 
