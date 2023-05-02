@@ -17,6 +17,9 @@ public class twoEdgeComparison {
     final int NIL = -1;
     int count = 0;
 
+    public int e1 = 0;
+    public int e2 = 0;
+
     // Constructor
     public twoEdgeComparison(int v) {
         V = v;
@@ -72,6 +75,8 @@ public class twoEdgeComparison {
                 // then u-v is a bridge
                 if (low[v] > disc[u]){
                     count++;
+                    e1 = u;
+                    e2 = v;
                     System.out.println("id " + u + " id " + v + " is a bridge ");
                 }
 

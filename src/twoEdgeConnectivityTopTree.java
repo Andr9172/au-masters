@@ -111,13 +111,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     public void combine(Node t) {
         updateBoundaries(t);
 
-        // TODO TEMP
-        //if (!t.isLeaf){
-            //InternalNode temp = (InternalNode) t;
-            //combine(temp.children.get(0));
-            //combine(temp.children.get(1));
-        //}
-
         if (t.isLeaf){
             // TODO I think this is the desired values, but may have to be redone
             twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
@@ -137,8 +130,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                         HashMap<Integer, Integer> tempSizeList = new HashMap<>();
                         HashMap<Integer, Integer> tempIncidentList = new HashMap<>();
                         for (int j = -1; j <= maxLevel; j++){
-                            tempSizeList.put(j, b0.size2.get(i) + b1.size2.get(i)); // Unsure if this should be i
-                            tempIncidentList.put(j, b0.incident2.get(i) + b1.incident2.get(i)); // Unsure if this should be i
+                            //tempSizeList.put(j, b0.size2.get(i) + b1.size2.get(i)); // Unsure if this should be i
+                            //tempIncidentList.put(j, b0.incident2.get(i) + b1.incident2.get(i)); // Unsure if this should be i
                             tempSizeList.put(j, 0); // This is a test
                             tempIncidentList.put(j, 0); // This is also part of said test
                         }
@@ -582,15 +575,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     }
                     // Find (b, B, i)
                     Vertex v = findNearestBoundary(u, c, i);
-                    return find(v, children.get(1), i);
+                    return find(u, children.get(1), i); // TODO v?
                 } else {
                     // c1 is a point cluster
                     if (c1.incident3.get(u).get(i) > 0) {
                         return find(u, children.get(1), i);
                     }
                     // Find (b, B, i)
-                    Vertex v = findNearestBoundary(u, c, i);
-                    return find(v, children.get(0), i);
+                    Vertex v = findNearestBoundary(u, c, i); // TODO v?
+                    return find(u, children.get(0), i);
                 }
             } else if (c0.boundaryVertices.contains(u)) {
                 // Only c0 contains u, and c0 is a path cluster
@@ -713,8 +706,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Vertex q = e.endpoints[0];
             Vertex r = e.endpoints[1];
 
-            expose(q);
-            expose(r);
+            Node a = expose(q);
+            Node b = expose(r);
             Node d = findRoot(q.firstEdge.userData);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
             //System.out.println("Value of i " + i + " value to divide with " + Math.pow(2, i));
@@ -882,6 +875,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
         // If tree edge, and bridge remove it
         if (userInfo.coverC == -1){
+            if (debug){
+                System.out.println("Edge " + c.edge.endpoints[0].id + " " + c.edge.endpoints[1].id  + " was deleted");
+            }
             // if coverC == -1, we have no edges covering us and we can safely remove it
             cut(c.edge);
         } else {
@@ -907,13 +903,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private void deleteEdge(Vertex u, Vertex v, int i) {
-        for (int j = 0; j <= i; j++){
-            graphs.get(j).removeEdge(u.id, v.id);
-            twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
-            twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
-            uinfo.incident2.put(j, uinfo.incident2.get(j) - 1);
-            vinfo.incident2.put(j, vinfo.incident2.get(j) - 1);
-        }
+        graphs.get(i).removeEdge(u.id, v.id);
+        twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
+        twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
+        uinfo.incident2.put(i, uinfo.incident2.get(i) - 1);
+        vinfo.incident2.put(i, vinfo.incident2.get(i) - 1);
     }
 
     public void delete(Node n){

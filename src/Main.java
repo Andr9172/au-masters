@@ -28,7 +28,7 @@ public class Main {
         boolean specific = true;
         int numberOfVertices = 8;
         int numberOfEdge = 16;
-        int seed = 7341;
+        int seed = 157;
         int repeats = 10000;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -326,14 +326,22 @@ public class Main {
             System.out.println("Automatic method says Top tree are it is not 2 edge connected!");
         }*/
         g1.bridge();
+        boolean topTreeConnected = false;
 
-        boolean topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(v1), t.vertex.get(v2));
+        if (g1.count != 0){
+            // Find bridge and check it is there
+            topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+        } else {
+            topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(v1), t.vertex.get(v2));
+        }
+
 
         if ((g1.count == 0 & topTreeConnected)
             || ((!(g1.count == 0)) & (!topTreeConnected))) {
             System.out.println("Agreement");
         } else {
             System.out.println("Something went wrong");
+            throw new RuntimeException();
         }
 
     }
