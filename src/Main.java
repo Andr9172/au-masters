@@ -25,10 +25,10 @@ public class Main {
         //int numberOfEdge = 20;
         //int seed = 15;
         //int repeats = 1;
-
+        boolean specific = false;
         int numberOfVertices = 8;
         int numberOfEdge = 16;
-        int seed = 0;
+        int seed = 132;
         int repeats = 10000;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -38,9 +38,13 @@ public class Main {
 
         //testSizeTopTree(numberOfVertices, numberOfEdge);
 
-        for (int i = 0; i < repeats; i++){
-            System.out.println("iteration " + i);
-            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, i , 0, 1);
+        if (specific){
+            testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, seed , 0, 1);
+        } else {
+            for (int i = 0; i < repeats; i++){
+                System.out.println("iteration " + i);
+                testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, i , 0, 1);
+            }
         }
 
     }

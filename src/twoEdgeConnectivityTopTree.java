@@ -703,7 +703,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Node d = findRoot(q.firstEdge.userData);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
             //System.out.println("Value of i " + i + " value to divide with " + Math.pow(2, i));
-            if (dinfo.size4.get(q).get(-1).get(i) + 2 > numberOfVertices/Math.pow(2, i)){
+            if (dinfo.size4.get(q).get(-1).get(i+1) + 2 > numberOfVertices/Math.pow(2, i+1)){
                 cover(d, i, e);
                 pushDownInfo(d);
                 notStopped = false;
@@ -729,7 +729,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 if (debug){
                     System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
                 }
-                //computeAllCombine(d);
+                computeAllCombine(d);
 
             }
             Node da = findRoot(q.firstEdge.userData);
