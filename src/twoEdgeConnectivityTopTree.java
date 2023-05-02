@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public HashMap<Integer, Graph> graphs;
-    public boolean debug = false;
+    public boolean debug = true;
 
     int numberOfVertices = 0;
     int maxLevel = 0;
@@ -547,8 +547,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             return findIncidentEdge(u, c, i);
         } else {
             if (c.isLeaf) {
-                Vertex otherBoundary = findOtherEndpoint(u, c);
-                return find(otherBoundary, c, i);
+                // Check other leaf, if not return null
+                Vertex v = findOtherEndpoint(u, c);
+                twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
+                if (vinfo.incident2.get(i) > 0) {
+                    return findIncidentEdge(v, c, i);
+                }
+                return null;
+                //Vertex otherBoundary = findOtherEndpoint(u, c);
+                //return find(otherBoundary, c, i);
             }
 
             clean(c);
@@ -592,7 +599,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 }
                 // Find (b, B, i)
                 Vertex v = findNearestBoundary(u, c, i);
-                return find(v, children.get(1), i);
+                Edge e = find(v, children.get(1), i);
+                if (e == null){
+                    e = find(findOtherBoundary(u,c), c, i);
+                }
+                return e;
             } else {
                 // Only c1 contains u, and c1 is a path cluster
                 if (c1.incident4.get(u).get(-1).get(i) > 0) {
@@ -600,7 +611,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 }
                 // Find (b, B, i)
                 Vertex v = findNearestBoundary(u, c, i);
-                return find(v, children.get(0), i);
+                Edge e = find(v, children.get(0), i);
+                if (e == null){
+                    e = find(findOtherBoundary(u,c), c, i);
+                }
+                return e;
             }
         }
     }
@@ -689,7 +704,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // deExpose, so we can expose new vertices in the while loop
         boolean notStopped = true;
         while (cinfo.incident4.get(u).get(-1).get(i) + uinfo.incident2.get(i) > 0 && notStopped){
-            combine(c);
+            //combine(c);
             Edge e = find(u, c, i);
             //System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover");
             deExpose(v);
@@ -776,7 +791,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Edge coverEdge = userInfo.coverEdgeC;
 
         if (userInfo.coverC >= 0){
-            for (int i = 0; i <= userInfo.coverC; i++){
+            //for (int i = 0; i <= userInfo.coverC; i++){
+                int i = userInfo.coverC;
                 graphs.get(i).removeEdge(coverEdge);
                 graphs.get(i).addEdge(u.id, v.id);
                 //graphs.get(i).removeEdge(u.id, v.id);
@@ -790,14 +806,26 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
                 twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[0].userInfo;
                 twoEdgeVertexUserInfo rinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[1].userInfo;
+                if (qinfo.incident2.get(i) - 1 < 0 || rinfo.incident2.get(i) - 1 < 0){
+                    System.out.println(coverEdge.endpoints[0].id);
+                    System.out.println(coverEdge.endpoints[1].id);
+                    throw new RuntimeException();
+                }
                 qinfo.incident2.put(i, qinfo.incident2.get(i) - 1);
                 rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
 
-            }
+            //}
             Edge e = Tree.adjacencyList[u.id][v.id];
             cut(e);
             //System.out.println("Swapping edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
             link(userInfo.coverEdgeC.endpoints[0], userInfo.coverEdgeC.endpoints[1], 1);
+
+            expose(u);
+            Node n = expose(v);
+            cover(n, userInfo.coverC, e);
+            deExpose(v);
+            deExpose(u);
+
             if (debug){
                 System.out.println("Swapped edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
             }
