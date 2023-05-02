@@ -702,8 +702,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             expose(r);
             Node d = findRoot(q.firstEdge.userData);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
-
-            if (dinfo.size4.get(q).get(-1).get(i) + 2 > numberOfVertices/(2^i)){
+            //System.out.println("Value of i " + i + " value to divide with " + Math.pow(2, i));
+            if (dinfo.size4.get(q).get(-1).get(i) + 2 > numberOfVertices/Math.pow(2, i)){
                 cover(d, i, e);
                 pushDownInfo(d);
                 notStopped = false;
