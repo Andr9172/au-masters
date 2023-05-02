@@ -28,7 +28,7 @@ public class Main {
         boolean specific = true;
         int numberOfVertices = 8;
         int numberOfEdge = 16;
-        int seed = 157;
+        int seed = 1927;
         int repeats = 10000;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -328,7 +328,10 @@ public class Main {
         g1.bridge();
         boolean topTreeConnected = false;
 
-        if (g1.count != 0){
+        if (g1.count == -1) {
+            // This case the graph is disconnected
+            topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+        } else if (g1.count != 0){
             // Find bridge and check it is there
             topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
         } else {

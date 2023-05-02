@@ -574,15 +574,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                         return find(u, children.get(0), i);
                     }
                     // Find (b, B, i)
-                    Vertex v = findNearestBoundary(u, c, i);
-                    return find(u, children.get(1), i); // TODO v?
+                    //Vertex v = findNearestBoundary(u, c, i);
+                    return find(u, children.get(1), i);
                 } else {
                     // c1 is a point cluster
                     if (c1.incident3.get(u).get(i) > 0) {
                         return find(u, children.get(1), i);
                     }
                     // Find (b, B, i)
-                    Vertex v = findNearestBoundary(u, c, i); // TODO v?
+                    //Vertex v = findNearestBoundary(u, c, i);
                     return find(u, children.get(0), i);
                 }
             } else if (c0.boundaryVertices.contains(u)) {

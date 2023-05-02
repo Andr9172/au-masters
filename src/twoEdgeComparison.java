@@ -110,6 +110,15 @@ public class twoEdgeComparison {
         for (int i = 0; i < V; i++)
             if (visited[i] == false)
                 bridgeUtil(i, visited, disc, low, parent);
+
+        for (int i = 0; i < V; i++){
+            if (adj[i].size() == 0){
+                // Something have no connected vertices which means it's 100% not connected
+                e1 = i;
+                e2 = V - i - 1;
+                count = -1;
+            }
+        }
     }
 
 }
