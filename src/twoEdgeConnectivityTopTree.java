@@ -687,7 +687,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         expose(v);
         expose(w);
         Node c = findRoot(v.firstEdge.userData);
-        computeAllCombine(c);
+        // computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
