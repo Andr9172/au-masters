@@ -25,10 +25,10 @@ public class Main {
         //int numberOfEdge = 20;
         //int seed = 15;
         //int repeats = 1;
-        boolean specific = true;
+        boolean specific = false;
         int numberOfVertices = 8;
         int numberOfEdge = 16;
-        int seed = 1927;
+        int seed = 8055;
         int repeats = 10000;
 
         /* for (int i = 0; i <= repeats; i++){

@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public HashMap<Integer, Graph> graphs;
-    public boolean debug = true;
+    public boolean debug = false;
 
     int numberOfVertices = 0;
     int maxLevel = 0;
@@ -54,10 +54,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         } else {
             InternalNode n = (InternalNode) t;
             ArrayList<Node> children = n.children;
-
-            // TODO Temporarily
-            // updateBoundaries(children.get(0));
-            // updateBoundaries(children.get(1));
 
             if (isPath(t)){
                 if (isPath(children.get(0)) && isPath(children.get(1))){
@@ -691,7 +687,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         expose(v);
         expose(w);
         Node c = findRoot(v.firstEdge.userData);
-        //computeAllCombine(c);
+        computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
@@ -767,11 +763,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private void recover(Vertex v, Vertex w, int i){
-        recoverInner(v, w, v, i);
-        recoverInner(v, w, w, i);
-        if (i >= 0) {
-            recover(v, w, i - 1);
+        for (int j = maxLevel; j >= 0; j--){
+            recoverInner(v, w, v, j);
+            recoverInner(v, w, w, j);
         }
+        //recoverInner(v, w, v, i);
+        //recoverInner(v, w, w, i);
+        //if (i > 0) {
+        //    recover(v, w, i - 1);
+        //}
     }
 
     private void swap(Vertex u, Vertex v){
