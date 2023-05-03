@@ -229,6 +229,8 @@ public interface TopTreeInterface {
         split(grandParent);
         split(parent);
         split(uncle);
+        split(node);
+        split(sibling);
         //System.out.println("Split called");
 
         pushFlip(grandParent);
@@ -279,6 +281,9 @@ public interface TopTreeInterface {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
+        combine(node); // These additional combines fixes stuff, but like it is ugly asf
+        combine(uncle);
+        combine(sibling);
         combine(parent);
         combine(grandParent); //TODO is this actually needed
         fullSplaySize.fullSplayCombineCost += combineCost(parent);
