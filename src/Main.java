@@ -29,7 +29,7 @@ public class Main {
         int numberOfVertices = 8;
         int numberOfEdge = 16;
         int seed = 8055;
-        int repeats = 10000;
+        int repeats = 10; //10000;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
