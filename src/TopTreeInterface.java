@@ -24,6 +24,29 @@ public interface TopTreeInterface {
 
     // Remove edge from tree
      default void cut(Edge edge){
+         // TODO test
+         // Find the entire path to the root and call split, should be fine runtime wise
+         Edge start = edge;
+
+         if (start == null){
+             return;
+         }
+         Node n = start.userData;
+
+         // List in oppsite order
+         ArrayList<Node> nodes = new ArrayList<>();
+         while (n != null){
+             nodes.add(n);
+             n = n.parent;
+         }
+         for (int i = nodes.size() - 1; i >= 0; i--){
+             split(nodes.get(i));
+             if (getSibling(nodes.get(i))!= null){
+                 split(getSibling(nodes.get(i)));
+             }
+         }
+
+
         Node node = edge.userData;
 
         Vertex u = edge.endpoints[0];
@@ -104,6 +127,28 @@ public interface TopTreeInterface {
 
     // Deexpose vertex in underlying tree
     default Node deExpose(Vertex v){
+        // TODO test
+        // Find the entire path to the root and call split, should be fine runtime wise
+        Edge start = v.firstEdge;
+
+        if (start == null){
+            return null;
+        }
+        Node n = start.userData;
+
+        // List in oppsite order
+        ArrayList<Node> nodes = new ArrayList<>();
+        while (n != null){
+            nodes.add(n);
+            n = n.parent;
+        }
+        for (int i = nodes.size() - 1; i >= 0; i--){
+            split(nodes.get(i));
+            if (getSibling(nodes.get(i))!= null){
+                split(getSibling(nodes.get(i)));
+            }
+        }
+
         Node root = null;
         Node node = findConsumingNode(v);
         v.isExposed = false;
@@ -119,6 +164,28 @@ public interface TopTreeInterface {
 
     // Expose version 1
     default Node expose(Vertex v){
+        // TODO test
+        // Find the entire path to the root and call split, should be fine runtime wise
+        Edge start = v.firstEdge;
+
+        if (start == null){
+            return null;
+        }
+        Node n = start.userData;
+
+        // List in oppsite order
+        ArrayList<Node> nodes = new ArrayList<>();
+        while (n != null){
+            nodes.add(n);
+            n = n.parent;
+        }
+        for (int i = nodes.size() - 1; i >= 0; i--){
+            split(nodes.get(i));
+            if (getSibling(nodes.get(i))!= null){
+                split(getSibling(nodes.get(i)));
+            }
+        }
+
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
             v.isExposed = true;
@@ -338,6 +405,23 @@ public interface TopTreeInterface {
     }
 
     default void semiSplay(Node node){
+        // TODO test
+        // Find the entire path to the root and call split, should be fine runtime wise
+        Node n = node;
+
+        // List in oppsite order
+        ArrayList<Node> nodes = new ArrayList<>();
+        while (n != null){
+            nodes.add(n);
+            n = n.parent;
+        }
+        for (int i = nodes.size() - 1; i >= 0; i--){
+            split(nodes.get(i));
+            if (getSibling(nodes.get(i)) != null){
+                split(getSibling(nodes.get(i)));
+            }
+        }
+
         fullSplaySize.fullSplayCombineCost = 0;
         Node top = node;
         while(top != null){
@@ -351,6 +435,23 @@ public interface TopTreeInterface {
     }
 
     default void fullSplay(Node node){
+        // TODO test
+        // Find the entire path to the root and call split, should be fine runtime wise
+        Node n = node;
+
+        // List in oppsite order
+        ArrayList<Node> nodes = new ArrayList<>();
+        while (n != null){
+            nodes.add(n);
+            n = n.parent;
+        }
+        for (int i = nodes.size() - 1; i >= 0; i--){
+            split(nodes.get(i));
+            if (getSibling(nodes.get(i)) != null){
+                split(getSibling(nodes.get(i)));
+            }
+        }
+
         fullSplaySize.fullSplayCombineCost = 0;
         while (true){
             Node top = splayStep(node);
@@ -366,7 +467,31 @@ public interface TopTreeInterface {
     }
 
     default Node findConsumingNode(Vertex vert){
+        // TODO test
+        // Find the entire path to the root and call split, should be fine runtime wise
         Edge start = vert.firstEdge;
+
+        if (start == null){
+            return null;
+        }
+        Node n = start.userData;
+
+        // List in oppsite order
+        ArrayList<Node> nodes = new ArrayList<>();
+        while (n != null){
+            nodes.add(n);
+            n = n.parent;
+        }
+        for (int i = nodes.size() - 1; i >= 0; i--){
+            split(nodes.get(i));
+            if (getSibling(nodes.get(i))!= null){
+                split(getSibling(nodes.get(i)));
+            }
+        }
+
+
+
+        start = vert.firstEdge;
 
         if (start == null){
             return null;

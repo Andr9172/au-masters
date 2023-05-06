@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public HashMap<Integer, Graph> graphs;
-    public boolean debug = false;
+    public boolean debug = true;
 
     int numberOfVertices = 0;
     int maxLevel = 0;
@@ -733,7 +733,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 if (debug){
                     System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
                 }
-                computeAllCombine(d);
+                //computeAllCombine(d);
 
             }
             Node da = findRoot(q.firstEdge.userData);
@@ -750,6 +750,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         deExpose(v);
         deExpose(w);
     }
+
 
     /*
     * Method to change the level of edges, and update the graphs
@@ -860,6 +861,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         if (Tree.adjacencyList[u.id][v.id] != null) {
             e = Tree.adjacencyList[u.id][v.id];
         } else {
+            if (debug){
+                System.out.println("Edge " + u.id + " " + v.id + " was deleted");
+            }
             // (u,v) is not in the spanning tree
             int i = findLevel(u, v);
             uncoverReal(u, v, i);
@@ -975,7 +979,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Node root = findRoot(u.firstEdge.userData);
         // A bit scuffed way of getting the edge
         cover(root, i, graphs.get(0).getEdge(u,v));
-        pushDownInfo(root); // This makes it work, but likely breaks the runtime too
+        //pushDownInfo(root); // This makes it work, but likely breaks the runtime too
         //clean(root);
         deExpose(u);
         deExpose(v);
@@ -1006,7 +1010,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
         Node root = findRoot(u.firstEdge.userData);
         uncover(root, i);
-        pushDownInfo(root); // TEMP
+        //pushDownInfo(root); // TEMP
         deExpose(u);
         deExpose(v);
     }
