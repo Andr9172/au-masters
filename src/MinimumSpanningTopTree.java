@@ -63,4 +63,9 @@ public class MinimumSpanningTopTree implements TopTreeInterface{
     public void split(Node n) {
 
     }
+
+    @Override
+    public void pushDown(Node n) {
+
+    }
 }

@@ -709,7 +709,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             //System.out.println("Value of i " + i + " value to divide with " + Math.pow(2, i));
             if (dinfo.size4.get(q).get(-1).get(i+1) + 2 > numberOfVertices/Math.pow(2, i+1)){
                 cover(d, i, e);
-                pushDownInfo(d);
+                //pushDownInfo(d);
                 notStopped = false;
                 if (debug){
                     System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover without increase");
@@ -729,13 +729,17 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 rinfo.incident2.put(i + 1, rinfo.incident2.get(i + 1) + 1);
 
                 cover(d, i + 1, e);
-                pushDownInfo(d);
+                //pushDownInfo(d);
                 if (debug){
                     System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
                 }
                 //computeAllCombine(d);
 
             }
+            pushDownInfo(d);
+            //pushDownInfoFromVerts(q,r);
+
+
             Node da = findRoot(q.firstEdge.userData);
             deExpose(q);
             deExpose(r);
@@ -749,6 +753,70 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
         deExpose(v);
         deExpose(w);
+    }
+
+    private void pushDownInfoFromVerts(Vertex q, Vertex r) {
+        //pushInfoFromRoot(q);
+        //pushInfoFromRoot(r);
+        //pushDownInfoFromVert(q);
+        //pushDownInfoFromVert(r);
+    }
+
+    private void pushInfoFromRoot(Vertex q) {
+        Edge start = q.firstEdge;
+
+        if (start == null){
+            return;
+        }
+        Node n = start.userData;
+        Node root = findRoot(n);
+
+        push(root, q);
+
+
+
+    }
+
+    private void push(Node root, Vertex q) {
+        if (root.isLeaf){
+            return;
+        }
+        twoEdgeConnectivityUserInfo uinfo = (twoEdgeConnectivityUserInfo) root.userInfo;
+        if (uinfo.boundaryVertices.contains(q) || uinfo.boundaryVertices.size() == 2){
+            split(root);
+            System.out.println("Information pushed down from " + root + "  3");
+        }
+        InternalNode node = (InternalNode) root;
+
+        push(node.children.get(0), q);
+        push(node.children.get(1), q);
+
+    }
+
+    private void pushDownInfoFromVert(Vertex v) {
+        Edge start = v.firstEdge;
+
+        if (start == null){
+            return;
+        }
+        Node n = start.userData;
+        //pushDown(findRoot(n));
+
+        // List in oppsite order
+        ArrayList<Node> nodes = new ArrayList<>();
+        while (n != null){
+            nodes.add(n);
+            n = n.parent;
+        }
+        for (int i = nodes.size() - 1; i >= 0; i--){
+            split(nodes.get(i));
+            System.out.println("Information pushed down from " + nodes.get(i) + "  2");
+            if (getSibling(nodes.get(i))!= null){
+                split(getSibling(nodes.get(i)));
+                System.out.println("Information pushed down from " + getSibling(nodes.get(i)) + "  2");
+
+            }
+        }
     }
 
 
@@ -924,6 +992,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // Delete C
     }
 
+    @Override
+    public void pushDown(Node n) {
+        pushDownInfo(n);
+    }
+
     private void clean(Node n){
         if (n.isLeaf){
             return;
@@ -986,6 +1059,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private void pushDownInfo(Node n) {
+        if (n.isLeaf){
+            return;
+        }
+        System.out.println("Information pushed down from " + n);
         clean(n);
         if (n.isLeaf){
             return;
@@ -995,7 +1072,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             ArrayList<Node> children = internalNode.children;
 
             for(int i = 0; i < 2; i++){
-                pushDownInfo(children.get(i));
+                if (isPath(children.get(i))){
+                    pushDownInfo(children.get(i));
+                }
+                //pushDownInfo(children.get(i));
             }
         }
     }

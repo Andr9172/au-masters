@@ -127,6 +127,7 @@ public interface TopTreeInterface {
 
     // Deexpose vertex in underlying tree
     default Node deExpose(Vertex v){
+        System.out.println("deExpose ");
         // TODO test
         // Find the entire path to the root and call split, should be fine runtime wise
         Edge start = v.firstEdge;
@@ -135,6 +136,7 @@ public interface TopTreeInterface {
             return null;
         }
         Node n = start.userData;
+        //pushDown(findRoot(n));
 
         // List in oppsite order
         ArrayList<Node> nodes = new ArrayList<>();
@@ -143,9 +145,11 @@ public interface TopTreeInterface {
             n = n.parent;
         }
         for (int i = nodes.size() - 1; i >= 0; i--){
+            System.out.println("Information pushed down from " + nodes.get(i) + "  2");
             split(nodes.get(i));
             if (getSibling(nodes.get(i))!= null){
-                split(getSibling(nodes.get(i)));
+                //split(getSibling(nodes.get(i)));
+                //System.out.println("Information pushed down from " + getSibling(nodes.get(i)) + "  2");
             }
         }
 
@@ -172,6 +176,7 @@ public interface TopTreeInterface {
             return null;
         }
         Node n = start.userData;
+        //pushDown(findRoot(n));
 
         // List in oppsite order
         ArrayList<Node> nodes = new ArrayList<>();
@@ -669,5 +674,6 @@ public interface TopTreeInterface {
 
     void split(Node n);
 
+    void pushDown(Node n);
 
     }
