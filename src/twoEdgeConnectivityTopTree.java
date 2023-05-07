@@ -9,7 +9,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     int numberOfVertices = 0;
     int maxLevel = 0;
 
-    public twoEdgeConnectivityTopTree(int numberOfVertices) {
+    public twoEdgeConnectivityTopTree(int numberOfVertices, boolean debug) {
+        this.debug = debug;
         this.numberOfVertices = numberOfVertices;
         this.maxLevel = (int) Math.ceil(Math.log(numberOfVertices));
 

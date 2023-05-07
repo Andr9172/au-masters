@@ -7,6 +7,8 @@ import java.util.*;
 import java.util.LinkedList;
 public class twoEdgeComparison {
 
+    private boolean debug = false;
+
     // This class represents a undirected graph using adjacency
     // list representation
     private final int V; // No. of vertices
@@ -21,7 +23,8 @@ public class twoEdgeComparison {
     public int e2 = 0;
 
     // Constructor
-    public twoEdgeComparison(int v) {
+    public twoEdgeComparison(int v, boolean debug) {
+        this.debug = debug;
         V = v;
         adj = new LinkedList[v];
         for (int i = 0; i < v; ++i)
@@ -77,7 +80,9 @@ public class twoEdgeComparison {
                     count++;
                     e1 = u;
                     e2 = v;
-                    System.out.println("id " + u + " id " + v + " is a bridge ");
+                    if (debug){
+                        System.out.println("id " + u + " id " + v + " is a bridge ");
+                    }
                 }
 
             }

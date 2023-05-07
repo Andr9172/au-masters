@@ -495,7 +495,6 @@ public interface TopTreeInterface {
         }
 
 
-
         start = vert.firstEdge;
 
         if (start == null){
@@ -535,6 +534,7 @@ public interface TopTreeInterface {
                 lastMiddleNode = node;
             }
         }
+
         return lastMiddleNode;
     }
 

@@ -26,10 +26,10 @@ public class Main {
         //int seed = 15;
         //int repeats = 1;
         boolean specific = false;
-        int numberOfVertices = 8;
-        int numberOfEdge = 16;
+        int numberOfVertices = 1000;
+        int numberOfEdge = 5000;
         int seed = 2343;
-        int repeats = 10000;
+        int repeats = 10;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -228,7 +228,7 @@ public class Main {
         // Create graphs given in above diagrams
         //System.out.println("Bridges in first graph ");
 
-        twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices);
+        twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices, debug);
 
         // Generate GraphEdges and Vertices
         //System.out.println("Generating random graph with desired number of vertices and edges");
@@ -265,11 +265,17 @@ public class Main {
 
         // Test of 2-edge connectivity top tree
         Tree t = Tree.createTree(numberOfVertices);
-        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices);
+        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
         debug = topTree.debug;
 
         int i = 0;
+        int j = 0;
+        System.out.println("Inserting edges");
         for (ArrayList<Integer> list : edges){
+            if (i % (numberOfEdge / 10) == 0){
+                System.out.println(j * 10 + "% done");
+                j++;
+            }
             //System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
 
             int a = list.get(0);
