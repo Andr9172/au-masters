@@ -24,6 +24,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     private void updateBoundaries(Node t){
         // update boundary vertices
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
+        if (t.numBoundary == 0){
+            userInfo.boundaryVertices = new ArrayList<>();
+            return;
+        }
 
         if (t.isLeaf){
 
@@ -106,8 +110,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     @Override
     public void combine(Node t) {
-
+        if (!t.isLeaf){
+            clean(t);
+        }
         updateBoundaries(t);
+
 
         if (t.isLeaf){
             // TODO I think this is the desired values, but may have to be redone
@@ -171,8 +178,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         //t.userInfo = new twoEdgeConnectivityUserInfo();
         //updateBoundaries(t);
         // Handle internal nodes as described on page 67 of https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
-        clean(t);
-        //t.userInfo = new twoEdgeConnectivityUserInfo();
+        t.userInfo = new twoEdgeConnectivityUserInfo();
+        updateBoundaries(t);
+
         if (debug){
             //System.out.println("Information pushed down from " + t + "  3");
         }
@@ -756,6 +764,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             expose(v);
             expose(w);
             c = findRoot(v.firstEdge.userData);
+            //computeAllCombine(c);
             cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
             //pushDownInfo(c);
         }
@@ -840,7 +849,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private void recover(Vertex v, Vertex w, int i){
-        for (int j = maxLevel; j >= 0; j--){
+        for (int j = i + 1; j >= 0; j--){
             recoverInner(v, w, v, j);
             recoverInner(v, w, w, j);
         }
@@ -1109,8 +1118,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Node root = findRoot(u.firstEdge.userData);
         uncover(root, i);
         //pushDownInfo(root); // TEMP
-        deExpose(u);
         deExpose(v);
+        deExpose(u);
     }
 
     public void computeAllCombine(Node n){

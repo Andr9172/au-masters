@@ -26,10 +26,10 @@ public class Main {
         //int seed = 15;
         //int repeats = 1;
         boolean specific = false;
-        int numberOfVertices = 1000;
-        int numberOfEdge = 5000;
-        int seed = 2343;
-        int repeats = 10;
+        int numberOfVertices = 8;
+        int numberOfEdge = 16;
+        int seed = 1927;
+        int repeats = 10000;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -273,7 +273,7 @@ public class Main {
         System.out.println("Inserting edges");
         for (ArrayList<Integer> list : edges){
             if (i % (numberOfEdge / 10) == 0){
-                System.out.println(j * 10 + "% done");
+                //System.out.println(j * 10 + "% done");
                 j++;
             }
             //System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
