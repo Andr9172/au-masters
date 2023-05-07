@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public HashMap<Integer, Graph> graphs;
-    public boolean debug = true;
+    public boolean debug = false;
 
     int numberOfVertices = 0;
     int maxLevel = 0;
@@ -105,6 +105,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     @Override
     public void combine(Node t) {
+
         updateBoundaries(t);
 
         if (t.isLeaf){
@@ -166,9 +167,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             }
             return;
         }
-        t.userInfo = new twoEdgeConnectivityUserInfo();
-        updateBoundaries(t);
+        //t.userInfo = new twoEdgeConnectivityUserInfo();
+        //updateBoundaries(t);
         // Handle internal nodes as described on page 67 of https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
+        clean(t);
+        //t.userInfo = new twoEdgeConnectivityUserInfo();
+        if (debug){
+            //System.out.println("Information pushed down from " + t + "  3");
+        }
+
         InternalNode n = (InternalNode) t;
         ArrayList<Node> children = n.children;
 
@@ -736,7 +743,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 //computeAllCombine(d);
 
             }
-            pushDownInfo(d);
+            //pushDownInfo(d);
             //pushDownInfoFromVerts(q,r);
 
 
@@ -784,7 +791,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         twoEdgeConnectivityUserInfo uinfo = (twoEdgeConnectivityUserInfo) root.userInfo;
         if (uinfo.boundaryVertices.contains(q) || uinfo.boundaryVertices.size() == 2){
             split(root);
-            System.out.println("Information pushed down from " + root + "  3");
+            //System.out.println("Information pushed down from " + root + "  3");
         }
         InternalNode node = (InternalNode) root;
 
@@ -810,10 +817,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
         for (int i = nodes.size() - 1; i >= 0; i--){
             split(nodes.get(i));
-            System.out.println("Information pushed down from " + nodes.get(i) + "  2");
+            //System.out.println("Information pushed down from " + nodes.get(i) + "  2");
             if (getSibling(nodes.get(i))!= null){
                 split(getSibling(nodes.get(i)));
-                System.out.println("Information pushed down from " + getSibling(nodes.get(i)) + "  2");
+                //System.out.println("Information pushed down from " + getSibling(nodes.get(i)) + "  2");
 
             }
         }
@@ -843,7 +850,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         //}
     }
 
-    private void swap(Vertex u, Vertex v){
+    private int swap(Vertex u, Vertex v){
         expose(u);
         expose(v);
         Node c = findRoot(u.firstEdge.userData);
@@ -891,14 +898,18 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             if (debug){
                 System.out.println("Swapped edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
             }
+            return userInfo.coverC;
         }
 
-
+        return -1;
     }
 
     public void insert(Vertex u, Vertex v){
         if (u.firstEdge != null && v.firstEdge != null && findRoot(u.firstEdge.userData).equals(findRoot(v.firstEdge.userData))){
             // u & v is in the same top tree already
+            if (u == null || v == null){
+                System.out.println("Error");
+            }
             Edge e = new Edge();
             e.endpoints[0] = u;
             e.endpoints[1] = v;
@@ -943,7 +954,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // Check if (u,v) is tree edge
         LeafNode c = (LeafNode) e.userData;
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) c.userInfo;
-
+        expose(u);
+        Node a = expose(v);
+        userInfo = (twoEdgeConnectivityUserInfo) a.userInfo;
+        deExpose(u);
+        deExpose(v);
 
         // If tree edge, and bridge remove it
         if (userInfo.coverC == -1){
@@ -956,7 +971,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             int i = userInfo.coverC;
             // It is not a bridge
             // swap, uncover, recover, finally delete the edge
-            swap(u, v);
+            i = swap(u, v);
             uncoverReal(u, v, i);
             deleteEdge(u, v, i);
             recover(u, v, i);
@@ -1062,7 +1077,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         if (n.isLeaf){
             return;
         }
-        System.out.println("Information pushed down from " + n);
+        if (debug){
+            //System.out.println("Information pushed down from " + n);
+        }
         clean(n);
         if (n.isLeaf){
             return;

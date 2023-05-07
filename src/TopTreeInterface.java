@@ -26,7 +26,7 @@ public interface TopTreeInterface {
      default void cut(Edge edge){
          // TODO test
          // Find the entire path to the root and call split, should be fine runtime wise
-         Edge start = edge;
+         /*Edge start = edge;
 
          if (start == null){
              return;
@@ -44,7 +44,7 @@ public interface TopTreeInterface {
              if (getSibling(nodes.get(i))!= null){
                  split(getSibling(nodes.get(i)));
              }
-         }
+         }*/
 
 
         Node node = edge.userData;
@@ -127,10 +127,10 @@ public interface TopTreeInterface {
 
     // Deexpose vertex in underlying tree
     default Node deExpose(Vertex v){
-        System.out.println("deExpose ");
+        //System.out.println("deExpose ");
         // TODO test
         // Find the entire path to the root and call split, should be fine runtime wise
-        Edge start = v.firstEdge;
+        /*Edge start = v.firstEdge;
 
         if (start == null){
             return null;
@@ -145,13 +145,13 @@ public interface TopTreeInterface {
             n = n.parent;
         }
         for (int i = nodes.size() - 1; i >= 0; i--){
-            System.out.println("Information pushed down from " + nodes.get(i) + "  2");
+            //System.out.println("Information pushed down from " + nodes.get(i) + "  2");
             split(nodes.get(i));
             if (getSibling(nodes.get(i))!= null){
-                //split(getSibling(nodes.get(i)));
+                split(getSibling(nodes.get(i)));
                 //System.out.println("Information pushed down from " + getSibling(nodes.get(i)) + "  2");
             }
-        }
+        }*/
 
         Node root = null;
         Node node = findConsumingNode(v);
@@ -170,7 +170,7 @@ public interface TopTreeInterface {
     default Node expose(Vertex v){
         // TODO test
         // Find the entire path to the root and call split, should be fine runtime wise
-        Edge start = v.firstEdge;
+        /*Edge start = v.firstEdge;
 
         if (start == null){
             return null;
@@ -189,7 +189,7 @@ public interface TopTreeInterface {
             if (getSibling(nodes.get(i))!= null){
                 split(getSibling(nodes.get(i)));
             }
-        }
+        }*/
 
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
@@ -412,7 +412,7 @@ public interface TopTreeInterface {
     default void semiSplay(Node node){
         // TODO test
         // Find the entire path to the root and call split, should be fine runtime wise
-        Node n = node;
+        /*Node n = node;
 
         // List in oppsite order
         ArrayList<Node> nodes = new ArrayList<>();
@@ -425,7 +425,7 @@ public interface TopTreeInterface {
             if (getSibling(nodes.get(i)) != null){
                 split(getSibling(nodes.get(i)));
             }
-        }
+        }*/
 
         fullSplaySize.fullSplayCombineCost = 0;
         Node top = node;
@@ -442,7 +442,7 @@ public interface TopTreeInterface {
     default void fullSplay(Node node){
         // TODO test
         // Find the entire path to the root and call split, should be fine runtime wise
-        Node n = node;
+        /*Node n = node;
 
         // List in oppsite order
         ArrayList<Node> nodes = new ArrayList<>();
@@ -455,7 +455,7 @@ public interface TopTreeInterface {
             if (getSibling(nodes.get(i)) != null){
                 split(getSibling(nodes.get(i)));
             }
-        }
+        }*/
 
         fullSplaySize.fullSplayCombineCost = 0;
         while (true){
@@ -490,7 +490,7 @@ public interface TopTreeInterface {
         for (int i = nodes.size() - 1; i >= 0; i--){
             split(nodes.get(i));
             if (getSibling(nodes.get(i))!= null){
-                split(getSibling(nodes.get(i)));
+                //split(getSibling(nodes.get(i)));
             }
         }
 
