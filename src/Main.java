@@ -1,6 +1,7 @@
 // Method for creating a top tree and testing it
 
 import java.lang.reflect.Array;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,7 +9,8 @@ import java.util.Random;
 
 public class Main {
 
-    private static  boolean debug = false;
+    private static boolean debug = false;
+    private static boolean debug2 = false;
 
     public static void main(String[] args) {
         //if (args.length < 1) {
@@ -20,12 +22,15 @@ public class Main {
         //    runCommandMode();
         //}
 
+        // Normal debugging of top tree
         debug = false;
+        // This is tracking statements for longer runs
+        debug2 = true;
         boolean specific = false;
-        int numberOfVertices = 8;
-        int numberOfEdge = 16;
+        int numberOfVertices = 1000;
+        int numberOfEdge = 5000;
         int seed = 2343;
-        int repeats = 10000;
+        int repeats = 100;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -268,8 +273,8 @@ public class Main {
         int j = 0;
         System.out.println("Inserting edges");
         for (ArrayList<Integer> list : edges){
-            if (i % (numberOfEdge / 10) == 0){
-                //System.out.println(j * 10 + "% done");
+            if (i % (numberOfEdge / 10) == 0 && debug2){
+                System.out.println(j * 10 + "% done");
                 j++;
             }
             //System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
@@ -289,9 +294,14 @@ public class Main {
         g1.removeEdge(t.vertex.get(edges.get(1).get(0)).id, t.vertex.get(edges.get(1).get(1)).id);
         g1.removeEdge(t.vertex.get(edges.get(2).get(0)).id, t.vertex.get(edges.get(2).get(1)).id);
         g1.removeEdge(t.vertex.get(edges.get(3).get(0)).id, t.vertex.get(edges.get(3).get(1)).id);
-
+        if (debug2){
+            System.out.println("Running Comparison");
+        }
         g1.bridge();
         System.out.println("There is " + g1.count + " bridges");
+        if(debug2){
+            System.out.println("Deleting edges");
+        }
         topTree.delete(t.vertex.get(edges.get(0).get(0)), t.vertex.get(edges.get(0).get(1)));
         toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
         topTree.delete(t.vertex.get(edges.get(1).get(0)), t.vertex.get(edges.get(1).get(1)));

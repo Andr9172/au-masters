@@ -701,8 +701,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     private void recoverInner(Vertex v, Vertex w, Vertex u, int i){
         // Expose v, w and retrieve the root
         expose(v);
-        expose(w);
-        Node c = findRoot(v.firstEdge.userData);
+        Node c = expose(w);
+        //Node c = findRoot(v.firstEdge.userData);
         // computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
@@ -719,8 +719,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Vertex r = e.endpoints[1];
 
             Node a = expose(q);
-            Node b = expose(r);
-            Node d = findRoot(q.firstEdge.userData);
+            Node d = expose(r);
+            //Node d = findRoot(q.firstEdge.userData);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
             //System.out.println("Value of i " + i + " value to divide with " + Math.pow(2, i));
             if (dinfo.size4.get(q).get(-1).get(i+1) + 2 > numberOfVertices/Math.pow(2, i+1)){
@@ -755,14 +755,14 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             //pushDownInfo(d);
 
 
-            Node da = findRoot(q.firstEdge.userData);
+            //Node da = findRoot(q.firstEdge.userData);
             deExpose(q);
             deExpose(r);
 
             // ???
             expose(v);
-            expose(w);
-            c = findRoot(v.firstEdge.userData);
+            c = expose(w);
+            //c = findRoot(v.firstEdge.userData);
             //computeAllCombine(c);
             cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
             //pushDownInfo(c);
@@ -796,8 +796,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     private int swap(Vertex u, Vertex v){
         expose(u);
-        expose(v);
-        Node c = findRoot(u.firstEdge.userData);
+        Node c = expose(v);
+        //Node c = findRoot(u.firstEdge.userData);
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         deExpose(v);
         deExpose(u);
@@ -921,7 +921,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             recover(u, v, i);
         }
 
-        Node d = findRoot(c);
+        //Node d = findRoot(c);
     }
 
     private int findLevel(Vertex u, Vertex v) {
@@ -986,16 +986,16 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     // Query for result
     public boolean twoEdgeConnected(Vertex u, Vertex v){
-        Node a = expose(u);
-        Node b = expose(v);
+        Node root1 = expose(u);
+        Node root2 = expose(v);
 
-        if (a == null || b == null){
+        if (root1 == null || root2 == null){
             deExpose(u);
             deExpose(v);
             return false;
         }
-        Node root = findRoot(u.firstEdge.userData);
-        twoEdgeConnectivityUserInfo userinfo = (twoEdgeConnectivityUserInfo) root.userInfo;
+        //Node root = findRoot(u.firstEdge.userData);
+        twoEdgeConnectivityUserInfo userinfo = (twoEdgeConnectivityUserInfo) root2.userInfo;
         boolean result = userinfo.coverC >= 0;
         deExpose(u);
         deExpose(v);
@@ -1007,8 +1007,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // The implementations of cover on page 66
         // https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
         expose(u);
-        expose(v);
-        Node root = findRoot(u.firstEdge.userData);
+        Node root = expose(v);
+        //Node root = findRoot(u.firstEdge.userData);
         // A bit scuffed way of getting the edge
         cover(root, i, graphs.get(0).getEdge(u,v));
         //pushDownInfo(root); // This makes it work, but likely breaks the runtime too
@@ -1049,8 +1049,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         if (root1 != root2){
             System.out.println("u and v are not in the same tree");
         }
-        Node root = findRoot(u.firstEdge.userData);
-        uncover(root, i);
+        //Node root = findRoot(u.firstEdge.userData);
+        uncover(root2, i);
         //pushDownInfo(root); // TEMP
         deExpose(v);
         deExpose(u);
