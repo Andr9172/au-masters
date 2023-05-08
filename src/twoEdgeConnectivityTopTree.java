@@ -5,6 +5,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public HashMap<Integer, Graph> graphs;
     public boolean debug = false;
+    public boolean debugTime = true;
 
     int numberOfVertices = 0;
     int maxLevel = 0;
@@ -728,7 +729,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 //pushDownInfo(d);
                 notStopped = false;
                 if (debug){
-                    System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover without increase");
+                    System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover without increase");
                 }
 
             } else {
@@ -747,7 +748,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 cover(d, i + 1, e);
                 //pushDownInfo(d);
                 if (debug){
-                    System.out.println("Using edge " + e.endpoints[0].id + e.endpoints[1].id + " as recover with increase");
+                    System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover with increase");
                 }
                 //computeAllCombine(d);
 
@@ -840,7 +841,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             deExpose(u);
 
             if (debug){
-                System.out.println("Swapped edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
+                System.out.println("Swapped edge " + u.id + " " + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + " " + userInfo.coverEdgeC.endpoints[1].id);
             }
             return userInfo.coverC;
         }
@@ -915,10 +916,30 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             int i = userInfo.coverC;
             // It is not a bridge
             // swap, uncover, recover, finally delete the edge
+            long start = System.nanoTime();
             i = swap(u, v);
+            long end = System.nanoTime();
+            if (debugTime){
+                //System.out.println("Swap: "  + (end - start));
+            }
+            start = System.nanoTime();
             uncoverReal(u, v, i);
+            end = System.nanoTime();
+            if (debugTime){
+                //System.out.println("uncover: " + (end - start));
+            }
+            start = System.nanoTime();
             deleteEdge(u, v, i);
+            end = System.nanoTime();
+            if (debugTime){
+                //System.out.println("deleteEdge: " + (end - start));
+            }
+            start = System.nanoTime();
             recover(u, v, i);
+            end = System.nanoTime();
+            if (debugTime){
+                System.out.println("recover: " + (end - start));
+            }
         }
 
         //Node d = findRoot(c);
