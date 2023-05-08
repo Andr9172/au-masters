@@ -20,15 +20,11 @@ public class Main {
         //    runCommandMode();
         //}
 
-        // Fail infinite loop
-        //int numberOfVertices = 10;
-        //int numberOfEdge = 20;
-        //int seed = 15;
-        //int repeats = 1;
+        debug = false;
         boolean specific = false;
         int numberOfVertices = 8;
         int numberOfEdge = 16;
-        int seed = 1927;
+        int seed = 2343;
         int repeats = 10000;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -370,6 +366,7 @@ public class Main {
     }
 
     private static ArrayList<ArrayList<Integer>> generateEdges(int numberOfVertices, int numberOfEdge, int seed) {
+        System.out.println("Generating edges");
         Random rnd = new Random();
         //rnd.setSeed(1); // Not connected
         //rnd.setSeed(2); // Connected

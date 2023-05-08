@@ -271,7 +271,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child0UserInfo.size4.get(a).get(i).get(j);
                         int tempIncident = child0UserInfo.incident4.get(a).get(i).get(j);
-                        if (userInfo.coverC >= i){
+                        if (child0UserInfo.coverC >= i){
                             tempSize += child1UserInfo.size3.get(c).get(j);
                             tempIncident += child1UserInfo.incident3.get(c).get(j);
                         }
@@ -300,7 +300,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child0UserInfo.size4.get(a).get(i).get(j);
                         int tempIncident = child0UserInfo.incident4.get(a).get(i).get(j);
-                        if (userInfo.coverC >= i){
+                        if (child0UserInfo.coverC >= i){
                             twoEdgeVertexUserInfo info = (twoEdgeVertexUserInfo) c.userInfo;
 
                             tempSize += info.size2.get(j);
@@ -354,7 +354,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child1UserInfo.size4.get(b).get(i).get(j);
                         int tempIncident = child1UserInfo.incident4.get(b).get(i).get(j);
-                        if (userInfo.coverC >= i){
+                        if (child1UserInfo.coverC >= i){
                             tempSize += child0UserInfo.size3.get(c).get(j);
                             tempIncident += child0UserInfo.incident3.get(c).get(j);
                         }
@@ -383,7 +383,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                     for (int j = -1; j <= maxLevel; j++){
                         int tempSize = child1UserInfo.size4.get(b).get(i).get(j);
                         int tempIncident = child1UserInfo.incident4.get(b).get(i).get(j);
-                        if (userInfo.coverC >= i){
+                        if (child1UserInfo.coverC >= i){
                             twoEdgeVertexUserInfo info = (twoEdgeVertexUserInfo) c.userInfo;
 
                             tempSize += info.size2.get(j);
@@ -753,7 +753,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             }
             //pushDownInfo(d);
-            //pushDownInfoFromVerts(q,r);
 
 
             Node da = findRoot(q.firstEdge.userData);
@@ -772,71 +771,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         deExpose(w);
     }
 
-    private void pushDownInfoFromVerts(Vertex q, Vertex r) {
-        //pushInfoFromRoot(q);
-        //pushInfoFromRoot(r);
-        //pushDownInfoFromVert(q);
-        //pushDownInfoFromVert(r);
-    }
-
-    private void pushInfoFromRoot(Vertex q) {
-        Edge start = q.firstEdge;
-
-        if (start == null){
-            return;
-        }
-        Node n = start.userData;
-        Node root = findRoot(n);
-
-        push(root, q);
-
-
-
-    }
-
-    private void push(Node root, Vertex q) {
-        if (root.isLeaf){
-            return;
-        }
-        twoEdgeConnectivityUserInfo uinfo = (twoEdgeConnectivityUserInfo) root.userInfo;
-        if (uinfo.boundaryVertices.contains(q) || uinfo.boundaryVertices.size() == 2){
-            split(root);
-            //System.out.println("Information pushed down from " + root + "  3");
-        }
-        InternalNode node = (InternalNode) root;
-
-        push(node.children.get(0), q);
-        push(node.children.get(1), q);
-
-    }
-
-    private void pushDownInfoFromVert(Vertex v) {
-        Edge start = v.firstEdge;
-
-        if (start == null){
-            return;
-        }
-        Node n = start.userData;
-        //pushDown(findRoot(n));
-
-        // List in oppsite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        for (int i = nodes.size() - 1; i >= 0; i--){
-            split(nodes.get(i));
-            //System.out.println("Information pushed down from " + nodes.get(i) + "  2");
-            if (getSibling(nodes.get(i))!= null){
-                split(getSibling(nodes.get(i)));
-                //System.out.println("Information pushed down from " + getSibling(nodes.get(i)) + "  2");
-
-            }
-        }
-    }
-
-
     /*
     * Method to change the level of edges, and update the graphs
     */
@@ -849,7 +783,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private void recover(Vertex v, Vertex w, int i){
-        for (int j = i + 1; j >= 0; j--){
+        for (int j = i; j >= 0; j--){
             recoverInner(v, w, v, j);
             recoverInner(v, w, w, j);
         }
