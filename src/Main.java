@@ -303,12 +303,15 @@ public class Main {
         }
 
         for (int k = 0; k < numberOfEdgesToDelete; k++){
+            System.out.println("Delete nr " + k);
+            g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
+            g1.bridge();
+            System.out.println("There is " + g1.count + " bridges");
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
-            g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
+
         }
-        g1.bridge();
-        System.out.println("There is " + g1.count + " bridges");
+
 
 
 

@@ -11,7 +11,7 @@ public class twoEdgeVertexUserInfo implements VertexUserInfo{
     public twoEdgeVertexUserInfo(int size){
         size2 = new HashMap<>();
         incident2 = new HashMap<>();
-        this.maxLevel = (int) Math.ceil(Math.log(size));
+        this.maxLevel = (int) Math.ceil(Math.log(size)/Math.log(2));
 
 
         for (int i = -1; i <= maxLevel; i++){

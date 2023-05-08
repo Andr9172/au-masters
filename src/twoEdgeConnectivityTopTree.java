@@ -13,7 +13,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     public twoEdgeConnectivityTopTree(int numberOfVertices, boolean debug) {
         this.debug = debug;
         this.numberOfVertices = numberOfVertices;
-        this.maxLevel = (int) Math.ceil(Math.log(numberOfVertices));
+        this.maxLevel = (int) Math.ceil(Math.log(numberOfVertices)/Math.log(2));
 
         // Instantiate the graphs, and make sure they are there so we can add/remove from them
         graphs = new HashMap<>();

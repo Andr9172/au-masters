@@ -489,9 +489,6 @@ public interface TopTreeInterface {
         }
         for (int i = nodes.size() - 1; i >= 0; i--){
             split(nodes.get(i));
-            if (getSibling(nodes.get(i))!= null){
-                //split(getSibling(nodes.get(i)));
-            }
         }
 
 
