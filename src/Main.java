@@ -26,11 +26,11 @@ public class Main {
         // This is tracking statements for longer runs
         debug2 = true;
         boolean specific = false;
-        int numberOfVertices = 1000;
-        int numberOfEdge = 5000;
+        int numberOfVertices = 500;
+        int numberOfEdge = 1000;
         int seed = 2343;
         int repeats = 1;
-        int numberOfEdgeToDelete = 1000;
+        int numberOfEdgeToDelete = 100;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -405,8 +405,11 @@ public class Main {
                 continue;
             }
             edgeSet.add(new Edge(i, j));
+            //System.out.println(new Edge(i,j).hashCode());
         }
-
+        for (Edge e : edgeSet){
+            //System.out.println("hashcode: " + e.hashCode());
+        }
         ArrayList<Edge> convertList = new ArrayList<>(edgeSet);
         ArrayList<ArrayList<Integer>> chosenEdges = new ArrayList<ArrayList<Integer>>();
 
