@@ -1,5 +1,5 @@
 
-public class Edge {
+public class Edge{
 
     public int weight;
     public Node userData; // To be customized to the specific context
@@ -24,4 +24,17 @@ public class Edge {
         this.prev = new Edge[2];
         this.next = new Edge[2];
     }
+
+    public Edge(int i, int j) {
+        this.endpoints = new Vertex[2];
+        this.endpoints[0] = Tree.getEdge(i);
+        this.endpoints[1] = Tree.getEdge(j);
+    }
+
+    @Override
+    public int hashCode(){
+        return 7 * this.endpoints[0].id + 7 * this.endpoints[1].id;
+    }
+
+
 }

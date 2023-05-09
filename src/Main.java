@@ -1,7 +1,6 @@
 // Method for creating a top tree and testing it
 
 import java.lang.reflect.Array;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,11 +26,11 @@ public class Main {
         // This is tracking statements for longer runs
         debug2 = true;
         boolean specific = false;
-        int numberOfVertices = 1000;
-        int numberOfEdge = 5000;
+        int numberOfVertices = 5000;
+        int numberOfEdge = 25000;
         int seed = 2343;
         int repeats = 1;
-        int numberOfEdgeToDelete = 100;
+        int numberOfEdgeToDelete = 1000;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -238,36 +237,16 @@ public class Main {
             System.out.println("Trying to generate a graph with more edges than exists");
         }
 
-        //Random rnd = new Random();
-        //rnd.setSeed(3); // connected
-        //rnd.setSeed(1); // not connected
-
-
-
-        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge, seed);
-
-        for (ArrayList<Integer> edge: edges) {
-            //System.out.println("Edge from " + edge.get(0) + " to " + edge.get(1) );
-        }
+        // Test of 2-edge connectivity top tree
+        Tree t = Tree.createTree(numberOfVertices);
+        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
+        // Generate edges
+        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed);
 
         for (ArrayList<Integer> list : edges){
             g1.addEdge(list.get(0), list.get(1));
         }
-
-        g1.bridge();
-        /*if (g1.count == 0) {
-            System.out.println(
-                    "Given graph is 2-edge connected:");
-        }
-        else {
-            System.out.println(
-                    "Given graph is not 2-edge connected:");
-        }*/
-
-
-        // Test of 2-edge connectivity top tree
-        Tree t = Tree.createTree(numberOfVertices);
-        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
+        //g1.bridge();
         debug = topTree.debug;
 
         int i = 0;
@@ -285,7 +264,7 @@ public class Main {
             int weight = 1;
 
             if (topTree.debug){
-                System.out.print("Edge " + i + " ");
+                System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
             }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
             i++;
@@ -305,7 +284,7 @@ public class Main {
         for (int k = 0; k < numberOfEdgesToDelete; k++){
             System.out.println("Delete nr " + k);
             g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
-            g1.bridge();
+            //g1.bridge();
             System.out.println("There is " + g1.count + " bridges");
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
@@ -406,6 +385,38 @@ public class Main {
             int index = rnd.nextInt(allEdges.size());
             chosenEdges.add(allEdges.get(index));
             allEdges.remove(index);
+        }
+        return chosenEdges;
+    }
+
+    private static ArrayList<ArrayList<Integer>> generateEdges2(int numberOfVertices, int numberOfEdge, int seed) {
+        System.out.println("Generating edges");
+        Random rnd = new Random();
+        //rnd.setSeed(1); // Not connected
+        //rnd.setSeed(2); // Connected
+
+        rnd.setSeed(seed);
+        HashSet<Edge> edgeSet = new HashSet<>();
+
+        while (edgeSet.size() < numberOfEdge){
+            int i = rnd.nextInt(numberOfVertices);
+            int j = rnd.nextInt(numberOfVertices);
+            if (i == j){
+                continue;
+            }
+            edgeSet.add(new Edge(i, j));
+        }
+
+        ArrayList<Edge> convertList = new ArrayList<>(edgeSet);
+        ArrayList<ArrayList<Integer>> chosenEdges = new ArrayList<ArrayList<Integer>>();
+
+        for (int i = 0; i < convertList.size(); i++ ){
+            Edge e = convertList.get(i);
+            ArrayList<Integer> edge = new ArrayList<>();
+            edge.add(e.endpoints[0].id);
+            edge.add(e.endpoints[1].id);
+            System.out.println("Edge " + i + " " + edge.get(0) + " " + edge.get(1));
+            chosenEdges.add(edge);
         }
         return chosenEdges;
     }
