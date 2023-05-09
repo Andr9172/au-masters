@@ -97,6 +97,7 @@ public class twoEdgeComparison {
     // DFS based function to find all bridges. It uses
     // recursive function bridgeUtil()
     void bridge() {
+        count = 0;
         // Mark all the vertices as not visited
         boolean[] visited = new boolean[V];
         int[] disc = new int[V];
