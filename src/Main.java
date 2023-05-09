@@ -26,8 +26,8 @@ public class Main {
         // This is tracking statements for longer runs
         debug2 = true;
         boolean specific = false;
-        int numberOfVertices = 5000;
-        int numberOfEdge = 25000;
+        int numberOfVertices = 1000;
+        int numberOfEdge = 5000;
         int seed = 2343;
         int repeats = 1;
         int numberOfEdgeToDelete = 1000;
