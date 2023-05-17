@@ -894,8 +894,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 System.out.println("Edge " + u.id + " " + v.id + " was deleted");
             }
             // (u,v) is not in the spanning tree
-            int i = findLevel(u, v);
-            uncoverReal(u, v, i);
+            int i = findLevel(u, v); // Worst case runtime of log n
+            uncoverReal(u, v, i); // Runtime > log n
             deleteEdge(u, v, i);
             recover(u,v,i);
             return;
@@ -943,7 +943,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             recover(u, v, i);
             end = System.nanoTime();
             if (debugTime){
-                System.out.println("recover: " + (end - start));
+                //System.out.println("recover: " + (end - start));
             }
         }
 
