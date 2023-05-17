@@ -426,12 +426,12 @@ public class Main {
         pw.write("vertices,edgesAdded,edgesDeleted,totalOperations,totalTime\n");
 
 
-        for (int j = 256; j < 2000; j = j * 2){
-            for (int i = 4 * j; i < 8 * j; i = i * 2){
+        for (int j = 100; j < 2000; j = j * 2){
+            for (int i = 4 * j; i <= 16 * j; i = i * 2){
                 System.out.println("Run: " + j + " " + i);
-                testRuntime(j, i, 100, j*i);
+                testRuntime(j, i, j, j*i);
             }
-        };
+        }
 
         pw.flush();
         pw.close();
@@ -475,11 +475,11 @@ public class Main {
             //g1.bridge();
             //System.out.println("There is " + g1.count + " bridges");
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
-            //toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
+            toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
 
         }
         stop = System.nanoTime();
-        pw.write(numberOfVertices + "," + numberOfEdge + "," + numberOfEdgesToDelete + "," + (numberOfEdge+numberOfEdgesToDelete) + "," + (stop-start));
+        pw.write(numberOfVertices + "," + numberOfEdge + "," + numberOfEdgesToDelete + "," + (numberOfEdge+numberOfEdgesToDelete) + "," + (stop-start) + "\n");
 
         boolean topTreeConnected = false;
         g1.bridge();
