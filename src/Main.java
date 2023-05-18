@@ -26,8 +26,8 @@ public class Main {
         // This is tracking statements for longer runs
         debug2 = true;
         boolean specific = true;
-        int numberOfVertices = 80;
-        int numberOfEdge = 640;
+        int numberOfVertices = 5000;
+        int numberOfEdge = 25000;
         int seed = numberOfEdge * numberOfVertices;
         int repeats = 10000;
         int numberOfEdgeToDelete = numberOfVertices;
@@ -394,6 +394,7 @@ public class Main {
             ArrayList<Integer> edge = new ArrayList<>();
             edge.add(e.endpoints[0].id);
             edge.add(e.endpoints[1].id);
+            edge.add(rnd.nextInt(100));
             chosenEdges.add(edge);
             //System.out.println(e.endpoints[1].id + " + " + e.endpoints[0].id);
         }
@@ -504,6 +505,53 @@ public class Main {
             System.out.println("Something went wrong");
             throw new RuntimeException();
         }
+    }
+
+    private static void runTestMST() throws  FileNotFoundException{
+
+    }
+
+    private static void testRuntimeMST(int numberOfVertices, int numberOfEdge, int numberOfEdgesToDelete, int seed){
+        // Method to test the runtime of top tree functions through a constant combine
+        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed);
+
+        // Generate MST using top tree
+        Tree t = Tree.createTree(numberOfVertices);
+        System.out.println("Graph generated, and kruskal completed, now generating top tree");
+        int j = 0;
+        MinimumSpanningTopTree topTree = new MinimumSpanningTopTree();
+        for (int i = 0; i < numberOfEdge; i++){
+
+            int a = edges.get(i).get(0);
+            int b = edges.get(i).get(1);
+            int weight = edges.get(i).get(2);
+
+            Node root1 = topTree.expose(t.vertex.get(a));
+            Node root2 = topTree.expose(t.vertex.get(b));
+
+            LeafNode maxEdge = null;
+            boolean insertLink = false;
+            if (root1 != null && (root1.equals(root2))){
+                MinimumSpanningTreeUserInfo userInfo = (MinimumSpanningTreeUserInfo) root1.userInfo;
+                if (weight < userInfo.spineWeight){
+                    insertLink = true;
+                    maxEdge = topTree.findMaximum(root1);
+                }
+            } else {
+                insertLink = true;
+            }
+            topTree.deExpose(t.vertex.get(a));
+            topTree.deExpose(t.vertex.get(b));
+
+
+            if(maxEdge != null){
+                topTree.cut(maxEdge.edge);
+            }
+            if(insertLink){
+                Node newRoot = topTree.link(t.vertex.get(a), t.vertex.get(b), weight);
+            }
+        }
+
     }
 
 
