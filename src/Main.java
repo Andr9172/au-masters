@@ -25,12 +25,12 @@ public class Main {
         debug = false;
         // This is tracking statements for longer runs
         debug2 = true;
-        boolean specific = false;
-        int numberOfVertices = 500;
-        int numberOfEdge = 1000;
-        int seed = 2343;
-        int repeats = 1;
-        int numberOfEdgeToDelete = 100;
+        boolean specific = true;
+        int numberOfVertices = 80;
+        int numberOfEdge = 640;
+        int seed = numberOfEdge * numberOfVertices;
+        int repeats = 10000;
+        int numberOfEdgeToDelete = numberOfVertices;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -38,11 +38,11 @@ public class Main {
         } */
 
         //testSizeTopTree(numberOfVertices, numberOfEdge);
-        try {
+        /*try {
             runTest();
         } catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
 
 
         if (specific){
@@ -289,40 +289,21 @@ public class Main {
             g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
             g1.bridge();
             System.out.println("There is " + g1.count + " bridges");
+
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
-            toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
-
+            if (g1.count == -1) {
+                // This case the graph is disconnected
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+            } else if (g1.count != 0){
+                // Find bridge and check it is there
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+            } else {
+                topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+            }
         }
 
 
 
-
-
-
-        //Vertex test = t.vertex.get(0);
-        //Node root = topTree.findRoot(test.firstEdge.userData);
-        //twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) root.userInfo;
-        /*HashSet<Node> roots = new HashSet<>();
-        for (int i = 0; i < numberOfVertices; i++){
-            roots.add(topTree.findRoot(t.vertex.get(i).firstEdge.userData));
-        }
-        if (roots.size() >= 2){
-            System.out.println("There is more than 1 top tree, this is why top Tree disagree");
-        }
-        Vertex test = t.vertex.get(0);
-        Node root = topTree.findRoot(test.firstEdge.userData);
-        twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) root.userInfo;
-        if (userInfo.coverC >= 0) {
-            System.out.println("Manual method says Top tree are 2 edge connected!");
-        } else {
-            System.out.println("Manual method says Top tree are it is not 2 edge connected!");
-        };
-        if (topTree.twoEdgeConnected(t.vertex.get(1), t.vertex.get(0))){
-            System.out.println("Automatic method says Top tree are 2 edge connected!");
-        } else {
-            System.out.println("Automatic method says Top tree are it is not 2 edge connected!");
-        }*/
-        //g1.bridge();
         boolean topTreeConnected = false;
 
         if (g1.count == -1) {
@@ -414,6 +395,7 @@ public class Main {
             edge.add(e.endpoints[0].id);
             edge.add(e.endpoints[1].id);
             chosenEdges.add(edge);
+            //System.out.println(e.endpoints[1].id + " + " + e.endpoints[0].id);
         }
         return chosenEdges;
     }
@@ -426,7 +408,7 @@ public class Main {
         pw.write("vertices,edgesAdded,edgesDeleted,totalOperations,totalTime\n");
 
 
-        for (int j = 100; j < 2000; j = j * 2){
+        for (int j = 40; j < 2000; j = j * 2){
             for (int i = 4 * j; i <= 16 * j; i = i * 2){
                 System.out.println("Run: " + j + " " + i);
                 testRuntime(j, i, j, j*i);
@@ -458,6 +440,7 @@ public class Main {
         for (ArrayList<Integer> list : edges){
             g1.addEdge(list.get(0), list.get(1));
         }
+        long totalTime = 0;
         long start;
         long stop;
         start = System.nanoTime();
@@ -468,18 +451,37 @@ public class Main {
 
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
         }
-
+        stop = System.nanoTime();
+        totalTime += ( stop- start);
         for (int k = 0; k < numberOfEdgesToDelete; k++){
             //System.out.println("Delete nr " + k);
-            //g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
-            //g1.bridge();
+            g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
+            g1.bridge();
             //System.out.println("There is " + g1.count + " bridges");
+            start = System.nanoTime();
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
-            toptreeConnected(topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1)));
-
+            stop = System.nanoTime();
+            totalTime += ( stop- start);
+            if (g1.count == -1) {
+                // This case the graph is disconnected
+                start = System.nanoTime();
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                stop = System.nanoTime();
+                totalTime += ( stop- start);
+            } else if (g1.count != 0){
+                // Find bridge and check it is there
+                start = System.nanoTime();
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                stop = System.nanoTime();
+                totalTime += ( stop- start);
+            } else {
+                start = System.nanoTime();
+                topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+                stop = System.nanoTime();
+                totalTime += ( stop- start);
+            }
         }
-        stop = System.nanoTime();
-        pw.write(numberOfVertices + "," + numberOfEdge + "," + numberOfEdgesToDelete + "," + (numberOfEdge+numberOfEdgesToDelete) + "," + (stop-start) + "\n");
+        pw.write(numberOfVertices + "," + numberOfEdge + "," + numberOfEdgesToDelete + "," + (numberOfEdge+numberOfEdgesToDelete) + "," + totalTime + "\n");
 
         boolean topTreeConnected = false;
         g1.bridge();
