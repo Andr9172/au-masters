@@ -783,6 +783,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     private void increaseLevel(Edge e, int levelFrom, int levelTo) {
         graphs.get(levelFrom).removeEdge(e);
         graphs.get(levelTo).addEdge(e);
+
         /* for (int i = levelFrom; i <= levelTo; i++){
             graphs.get(i).addEdge(e);
         } */
@@ -812,8 +813,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         if (userInfo.coverC >= 0){
             //for (int i = 0; i <= userInfo.coverC; i++){
                 int i = userInfo.coverC;
-                graphs.get(i).removeEdge(coverEdge);
-                graphs.get(i).addEdge(u.id, v.id);
+
                 //graphs.get(i).removeEdge(u.id, v.id);
                 //graphs.get(i).addEdge(userInfo.coverEdgeC);
 
@@ -832,12 +832,29 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 }
                 qinfo.incident2.put(i, qinfo.incident2.get(i) - 1);
                 rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
-
+            graphs.get(i).removeEdge(coverEdge);
+            graphs.get(i).addEdge(u.id, v.id);
             //}
             Edge e = Tree.adjacencyList[u.id][v.id];
             cut(e);
-            //System.out.println("Swapping edge " + u.id + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + userInfo.coverEdgeC.endpoints[1].id);
-            link(userInfo.coverEdgeC.endpoints[0], userInfo.coverEdgeC.endpoints[1], 1);
+            // TEMP
+            /*Node a = expose(u);
+            Node b = expose(v);
+            if (a == b){
+                System.out.println("Vertices still connected");
+            }
+            deExpose(u);
+            deExpose(v);*/
+
+            // TODO TEMP new edge connects elements from the same top tree
+            expose(coverEdge.endpoints[0]);
+            expose(coverEdge.endpoints[1]);
+
+            deExpose(coverEdge.endpoints[0]);
+            deExpose(coverEdge.endpoints[1]);
+
+            //System.out.println("Swapping edge " + u.id + " " + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + " " + userInfo.coverEdgeC.endpoints[1].id);
+            link(coverEdge.endpoints[0], coverEdge.endpoints[1], 1);
 
             expose(u);
             Node n = expose(v);
@@ -1077,7 +1094,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
         //Node root = findRoot(u.firstEdge.userData);
         uncover(root2, i);
-        //pushDownInfo(root); // TEMP
+        //pushDownInfo(root2); // TEMP
         deExpose(v);
         deExpose(u);
     }

@@ -26,9 +26,9 @@ public class Main {
         // This is tracking statements for longer runs
         debug2 = false;
         boolean specific = true;
-        int numberOfVertices = 320;
-        int numberOfEdge = 1280;
-        int seed = 1280;
+        int numberOfVertices = 640;
+        int numberOfEdge = numberOfVertices * 16;
+        int seed = numberOfVertices * 16;
         int repeats = 100;
         int numberOfEdgeToDelete = numberOfVertices;
 
@@ -44,11 +44,13 @@ public class Main {
             e.printStackTrace();
         }
         */
-        try {
+        /*try {
             runTest();
         } catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
+
+
 
 
         if (specific){

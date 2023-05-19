@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class Edge{
 
@@ -34,14 +36,34 @@ public class Edge{
     @Override
     public int hashCode(){
         if (endpoints[0].id < endpoints[1].id){
-            return 116191 * this.endpoints[0].id + 112921 * this.endpoints[1].id;
+            return this.endpoints[0].hashCode() + this.endpoints[1].hashCode();
+            //return 116191 * this.endpoints[0].id + 112921 * 2 * this.endpoints[1].id;
         } else {
-            return 116191 * this.endpoints[1].id + 112921 * this.endpoints[0].id;
+            return this.endpoints[0].hashCode() + this.endpoints[1].hashCode();
+            //return 116191 * this.endpoints[1].id + 112921 * 2 * this.endpoints[0].id;
         }
     }
 
     @Override
     public boolean equals(Object obj) {
         return this.hashCode() == obj.hashCode();
+        /*if (obj != null){
+            if (obj instanceof Edge){
+                Edge other = (Edge) obj;
+                for (Vertex v: this.endpoints){
+                    List<Vertex> list = new ArrayList<>();
+                    list.add(other.endpoints[0]);
+                    list.add(other.endpoints[1]);
+                    if (!list.contains(v)){
+                        return false;
+                    };
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;*/
     }
 }
