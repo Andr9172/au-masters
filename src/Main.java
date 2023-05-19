@@ -24,12 +24,12 @@ public class Main {
         // Normal debugging of top tree
         debug = false;
         // This is tracking statements for longer runs
-        debug2 = true;
+        debug2 = false;
         boolean specific = true;
-        int numberOfVertices = 5000;
-        int numberOfEdge = 25000;
-        int seed = numberOfEdge * numberOfVertices;
-        int repeats = 10000;
+        int numberOfVertices = 320;
+        int numberOfEdge = 1280;
+        int seed = 1280;
+        int repeats = 100;
         int numberOfEdgeToDelete = numberOfVertices;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -39,10 +39,16 @@ public class Main {
 
         //testSizeTopTree(numberOfVertices, numberOfEdge);
         /*try {
+            runTestSize();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        */
+        try {
             runTest();
         } catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
 
 
         if (specific){
@@ -272,11 +278,6 @@ public class Main {
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
             i++;
         }
-        //topTree.computeAllCombine(t.vertex.get(0).firstEdge.userData);
-        //g1.removeEdge(t.vertex.get(edges.get(0).get(0)).id, t.vertex.get(edges.get(0).get(1)).id);
-        //g1.removeEdge(t.vertex.get(edges.get(1).get(0)).id, t.vertex.get(edges.get(1).get(1)).id);
-        //g1.removeEdge(t.vertex.get(edges.get(2).get(0)).id, t.vertex.get(edges.get(2).get(1)).id);
-        //g1.removeEdge(t.vertex.get(edges.get(3).get(0)).id, t.vertex.get(edges.get(3).get(1)).id);
         if (debug2){
             System.out.println("Running Comparison");
         }
@@ -301,8 +302,6 @@ public class Main {
                 topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
             }
         }
-
-
 
         boolean topTreeConnected = false;
 
@@ -408,11 +407,10 @@ public class Main {
         pw = new PrintWriter(csv);
         pw.write("vertices,edgesAdded,edgesDeleted,totalOperations,totalTime\n");
 
-
-        for (int j = 40; j < 2000; j = j * 2){
-            for (int i = 4 * j; i <= 16 * j; i = i * 2){
+        for (int i = 4; i <= 16; i = i * 2){
+            for (int j = 40; j < 1000; j = j * 2){
                 System.out.println("Run: " + j + " " + i);
-                testRuntime(j, i, j, j*i);
+                testRuntime(j, i * j, j, j*i);
             }
         }
 
@@ -424,7 +422,6 @@ public class Main {
     private static void testRuntime(int numberOfVertices, int numberOfEdge, int numberOfEdgesToDelete, int seed){
 
         // Create graphs given in above diagrams
-
         twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices, debug);
 
         // Generate GraphEdges and Vertices
@@ -507,51 +504,120 @@ public class Main {
         }
     }
 
-    private static void runTestMST() throws  FileNotFoundException{
+    private static void runTestSize() throws  FileNotFoundException{
+        // Prepare data logging file
+        csv = new File("testRuntimeSize3.csv");
+        pw = new PrintWriter(csv);
+        pw.write("vertices,edgesAdded,edgesDeleted,expose,deexpose,link,cut,totalOperations,exposeTime,deexposeTime,linkTime,cutTime,totalTime\n");
 
-    }
-
-    private static void testRuntimeMST(int numberOfVertices, int numberOfEdge, int numberOfEdgesToDelete, int seed){
-        // Method to test the runtime of top tree functions through a constant combine
-        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed);
-
-        // Generate MST using top tree
-        Tree t = Tree.createTree(numberOfVertices);
-        System.out.println("Graph generated, and kruskal completed, now generating top tree");
-        int j = 0;
-        MinimumSpanningTopTree topTree = new MinimumSpanningTopTree();
-        for (int i = 0; i < numberOfEdge; i++){
-
-            int a = edges.get(i).get(0);
-            int b = edges.get(i).get(1);
-            int weight = edges.get(i).get(2);
-
-            Node root1 = topTree.expose(t.vertex.get(a));
-            Node root2 = topTree.expose(t.vertex.get(b));
-
-            LeafNode maxEdge = null;
-            boolean insertLink = false;
-            if (root1 != null && (root1.equals(root2))){
-                MinimumSpanningTreeUserInfo userInfo = (MinimumSpanningTreeUserInfo) root1.userInfo;
-                if (weight < userInfo.spineWeight){
-                    insertLink = true;
-                    maxEdge = topTree.findMaximum(root1);
-                }
-            } else {
-                insertLink = true;
-            }
-            topTree.deExpose(t.vertex.get(a));
-            topTree.deExpose(t.vertex.get(b));
-
-
-            if(maxEdge != null){
-                topTree.cut(maxEdge.edge);
-            }
-            if(insertLink){
-                Node newRoot = topTree.link(t.vertex.get(a), t.vertex.get(b), weight);
+        for (int i = 4; i <= 16; i = i * 2){
+            for (int j = 40; j < 30000; j = j * 2){
+                System.out.println("Run: " + j + " " + i);
+                testRuntimeSize(j, i * j, 0, j*i);
             }
         }
 
+        pw.flush();
+        pw.close();
+    }
+
+    private static void testRuntimeSize(int numberOfVertices, int numberOfEdge, int numberOfEdgesToDelete, int seed){
+        // Expose, deExpose, Link, Cut
+        ArrayList<Integer> operationsPerformed = new ArrayList<>();
+        ArrayList<Double> timeRan = new ArrayList<>();
+        for (int i = 0; i < 4; i++){
+            operationsPerformed.add(0);
+            timeRan.add(0.0);
+        }
+        Random rnd = new Random();
+        Tree t = Tree.createTree(numberOfVertices);
+
+
+        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed);
+
+        SizeTopTree topTree = new SizeTopTree();
+
+        long start;
+        long stop;
+        long exposeTime = 0;
+        long deExposeTime = 0;
+        long linkTime = 0;
+        long cutTime = 0;
+
+        for (int i = 0; i < numberOfEdge; i++) {
+
+            int a = edges.get(i).get(0);
+            int b = edges.get(i).get(1);
+            start = System.nanoTime();
+            Node root1 = topTree.expose(t.vertex.get(a));
+            Node root2 = topTree.expose(t.vertex.get(b));
+            stop = System.nanoTime();
+            operationsPerformed.set(0, operationsPerformed.get(0) + 2);
+            exposeTime +=  (stop - start);
+            boolean insertLink = false;
+            if (root1 != null && (root1.equals(root2))){
+                // Skip edge
+            } else {
+                insertLink = true;
+            }
+            start = System.nanoTime();
+            topTree.deExpose(t.vertex.get(a));
+            topTree.deExpose(t.vertex.get(b));
+            stop = System.nanoTime();
+            operationsPerformed.set(1, operationsPerformed.get(1) + 2);
+            deExposeTime += (stop - start);
+
+            if(insertLink){
+                start = System.nanoTime();
+                Node newRoot = topTree.link(t.vertex.get(a), t.vertex.get(b), 1);
+                stop = System.nanoTime();
+                operationsPerformed.set(2, operationsPerformed.get(2) + 1);
+                linkTime += (stop - start);
+            }
+        }
+        for (int i = 0; i < numberOfEdgesToDelete; i++){
+            int a = edges.get(i).get(0);
+            int b = edges.get(i).get(1);
+            start = System.nanoTime();
+            Node root1 = topTree.expose(t.vertex.get(a));
+            Node root2 = topTree.expose(t.vertex.get(b));
+            stop = System.nanoTime();
+            operationsPerformed.set(0, operationsPerformed.get(0) + 2);
+            exposeTime +=  (stop - start);
+            boolean cut = false;
+            if (root1 != null && (root1.equals(root2))){
+                cut = true;
+            } else {
+                // Do nothing
+            }
+            start = System.nanoTime();
+            topTree.deExpose(t.vertex.get(a));
+            topTree.deExpose(t.vertex.get(b));
+            stop = System.nanoTime();
+            operationsPerformed.set(1, operationsPerformed.get(1) + 2);
+            deExposeTime +=  (stop - start);
+            if(cut){
+                start = System.nanoTime();
+                Edge e = t.adjacencyList[a][b];
+                topTree.cut(e);
+                stop = System.nanoTime();
+                operationsPerformed.set(3, operationsPerformed.get(3) + 1);
+                cutTime += (stop - start);
+            }
+        }
+        //pw.write("vertices,edgesAdded,edgesDeleted,expose,deexpose,link,cut,totalOperations,exposeTime,deexposeTime,linkTime,cutTime,totalTime\n");
+        pw.write(numberOfVertices + "," + numberOfEdge + "," +
+                numberOfEdgesToDelete + "," + operationsPerformed.get(0) + "," +
+                operationsPerformed.get(1) + "," + operationsPerformed.get(2) + "," +
+                operationsPerformed.get(3) + "," +
+                (operationsPerformed.get(0) + operationsPerformed.get(1) + operationsPerformed.get(2) + operationsPerformed.get(3)) + "," +
+                exposeTime + "," + deExposeTime + "," + linkTime + "," + cutTime + "," +
+                (exposeTime + deExposeTime + linkTime + cutTime) + "\n");
+
+
+        SizeUserInfo userInfo = (SizeUserInfo) topTree.findRoot(t.vertex.get(0).firstEdge.userData).userInfo;
+        int size = userInfo.size;
+        System.out.println("Size of spanning tree is: " + size);
     }
 
 

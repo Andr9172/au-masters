@@ -34,9 +34,9 @@ public class Edge{
     @Override
     public int hashCode(){
         if (endpoints[0].id < endpoints[1].id){
-            return 29207 * this.endpoints[0].id + 29311 * this.endpoints[1].id;
+            return 116191 * this.endpoints[0].id + 112921 * this.endpoints[1].id;
         } else {
-            return 29207 * this.endpoints[1].id + 29311 * this.endpoints[0].id;
+            return 116191 * this.endpoints[1].id + 112921 * this.endpoints[0].id;
         }
     }
 

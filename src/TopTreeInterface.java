@@ -191,23 +191,6 @@ public interface TopTreeInterface {
                 split(getSibling(nodes.get(i)));
             }
         }*/
-        // TODO test
-        // Find the entire path to the root and call split, should be fine runtime wise
-        Edge start = v.firstEdge;
-
-        if (start == null){
-            return null;
-        }
-        Node n = start.userData;
-
-        // List in oppsite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        //System.out.println("Depth expose " + nodes.size());
-
 
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
