@@ -114,14 +114,14 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         if (!t.isLeaf){
             clean(t);
         }
-        updateBoundaries(t);
 
 
         if (t.isLeaf){
+            updateBoundaries(t);
+
             // TODO I think this is the desired values, but may have to be redone
             twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
             ArrayList<Vertex> boundary = userInfo.boundaryVertices;
-            LeafNode leaf = (LeafNode) t;
 
             if (isPath(t)){
                 twoEdgeVertexUserInfo b0 = (twoEdgeVertexUserInfo) boundary.get(0).userInfo;
@@ -747,8 +747,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         int i = userInfo.coverC;
         Edge coverEdge = userInfo.coverEdgeC;
 
-        deExpose(v);
         deExpose(u);
+        deExpose(v);
 
         if (i >= 0){
             // Update incident numbers
@@ -773,6 +773,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             link(coverEdge.endpoints[0], coverEdge.endpoints[1], 1);
             graphs.get(i).removeEdge(coverEdge);
             graphs.get(i).addEdge(u.id, v.id);
+            coverReal(u,v,i);
+
+            System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id);
 
             if (debug){
                 System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id);
@@ -807,6 +810,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             }
 
         } else {
+            System.out.println(u.id + " " + v.id);
             link(u,v,1);
             if (debug){
                 System.out.println("Insterted " + u.id + " " + v.id + " into the spanning tree");
@@ -852,7 +856,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             // It is not a bridge
             // swap, uncover, recover, finally delete the edge
             long start = System.nanoTime();
-            swap(u, v);
+            i = swap(u, v);
             long end = System.nanoTime();
             if (debugTime){
                 //System.out.println("Swap: "  + (end - start));
@@ -917,7 +921,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             return;
         }
 
-
         twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
 
         if (info.coverCMinus == -1 && info.coverCPlus == -1){
@@ -925,61 +928,17 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         InternalNode internalNode = (InternalNode) n;
-
         ArrayList<Node> children = internalNode.children;
-
         for(int i = 0; i < 2; i++){
             if (isPath(children.get(i))){
                 uncover(children.get(i), info.coverCMinus);
                 cover(children.get(i), info.coverCPlus, info.coverEdgeCPlus);
-            } else if (children.get(i).isLeaf){
-                //uncoverLeaf(children.get(i), info.coverCMinus);
-                //coverLeaf(children.get(i), info.coverCPlus, info.coverEdgeCPlus);
             }
         }
 
         info.coverCPlus = -1;
         info.coverCMinus = -1;
         info.coverEdgeCPlus = null;
-    }
-
-    private void coverLeaf(Node n, int i, Edge e) {
-        twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
-
-        // TODO should be <= maybe?
-        if (info.coverC <= i){
-            info.coverC = i;
-            info.coverEdgeC = e;
-        }
-        if (i < info.coverCPlus){
-            // Do nothing
-        }
-        if (info.coverCMinus >= i && i >= info.coverCPlus){
-            info.coverCPlus = i;
-            info.coverEdgeCPlus = e;
-        }
-        if (i > info.coverCMinus){
-            info.coverCMinus = i;
-            info.coverCPlus = i;
-            info.coverEdgeCPlus = e;
-        }
-    }
-
-    private void uncoverLeaf(Node n, int i) {
-        twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
-
-        if (info.coverC <= i){
-            info.coverC = -1;
-            info.coverEdgeC = null;
-        }
-        if (i < info.coverCPlus){
-            // Do nothing
-        }
-        if (i >= info.coverCPlus){
-            info.coverCPlus = -1;
-            info.coverCMinus = Math.max(info.coverCMinus, i);
-            info.coverEdgeCPlus = null;
-        }
     }
 
     // Query for result
@@ -1008,7 +967,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Node root = expose(v);
         //Node root = findRoot(u.firstEdge.userData);
         // A bit scuffed way of getting the edge
-        cover(root, i, graphs.get(0).getEdge(u,v));
+        cover(root, i, graphs.get(i).getEdge(u,v));
         //pushDownInfo(root); // This makes it work, but likely breaks the runtime too
         //clean(root);
         deExpose(u);

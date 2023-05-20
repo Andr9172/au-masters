@@ -25,7 +25,7 @@ public class Main {
         int numberOfEdge = 100;
         int seed = 0;
         int repeats = 10000;
-        int numberOfEdgeToDelete = numberOfVertices;
+        int numberOfEdgeToDelete = numberOfVertices*2;
 
         /* for (int i = 0; i <= repeats; i++){
             int res = runCompareMode(numberOfVertices, numberOfEdge);
@@ -287,8 +287,9 @@ public class Main {
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             if (g1.count == -1) {
+                return;
                 // This case the graph is disconnected
-                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                //topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else if (g1.count != 0){
                 // Find bridge and check it is there
                 topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
