@@ -12,21 +12,13 @@ public class Main {
     static PrintWriter pw;
 
     public static void main(String[] args) {
-        //if (args.length < 1) {
-        //    System.out.println("Missing arguments");
-        //    return;
-        //}
-
-        //if (args[0].equals("command")){
-        //    runCommandMode();
-        //}
 
         // Normal debugging of top tree
         debug = false;
         // This is tracking statements for longer runs
         debug2 = false;
 
-        boolean test = true;
+        boolean test = false;
 
         boolean specific = false;
         int numberOfVertices = 30;
@@ -57,18 +49,10 @@ public class Main {
             }
         }
 
-
-
-
         if (specific){
             testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, seed , 0, 1, numberOfEdgeToDelete);
         } else {
             for (int i = 0; i < repeats; i++){
-                if (i == 42){
-                    debug = true;
-                } else {
-                    debug = false;
-                }
                 System.out.println("iteration " + i);
                 testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, i , 0, 1, numberOfEdgeToDelete);
             }
@@ -249,10 +233,7 @@ public class Main {
         return sum;
     }
 
-
     private static void testTwoEdgeConnectivity(int numberOfVertices, int numberOfEdge, int seed, int v1, int v2, int numberOfEdgesToDelete){
-
-        // Create graphs given in above diagrams
 
         twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices, debug);
 
@@ -280,11 +261,9 @@ public class Main {
                 System.out.println(j * 10 + "% done");
                 j++;
             }
-            //System.out.println("Edge from " + list.get(0) + " to " + list.get(1) );
 
             int a = list.get(0);
             int b = list.get(1);
-            int weight = 1;
 
             if (topTree.debug){
                 System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
