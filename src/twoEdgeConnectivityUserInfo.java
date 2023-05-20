@@ -29,6 +29,8 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
         coverC = -1;
         coverCPlus = -1;
         coverCMinus = -1;
+        coverEdgeC = null;
+        coverEdgeCPlus = null;
     }
 
 

@@ -490,7 +490,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
 
         // TODO should be <= maybe?
-        if (info.coverC < i){
+        if (info.coverC <= i){
             info.coverC = i;
             info.coverEdgeC = e;
         }
@@ -811,54 +811,48 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Edge coverEdge = userInfo.coverEdgeC;
 
         if (userInfo.coverC >= 0){
-            //for (int i = 0; i <= userInfo.coverC; i++){
-                int i = userInfo.coverC;
+            int i = userInfo.coverC;
 
-                //graphs.get(i).removeEdge(u.id, v.id);
-                //graphs.get(i).addEdge(userInfo.coverEdgeC);
+            // Update incident numbers
+            twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
+            twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
+            uinfo.incident2.put(i, uinfo.incident2.get(i) + 1);
+            vinfo.incident2.put(i, vinfo.incident2.get(i) + 1);
 
-                // Update incident numbers
-                twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
-                twoEdgeVertexUserInfo vinfo = (twoEdgeVertexUserInfo) v.userInfo;
-                uinfo.incident2.put(i, uinfo.incident2.get(i) + 1);
-                vinfo.incident2.put(i, vinfo.incident2.get(i) + 1);
-
-                twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[0].userInfo;
-                twoEdgeVertexUserInfo rinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[1].userInfo;
-                if (qinfo.incident2.get(i) - 1 < 0 || rinfo.incident2.get(i) - 1 < 0){
-                    System.out.println(coverEdge.endpoints[0].id);
-                    System.out.println(coverEdge.endpoints[1].id);
-                    throw new RuntimeException();
-                }
-                qinfo.incident2.put(i, qinfo.incident2.get(i) - 1);
-                rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
-            graphs.get(i).removeEdge(coverEdge);
-            graphs.get(i).addEdge(u.id, v.id);
-            //}
-            Edge e = Tree.adjacencyList[u.id][v.id];
-            cut(e);
-            // TEMP
-            /*Node a = expose(u);
-            Node b = expose(v);
-            if (a == b){
-                System.out.println("Vertices still connected");
+            twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[0].userInfo;
+            twoEdgeVertexUserInfo rinfo = (twoEdgeVertexUserInfo) coverEdge.endpoints[1].userInfo;
+            if (qinfo.incident2.get(i) - 1 < 0 || rinfo.incident2.get(i) - 1 < 0){
+                System.out.println(coverEdge.endpoints[0].id);
+                System.out.println(coverEdge.endpoints[1].id);
+                throw new RuntimeException();
             }
-            deExpose(u);
-            deExpose(v);*/
+            qinfo.incident2.put(i, qinfo.incident2.get(i) - 1);
+            rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
 
-            // TODO TEMP new edge connects elements from the same top tree
+
             expose(coverEdge.endpoints[0]);
-            expose(coverEdge.endpoints[1]);
-
+            c = expose(coverEdge.endpoints[1]);
+            uncover(c, userInfo.coverC);
+            //pushDownInfo(c);
             deExpose(coverEdge.endpoints[0]);
             deExpose(coverEdge.endpoints[1]);
 
-            //System.out.println("Swapping edge " + u.id + " " + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + " " + userInfo.coverEdgeC.endpoints[1].id);
+            Edge e = Tree.adjacencyList[u.id][v.id];
+            cut(e);
+
+
+
+
+            System.out.println("Swapping edge " + u.id + " " + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + " " + userInfo.coverEdgeC.endpoints[1].id);
             link(coverEdge.endpoints[0], coverEdge.endpoints[1], 1);
+            graphs.get(i).removeEdge(coverEdge);
+            graphs.get(i).addEdge(u.id, v.id);
 
             expose(u);
             Node n = expose(v);
+
             cover(n, userInfo.coverC, e);
+            //pushDownInfo(n);
             deExpose(v);
             deExpose(u);
 
@@ -903,7 +897,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public void delete(Vertex u, Vertex v){
         Edge e = null;
-
+        System.out.println("Edge " + u.id + " " + v.id + " is deleted");
         if (Tree.adjacencyList[u.id][v.id] != null) {
             e = Tree.adjacencyList[u.id][v.id];
         } else {

@@ -63,20 +63,22 @@ public class Graph {
     }
 
     public Edge getEdge(Vertex u, Vertex v){
-        Edge e = new Edge(u.id , v.id);
+        //Edge e = new Edge(u.id , v.id);
 
         //return e;
 
-        return adjacencyList[u.id][v.id];
+        return list.get(u.id).get(v.id);
+
+        //return adjacencyList[u.id][v.id];
     }
 
 
     public boolean containEdge(int i, int j) {
-        Edge e = new Edge(i , j);
+        //Edge e = new Edge(i , j);
 
-        //return list.get(i).get(j) != null;
+        return list.get(i).get(j) != null;
 
-        return adjacencyList[i][j] != null;
+        //return adjacencyList[i][j] != null;
     }
 
     public Edge incidentEdge(int id) {
@@ -84,15 +86,15 @@ public class Graph {
         //System.out.println("Possible edges: " + Arrays.toString(adjacencyList[id]));
         //int key = list.get(id).keySet().iterator().next();
         //return list.get(id).get(key);
-        //return list.get(id).values().iterator().next();
+        return list.get(id).values().iterator().next();
 
-        for (int i = 0; i < numberOfVertices; i++){
+        /*for (int i = 0; i < numberOfVertices; i++){
             if (adjacencyList[id][i] != null){
                 return adjacencyList[id][i];
             }
         }
 
-        return null;
+        return null;*/
     }
 
 }

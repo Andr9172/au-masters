@@ -25,11 +25,14 @@ public class Main {
         debug = false;
         // This is tracking statements for longer runs
         debug2 = false;
-        boolean specific = true;
-        int numberOfVertices = 640;
-        int numberOfEdge = numberOfVertices * 16;
-        int seed = numberOfVertices * 16;
-        int repeats = 100;
+
+        boolean test = false;
+
+        boolean specific = false;
+        int numberOfVertices = 40;
+        int numberOfEdge = numberOfVertices * 4;
+        int seed = 39;
+        int repeats = 10000;
         int numberOfEdgeToDelete = numberOfVertices;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -44,11 +47,16 @@ public class Main {
             e.printStackTrace();
         }
         */
-        /*try {
-            runTest();
-        } catch (Exception e){
-            e.printStackTrace();
-        }*/
+        if (test){
+            try {
+                runTest();
+            } catch (Exception e){
+                e.printStackTrace();
+            } finally {
+                pw.close();
+            }
+        }
+
 
 
 
@@ -288,6 +296,7 @@ public class Main {
         }
 
         for (int k = 0; k < numberOfEdgesToDelete; k++){
+
             System.out.println("Delete nr " + k);
             g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
             g1.bridge();
@@ -397,7 +406,7 @@ public class Main {
             edge.add(e.endpoints[1].id);
             edge.add(rnd.nextInt(100));
             chosenEdges.add(edge);
-            //System.out.println(e.endpoints[1].id + " + " + e.endpoints[0].id);
+            System.out.println(e.endpoints[0].id + " + " + e.endpoints[1].id);
         }
         return chosenEdges;
     }
@@ -405,12 +414,12 @@ public class Main {
     private static void runTest() throws FileNotFoundException{
 
         // Prepare data logging file
-        csv = new File("testRuntime.csv");
+        csv = new File("testRuntime2.csv");
         pw = new PrintWriter(csv);
         pw.write("vertices,edgesAdded,edgesDeleted,totalOperations,totalTime\n");
 
-        for (int i = 4; i <= 16; i = i * 2){
-            for (int j = 40; j < 1000; j = j * 2){
+        for (int i = 16; i <= 16; i = i * 2){
+            for (int j = 400; j < 1000; j = j * 2){
                 System.out.println("Run: " + j + " " + i);
                 testRuntime(j, i * j, j, j*i);
             }
@@ -482,6 +491,7 @@ public class Main {
             }
         }
         pw.write(numberOfVertices + "," + numberOfEdge + "," + numberOfEdgesToDelete + "," + (numberOfEdge+numberOfEdgesToDelete) + "," + totalTime + "\n");
+        pw.flush();
 
         boolean topTreeConnected = false;
         g1.bridge();
