@@ -176,10 +176,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             }
             return;
         }
-        //t.userInfo = new twoEdgeConnectivityUserInfo();
-        //updateBoundaries(t);
+
         // Handle internal nodes as described on page 67 of https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
-        t.userInfo = new twoEdgeConnectivityUserInfo();
+        //t.userInfo = new twoEdgeConnectivityUserInfo();
         updateBoundaries(t);
 
         if (debug){
@@ -517,6 +516,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 }
             }
         }
+        //pushDownInfo(n);
     }
 
     private void uncover(Node n, int i){
@@ -550,6 +550,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 }
             }
         }
+        //pushDownInfo(n);
     }
 
     private Edge find(Vertex u, Node c, int i){
@@ -783,10 +784,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     private void increaseLevel(Edge e, int levelFrom, int levelTo) {
         graphs.get(levelFrom).removeEdge(e);
         graphs.get(levelTo).addEdge(e);
-
-        /* for (int i = levelFrom; i <= levelTo; i++){
-            graphs.get(i).addEdge(e);
-        } */
     }
 
     private void recover(Vertex v, Vertex w, int i){
@@ -794,11 +791,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             recoverInner(v, w, v, j);
             recoverInner(v, w, w, j);
         }
-        //recoverInner(v, w, v, i);
-        //recoverInner(v, w, w, i);
-        //if (i > 0) {
-        //    recover(v, w, i - 1);
-        //}
     }
 
     private int swap(Vertex u, Vertex v){
@@ -806,12 +798,13 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Node c = expose(v);
         //Node c = findRoot(u.firstEdge.userData);
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) c.userInfo;
+        int i = userInfo.coverC;
+
         deExpose(v);
         deExpose(u);
         Edge coverEdge = userInfo.coverEdgeC;
 
-        if (userInfo.coverC >= 0){
-            int i = userInfo.coverC;
+        if (i >= 0){
 
             // Update incident numbers
             twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
@@ -830,20 +823,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
 
 
-            expose(coverEdge.endpoints[0]);
-            c = expose(coverEdge.endpoints[1]);
-            uncover(c, userInfo.coverC);
-            //pushDownInfo(c);
-            deExpose(coverEdge.endpoints[0]);
-            deExpose(coverEdge.endpoints[1]);
-
             Edge e = Tree.adjacencyList[u.id][v.id];
             cut(e);
 
 
-
-
-            System.out.println("Swapping edge " + u.id + " " + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + " " + userInfo.coverEdgeC.endpoints[1].id);
+            //System.out.println("Swapping edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id);
             link(coverEdge.endpoints[0], coverEdge.endpoints[1], 1);
             graphs.get(i).removeEdge(coverEdge);
             graphs.get(i).addEdge(u.id, v.id);
@@ -851,15 +835,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             expose(u);
             Node n = expose(v);
 
-            cover(n, userInfo.coverC, e);
+            cover(n, i, e);
             //pushDownInfo(n);
             deExpose(v);
             deExpose(u);
 
             if (debug){
-                System.out.println("Swapped edge " + u.id + " " + v.id + " with " + userInfo.coverEdgeC.endpoints[0].id + " " + userInfo.coverEdgeC.endpoints[1].id);
+                System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id);
             }
-            return userInfo.coverC;
+            return i;
         }
 
         return -1;
@@ -897,7 +881,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public void delete(Vertex u, Vertex v){
         Edge e = null;
-        System.out.println("Edge " + u.id + " " + v.id + " is deleted");
+        //System.out.println("Edge " + u.id + " " + v.id + " is deleted");
         if (Tree.adjacencyList[u.id][v.id] != null) {
             e = Tree.adjacencyList[u.id][v.id];
         } else {
@@ -1013,12 +997,54 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             if (isPath(children.get(i))){
                 uncover(children.get(i), info.coverCMinus);
                 cover(children.get(i), info.coverCPlus, info.coverEdgeCPlus);
+            } else if (children.get(i).isLeaf){
+                //uncoverLeaf(children.get(i), info.coverCMinus);
+                //coverLeaf(children.get(i), info.coverCPlus, info.coverEdgeCPlus);
             }
         }
 
         info.coverCPlus = -1;
         info.coverCMinus = -1;
         info.coverEdgeCPlus = null;
+    }
+
+    private void coverLeaf(Node n, int i, Edge e) {
+        twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
+
+        // TODO should be <= maybe?
+        if (info.coverC <= i){
+            info.coverC = i;
+            info.coverEdgeC = e;
+        }
+        if (i < info.coverCPlus){
+            // Do nothing
+        }
+        if (info.coverCMinus >= i && i >= info.coverCPlus){
+            info.coverCPlus = i;
+            info.coverEdgeCPlus = e;
+        }
+        if (i > info.coverCMinus){
+            info.coverCMinus = i;
+            info.coverCPlus = i;
+            info.coverEdgeCPlus = e;
+        }
+    }
+
+    private void uncoverLeaf(Node n, int i) {
+        twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
+
+        if (info.coverC <= i){
+            info.coverC = -1;
+            info.coverEdgeC = null;
+        }
+        if (i < info.coverCPlus){
+            // Do nothing
+        }
+        if (i >= info.coverCPlus){
+            info.coverCPlus = -1;
+            info.coverCMinus = Math.max(info.coverCMinus, i);
+            info.coverEdgeCPlus = null;
+        }
     }
 
     // Query for result

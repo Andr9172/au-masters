@@ -26,12 +26,12 @@ public class Main {
         // This is tracking statements for longer runs
         debug2 = false;
 
-        boolean test = false;
+        boolean test = true;
 
         boolean specific = false;
-        int numberOfVertices = 40;
-        int numberOfEdge = numberOfVertices * 4;
-        int seed = 39;
+        int numberOfVertices = 30;
+        int numberOfEdge = 100;
+        int seed = 0;
         int repeats = 10000;
         int numberOfEdgeToDelete = numberOfVertices;
 
@@ -60,11 +60,15 @@ public class Main {
 
 
 
-
         if (specific){
             testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, seed , 0, 1, numberOfEdgeToDelete);
         } else {
             for (int i = 0; i < repeats; i++){
+                if (i == 42){
+                    debug = true;
+                } else {
+                    debug = false;
+                }
                 System.out.println("iteration " + i);
                 testTwoEdgeConnectivity(numberOfVertices, numberOfEdge, i , 0, 1, numberOfEdgeToDelete);
             }
@@ -296,11 +300,11 @@ public class Main {
         }
 
         for (int k = 0; k < numberOfEdgesToDelete; k++){
-
-            System.out.println("Delete nr " + k);
+            if (k == 1);
+            //System.out.println("Delete nr " + k);
             g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
             g1.bridge();
-            System.out.println("There is " + g1.count + " bridges");
+            //System.out.println("There is " + g1.count + " bridges");
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             if (g1.count == -1) {
@@ -406,7 +410,7 @@ public class Main {
             edge.add(e.endpoints[1].id);
             edge.add(rnd.nextInt(100));
             chosenEdges.add(edge);
-            System.out.println(e.endpoints[0].id + " + " + e.endpoints[1].id);
+            //System.out.println(e.endpoints[0].id + " + " + e.endpoints[1].id);
         }
         return chosenEdges;
     }
@@ -418,8 +422,8 @@ public class Main {
         pw = new PrintWriter(csv);
         pw.write("vertices,edgesAdded,edgesDeleted,totalOperations,totalTime\n");
 
-        for (int i = 16; i <= 16; i = i * 2){
-            for (int j = 400; j < 1000; j = j * 2){
+        for (int i = 4; i <= 16; i = i * 2){
+            for (int j = 50; j < 1000; j = j * 2){
                 System.out.println("Run: " + j + " " + i);
                 testRuntime(j, i * j, j, j*i);
             }
