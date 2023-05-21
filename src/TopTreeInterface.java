@@ -299,11 +299,11 @@ public interface TopTreeInterface {
         Node uncle = getSibling(parent);
 
         //TODO temp
-        split(grandParent);
+        /*split(grandParent);
         split(parent);
         split(uncle);
         split(node);
-        split(sibling);
+        split(sibling);*/
         //System.out.println("Split called");
 
         pushFlip(grandParent);
@@ -490,7 +490,7 @@ public interface TopTreeInterface {
         }
         //System.out.println("Depth consuming " + nodes.size());
         for (int i = nodes.size() - 1; i >= 0; i--){
-            split(nodes.get(i));
+            //split(nodes.get(i));
         }
 
 

@@ -12,7 +12,7 @@ public class Main {
     static PrintWriter pw;
 
     public static void main(String[] args) {
-
+        testFailure();
         // Normal debugging of top tree
         debug = false;
         // This is tracking statements for longer runs
@@ -246,7 +246,7 @@ public class Main {
         Tree t = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
         // Generate edges
-        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed);
+        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge, seed);
 
         for (ArrayList<Integer> list : edges){
             g1.addEdge(list.get(0), list.get(1));
@@ -269,6 +269,7 @@ public class Main {
                 System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
             }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
+            System.out.println(a + " " + b);
             i++;
         }
         if (debug2){
@@ -403,7 +404,7 @@ public class Main {
         pw.write("vertices,edgesAdded,edgesDeleted,totalOperations,totalTime\n");
 
         for (int i = 4; i <= 16; i = i * 2){
-            for (int j = 50; j < 1000; j = j * 2){
+            for (int j = 50; j < 4000; j = j * 2){
                 System.out.println("Run: " + j + " " + i);
                 testRuntime(j, i * j, j, j*i);
             }
@@ -428,7 +429,7 @@ public class Main {
         Tree t = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
         // Generate edges
-        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed);
+        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge, seed);
 
         for (ArrayList<Integer> list : edges){
             g1.addEdge(list.get(0), list.get(1));
@@ -529,7 +530,7 @@ public class Main {
         Tree t = Tree.createTree(numberOfVertices);
 
 
-        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed);
+        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge, seed);
 
         SizeTopTree topTree = new SizeTopTree();
 
@@ -616,5 +617,167 @@ public class Main {
         System.out.println("Size of spanning tree is: " + size);
     }
 
+
+    public static void testFailure(){
+        // Create graphs given in above diagrams
+        twoEdgeComparison g1 = new twoEdgeComparison(30, debug);
+
+        // Generate GraphEdges and Vertices
+        if (100 > (30 * (30 - 1)/2)){
+            System.out.println("Trying to generate a graph with more edges than exists");
+        }
+
+        // Test of 2-edge connectivity top tree
+        Tree t = Tree.createTree(30);
+        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(30, debug);
+        // Generate edges
+        ArrayList<ArrayList<Integer>> edges = fixedGraph();
+
+        for (ArrayList<Integer> list : edges){
+            g1.addEdge(list.get(0), list.get(1));
+        }
+
+        System.out.println("Inserting edges");
+        for (ArrayList<Integer> list : edges){
+            int a = list.get(0);
+            int b = list.get(1);
+
+            topTree.insert(t.vertex.get(a),t.vertex.get(b));
+        }
+        System.out.println("Deletes");
+        for (int k = 0; k < 60; k++){
+            //System.out.println("Delete nr " + k);
+            g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
+            g1.bridge();
+            //System.out.println("There is " + g1.count + " bridges");
+
+            topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
+            if (g1.count == -1) {
+                return;
+                // This case the graph is disconnected
+                //topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+            } else if (g1.count != 0){
+                // Find bridge and check it is there
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+            } else {
+                topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+            }
+        }
+
+    }
+
+    private static ArrayList<ArrayList<Integer>> fixedGraph() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	5	);	list.add(	17	);
+        list.add(	4	);	list.add(	10	);
+        list.add(	23	);	list.add(	25	);
+        list.add(	4	);	list.add(	29	);
+        list.add(	1	);	list.add(	11	);
+        list.add(	8	);	list.add(	21	);
+        list.add(	17	);	list.add(	26	);
+        list.add(	21	);	list.add(	25	);
+        list.add(	12	);	list.add(	24	);
+        list.add(	10	);	list.add(	19	);
+        list.add(	0	);	list.add(	7	);
+        list.add(	14	);	list.add(	21	);
+        list.add(	1	);	list.add(	8	);
+        list.add(	22	);	list.add(	26	);
+        list.add(	14	);	list.add(	26	);
+        list.add(	15	);	list.add(	26	);
+        list.add(	15	);	list.add(	17	);
+        list.add(	6	);	list.add(	26	);
+        list.add(	13	);	list.add(	15	);
+        list.add(	0	);	list.add(	12	);
+        list.add(	10	);	list.add(	29	);
+        list.add(	12	);	list.add(	28	);
+        list.add(	17	);	list.add(	25	);
+        list.add(	0	);	list.add(	9	);
+        list.add(	11	);	list.add(	17	);
+        list.add(	13	);	list.add(	17	);
+        list.add(	1	);	list.add(	18	);
+        list.add(	11	);	list.add(	13	);
+        list.add(	2	);	list.add(	23	);
+        list.add(	5	);	list.add(	18	);
+        list.add(	25	);	list.add(	29	);
+        list.add(	23	);	list.add(	27	);
+        list.add(	4	);	list.add(	16	);
+        list.add(	15	);	list.add(	24	);
+        list.add(	19	);	list.add(	29	);
+        list.add(	19	);	list.add(	20	);
+        list.add(	0	);	list.add(	1	);
+        list.add(	17	);	list.add(	19	);
+        list.add(	7	);	list.add(	8	);
+        list.add(	14	);	list.add(	25	);
+        list.add(	26	);	list.add(	28	);
+        list.add(	5	);	list.add(	7	);
+        list.add(	5	);	list.add(	28	);
+        list.add(	6	);	list.add(	19	);
+        list.add(	2	);	list.add(	20	);
+        list.add(	11	);	list.add(	26	);
+        list.add(	26	);	list.add(	27	);
+        list.add(	0	);	list.add(	23	);
+        list.add(	7	);	list.add(	19	);
+        list.add(	3	);	list.add(	7	);
+        list.add(	24	);	list.add(	25	);
+        list.add(	5	);	list.add(	6	);
+        list.add(	10	);	list.add(	14	);
+        list.add(	16	);	list.add(	24	);
+        list.add(	15	);	list.add(	16	);
+        list.add(	21	);	list.add(	28	);
+        list.add(	21	);	list.add(	26	);
+        list.add(	10	);	list.add(	11	);
+        list.add(	2	);	list.add(	14	);
+        list.add(	10	);	list.add(	23	);
+        list.add(	18	);	list.add(	25	);
+        list.add(	3	);	list.add(	4	);
+        list.add(	4	);	list.add(	9	);
+        list.add(	16	);	list.add(	18	);
+        list.add(	8	);	list.add(	27	);
+        list.add(	16	);	list.add(	20	);
+        list.add(	1	);	list.add(	21	);
+        list.add(	16	);	list.add(	23	);
+        list.add(	9	);	list.add(	19	);
+        list.add(	16	);	list.add(	21	);
+        list.add(	14	);	list.add(	18	);
+        list.add(	20	);	list.add(	23	);
+        list.add(	3	);	list.add(	17	);
+        list.add(	1	);	list.add(	5	);
+        list.add(	11	);	list.add(	24	);
+        list.add(	6	);	list.add(	7	);
+        list.add(	4	);	list.add(	20	);
+        list.add(	11	);	list.add(	15	);
+        list.add(	21	);	list.add(	29	);
+        list.add(	0	);	list.add(	19	);
+        list.add(	5	);	list.add(	14	);
+        list.add(	17	);	list.add(	22	);
+        list.add(	10	);	list.add(	25	);
+        list.add(	4	);	list.add(	24	);
+        list.add(	2	);	list.add(	29	);
+        list.add(	2	);	list.add(	22	);
+        list.add(	3	);	list.add(	15	);
+        list.add(	6	);	list.add(	12	);
+        list.add(	18	);	list.add(	24	);
+        list.add(	8	);	list.add(	17	);
+        list.add(	8	);	list.add(	19	);
+        list.add(	0	);	list.add(	29	);
+        list.add(	0	);	list.add(	25	);
+        list.add(	21	);	list.add(	22	);
+        list.add(	19	);	list.add(	24	);
+        list.add(	11	);	list.add(	28	);
+        list.add(	10	);	list.add(	12	);
+        list.add(	3	);	list.add(	23	);
+        list.add(	19	);	list.add(	22	);
+        list.add(	2	);	list.add(	5	);
+        for (int i = 0; i < 100; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
 
 }
