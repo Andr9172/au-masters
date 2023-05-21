@@ -112,7 +112,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     @Override
     public void combine(Node t) {
         if (!t.isLeaf){
-            //clean(t);
+            clean(t);
         }
 
 
@@ -666,7 +666,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // Expose v, w and retrieve the root
         expose(v);
         Node c = expose(w);
-
+        computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
@@ -683,16 +683,16 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             expose(q);
             Node d = expose(r);
-
+            //computeAllCombine(d);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
 
             if (dinfo.size4.get(q).get(-1).get(i+1) + 2 > numberOfVertices/Math.pow(2, i+1)){
                 cover(d, i, e);
                 //pushDownInfo(d);
                 notStopped = false;
-                if (debug){
-                    System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover without increase");
-                }
+                //if (debug){
+                    //System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover without increase at " + i);
+                //}
 
             } else {
                 twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) q.userInfo;
@@ -707,13 +707,14 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
                 rinfo.incident2.put(i + 1, rinfo.incident2.get(i + 1) + 1);
 
+
                 cover(d, i + 1, e);
-                if (debug){
-                    System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover with increase");
-                }
+                //if (debug){
+                    //System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover with increase at " + (i + 1));
+                //}
 
             }
-            pushDownInfo(d);
+            //pushDownInfo(d);
             deExpose(q);
             deExpose(r);
 
@@ -725,6 +726,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         deExpose(v);
         deExpose(w);
     }
+
 
     /*
     * Method to change the level of edges, and update the graphs
@@ -773,17 +775,21 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Edge e = Tree.adjacencyList[u.id][v.id];
             cut(e);
 
+            //System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id + " at level " + i);
+
             link(coverEdge.endpoints[0], coverEdge.endpoints[1], 1);
 
             graphs.get(i).removeEdge(coverEdge);
             graphs.get(i).addEdge(u.id, v.id);
             coverReal(u,v,i);
 
-            System.out.println(coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id);
+
+
+            //System.out.println(coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id);
 
             //System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id);
 
-            coverReal(u, v, i);
+            //coverReal(u, v, i);
 
 
 
@@ -820,7 +826,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             }
 
         } else {
-            System.out.println(u.id + " " + v.id);
+            //System.out.println(u.id + " " + v.id);
             link(u,v,1);
             if (debug){
                 System.out.println("Insterted " + u.id + " " + v.id + " into the spanning tree");
@@ -978,7 +984,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         //Node root = findRoot(u.firstEdge.userData);
         // A bit scuffed way of getting the edge
         cover(root, i, graphs.get(i).getEdge(u,v));
-        pushDownInfo(root); // This makes it work, but likely breaks the runtime too
+        //pushDownInfo(root); // This makes it work, but likely breaks the runtime too
         //clean(root);
         deExpose(u);
         deExpose(v);
@@ -1018,7 +1024,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
         //Node root = findRoot(u.firstEdge.userData);
         uncover(root2, i);
-        pushDownInfo(root2); // TEMP
+        //pushDownInfo(root2); // TEMP
         deExpose(v);
         deExpose(u);
     }

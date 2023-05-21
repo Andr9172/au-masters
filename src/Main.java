@@ -269,7 +269,7 @@ public class Main {
                 System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
             }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
-            System.out.println(a + " " + b);
+            //System.out.println(a + " " + b);
             i++;
         }
         if (debug2){
@@ -288,9 +288,8 @@ public class Main {
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             if (g1.count == -1) {
-                return;
                 // This case the graph is disconnected
-                //topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else if (g1.count != 0){
                 // Find bridge and check it is there
                 topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
