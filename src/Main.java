@@ -72,10 +72,7 @@ public class Main {
             }
             int dest = Math.abs(rnd.nextInt() % numberOfVertices);
             int source = Math.abs(rnd.nextInt() % numberOfVertices);
-            //if (edgeExistsAlready(source, dest, edges)){
-            //    i--;
-            //    continue;
-            //}
+
             if (dest == source) {
                 i--;
                 continue;
@@ -137,10 +134,7 @@ public class Main {
             }
             int dest = Math.abs(rnd.nextInt() % numberOfVertices);
             int source = Math.abs(rnd.nextInt() % numberOfVertices);
-            //if (edgeExistsAlready(source, dest, edges)){
-            //    i--;
-            //    continue;
-            //}
+
             if (dest == source) {
                 i--;
                 continue;
@@ -152,8 +146,6 @@ public class Main {
         int kruskalResult = Kruskal.kruskals(numberOfVertices, edges);
 
         Collections.shuffle(edges);
-
-
 
         // Generate MST using top tree
         Tree t = Tree.createTree(numberOfVertices);
