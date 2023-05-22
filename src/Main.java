@@ -12,7 +12,7 @@ public class Main {
     static PrintWriter pw;
 
     public static void main(String[] args) {
-        testFailure();
+        testFailure(10, 30, 1);
         // Normal debugging of top tree
         debug = false;
         // This is tracking statements for longer runs
@@ -21,10 +21,10 @@ public class Main {
         boolean test = false;
 
         boolean specific = false;
-        int numberOfVertices = 30;
-        int numberOfEdge = 100;
+        int numberOfVertices = 10;
+        int numberOfEdge = 30;
         int seed = 0;
-        int repeats = 10000;
+        int repeats = 0;
         int numberOfEdgeToDelete = numberOfVertices*2;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -269,7 +269,7 @@ public class Main {
                 System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
             }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
-            //System.out.println(a + " " + b);
+            System.out.println(a + " " + b);
             i++;
         }
         if (debug2){
@@ -617,9 +617,9 @@ public class Main {
     }
 
 
-    public static void testFailure(){
+    public static void testFailure(int numberOfVertices, int numberOfEdges, int id){
         // Create graphs given in above diagrams
-        twoEdgeComparison g1 = new twoEdgeComparison(30, debug);
+        twoEdgeComparison g1 = new twoEdgeComparison(numberOfVertices, debug);
 
         // Generate GraphEdges and Vertices
         if (100 > (30 * (30 - 1)/2)){
@@ -627,10 +627,16 @@ public class Main {
         }
 
         // Test of 2-edge connectivity top tree
-        Tree t = Tree.createTree(30);
-        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(30, debug);
+        Tree t = Tree.createTree(numberOfVertices);
+        twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
         // Generate edges
-        ArrayList<ArrayList<Integer>> edges = fixedGraph();
+        ArrayList<ArrayList<Integer>> edges;
+
+        if (id == 0){
+            edges = fixedGraph();
+        } else {
+            edges = fixedGraph2();
+        }
 
         for (ArrayList<Integer> list : edges){
             g1.addEdge(list.get(0), list.get(1));
@@ -644,11 +650,11 @@ public class Main {
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
         }
         System.out.println("Deletes");
-        for (int k = 0; k < 60; k++){
-            //System.out.println("Delete nr " + k);
+        for (int k = 0; k < numberOfVertices * 2; k++){
+            System.out.println("Delete nr " + k);
             g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
             g1.bridge();
-            //System.out.println("There is " + g1.count + " bridges");
+            System.out.println("There is " + g1.count + " bridges");
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             if (g1.count == -1) {
@@ -778,5 +784,50 @@ public class Main {
 
         return edges;
     }
+
+    private static ArrayList<ArrayList<Integer>> fixedGraph2() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	1	);	list.add(	8	);
+        list.add(	1	);	list.add(	2	);
+        list.add(	5	);	list.add(	8	);
+        list.add(	7	);	list.add(	8	);
+        list.add(	3	);	list.add(	9	);
+        list.add(	3	);	list.add(	6	);
+        list.add(	1	);	list.add(	5	);
+        list.add(	2	);	list.add(	8	);
+        list.add(	0	);	list.add(	3	);
+        list.add(	2	);	list.add(	3	);
+        list.add(	6	);	list.add(	8	);
+        list.add(	0	);	list.add(	5	);
+        list.add(	0	);	list.add(	6	);
+        list.add(	1	);	list.add(	4	);
+        list.add(	2	);	list.add(	6	);
+        list.add(	0	);	list.add(	9	);
+        list.add(	5	);	list.add(	9	);
+        list.add(	0	);	list.add(	8	);
+        list.add(	0	);	list.add(	2	);
+        list.add(	0	);	list.add(	1	);
+        list.add(	3	);	list.add(	8	);
+        list.add(	4	);	list.add(	7	);
+        list.add(	4	);	list.add(	8	);
+        list.add(	2	);	list.add(	4	);
+        list.add(	2	);	list.add(	7	);
+        list.add(	1	);	list.add(	7	);
+        list.add(	6	);	list.add(	9	);
+        list.add(	2	);	list.add(	9	);
+        list.add(	3	);	list.add(	5	);
+        list.add(	7	);	list.add(	9	);
+        for (int i = 0; i < 30; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
+
 
 }

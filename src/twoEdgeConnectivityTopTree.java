@@ -167,7 +167,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         // Handle internal nodes as described on page 67 of https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
-        //t.userInfo = new twoEdgeConnectivityUserInfo();
+        t.userInfo = new twoEdgeConnectivityUserInfo();
         updateBoundaries(t);
 
         InternalNode n = (InternalNode) t;
@@ -666,7 +666,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // Expose v, w and retrieve the root
         expose(v);
         Node c = expose(w);
-        computeAllCombine(c);
+        //computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
@@ -681,7 +681,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Vertex q = e.endpoints[0];
             Vertex r = e.endpoints[1];
 
-            expose(q);
+            Node a = expose(q);
             Node d = expose(r);
             //computeAllCombine(d);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
@@ -691,7 +691,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 //pushDownInfo(d);
                 notStopped = false;
                 //if (debug){
-                    //System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover without increase at " + i);
+                    System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover without increase at " + i);
                 //}
 
             } else {
@@ -707,10 +707,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
                 rinfo.incident2.put(i + 1, rinfo.incident2.get(i + 1) + 1);
 
-
                 cover(d, i + 1, e);
                 //if (debug){
-                    //System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover with increase at " + (i + 1));
+                    System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover with increase at " + (i + 1));
                 //}
 
             }
@@ -726,6 +725,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         deExpose(v);
         deExpose(w);
     }
+
 
 
     /*
@@ -775,7 +775,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Edge e = Tree.adjacencyList[u.id][v.id];
             cut(e);
 
-            //System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id + " at level " + i);
+            System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id + " at level " + i);
 
             link(coverEdge.endpoints[0], coverEdge.endpoints[1], 1);
 
@@ -801,6 +801,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
         return -1;
     }
+
 
     public void insert(Vertex u, Vertex v){
         if (u.firstEdge != null && v.firstEdge != null && findRoot(u.firstEdge.userData).equals(findRoot(v.firstEdge.userData))){
@@ -836,7 +837,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public void delete(Vertex u, Vertex v){
         Edge e = null;
-        //System.out.println("Edge " + u.id + " " + v.id + " is deleted");
+        System.out.println("Edge " + u.id + " " + v.id + " is deleted");
         if (Tree.adjacencyList[u.id][v.id] != null) {
             e = Tree.adjacencyList[u.id][v.id];
         } else {

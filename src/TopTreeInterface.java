@@ -197,6 +197,8 @@ public interface TopTreeInterface {
             v.isExposed = true;
             return null;
         }
+        //checkCombineFromRoot(node);
+        test(v);
 
         while (isPath(node)) { // rotateUp until consuming node is a point cluster
             InternalNode internalNode = (InternalNode) node;
@@ -219,11 +221,35 @@ public interface TopTreeInterface {
                 System.out.println("Trying to increase numBoundary beyond 2 :)");
             }
             root.numBoundary = root.numBoundary + 1;
+            if (getSibling(node) != null){
+                //combine(getSibling(node));
+            }
             combine(node);
             node = root.parent;
         }
         return root;
     }
+
+    default void test(Vertex v){
+        Edge[] edges = Tree.adjacencyList[v.id];
+        for (int i = 0; i < edges.length; i++){
+            if (edges[i] != null){
+                combineRoot(edges[i].userData);
+            }
+        }
+    }
+
+    default void combineRoot(Node userData){
+        Node n = userData;
+
+
+        while (n != null){
+            combine(n);
+            n = n.parent;
+        }
+
+    }
+
 
     // Expose version 2 (from appendix)
     default Node expose2(Vertex v){
@@ -492,6 +518,9 @@ public interface TopTreeInterface {
         for (int i = nodes.size() - 1; i >= 0; i--){
             split(nodes.get(i));
         }
+        for (int i = 0; i < nodes.size(); i++){
+            combine(nodes.get(i));
+        }
 
 
         start = vert.firstEdge;
@@ -535,6 +564,7 @@ public interface TopTreeInterface {
         }
 
         //checkCombineFromRoot(lastMiddleNode);
+        //checkCombine(lastMiddleNode);
 
         return lastMiddleNode;
     }
@@ -648,11 +678,11 @@ public interface TopTreeInterface {
      */
     default void checkCombine(Node v) {
         UserInfo userInfo = computeCombine(v);
-        if (v.userInfo.equals(userInfo)){
+        if (!(v.userInfo.equals(userInfo))){
             System.out.println("There was a userinfo that wasn't the same??");
         }
         if (v.parent != null){
-            checkCombine(v);
+            checkCombine(v.parent);
         }
     }
 
