@@ -108,6 +108,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     @Override
     public void combine(Node t) {
+        if (t == null) return;
         if (!t.isLeaf){
             clean(t);
         }
@@ -657,7 +658,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private void recoverInner(Vertex v, Vertex w, Vertex u, int i){
-        // Expose v, w and retrieve the root
+        // expose v, w and retrieve the root
         expose(v);
         Node c = expose(w);
         //computeAllCombine(c);
@@ -681,9 +682,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 cover(d, i, e);
                 //pushDownInfo(d);
                 notStopped = false;
-                //if (debug){
+                if (debug){
                     System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover without increase at " + i);
-                //}
+                }
 
             } else {
                 twoEdgeVertexUserInfo qinfo = (twoEdgeVertexUserInfo) q.userInfo;
@@ -699,14 +700,15 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 rinfo.incident2.put(i + 1, rinfo.incident2.get(i + 1) + 1);
 
                 cover(d, i + 1, e);
-                //if (debug){
+                if (debug){
                     System.out.println("Using edge " + e.endpoints[0].id + " " + e.endpoints[1].id + " as recover with increase at " + (i + 1));
-                //}
+                }
 
             }
+            pushDownInfo(d);
+
             deExpose(q);
             deExpose(r);
-
             // ???
             expose(v);
             c = expose(w);
@@ -763,7 +765,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Edge e = Tree.adjacencyList[u.id][v.id];
             cut(e);
 
-            System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id + " at level " + i);
+            //System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id + " at level " + i);
 
             link(coverEdge.endpoints[0], coverEdge.endpoints[1], 1);
 
@@ -815,7 +817,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     public void delete(Vertex u, Vertex v){
         Edge e = null;
-        System.out.println("Edge " + u.id + " " + v.id + " is deleted");
+        //System.out.println("Edge " + u.id + " " + v.id + " is deleted");
         if (Tree.adjacencyList[u.id][v.id] != null) {
             e = Tree.adjacencyList[u.id][v.id];
         } else {

@@ -12,7 +12,7 @@ public class Main {
     static PrintWriter pw;
 
     public static void main(String[] args) {
-        testFailure(10, 30, 1);
+        testFailure(30, 100, 0);
         // Normal debugging of top tree
         debug = false;
         // This is tracking statements for longer runs
@@ -21,8 +21,8 @@ public class Main {
         boolean test = false;
 
         boolean specific = false;
-        int numberOfVertices = 10;
-        int numberOfEdge = 30;
+        int numberOfVertices = 100;
+        int numberOfEdge = 400;
         int seed = 0;
         int repeats = 0;
         int numberOfEdgeToDelete = numberOfVertices*2;
@@ -261,7 +261,7 @@ public class Main {
                 System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
             }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
-            System.out.println(a + " " + b);
+            //System.out.println(a + " " + b);
             i++;
         }
         if (debug2){

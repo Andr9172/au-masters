@@ -209,6 +209,9 @@ public interface TopTreeInterface {
     }
 
     default Node getSibling(Node node){
+        if (node == null){
+            return null;
+        }
         InternalNode parent = node.parent;
         if (parent == null) {
             return null;
@@ -218,18 +221,17 @@ public interface TopTreeInterface {
     }
 
     default void rotateUp(Node node){
-
         InternalNode parent = node.parent;
         InternalNode grandParent = parent.parent;
         Node sibling = getSibling(node);
         Node uncle = getSibling(parent);
 
         //TODO temp
-        split(grandParent);
+        /*split(grandParent);
         split(parent);
         split(uncle);
         split(node);
-        split(sibling);
+        split(sibling);*/
 
         pushFlip(grandParent);
         pushFlip(parent);
@@ -279,9 +281,9 @@ public interface TopTreeInterface {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
-        combine(node); // These additional combines fixes stuff, but like it is ugly asf
-        combine(uncle);
-        combine(sibling);
+        //combine(node); // These additional combines fixes stuff, but like it is ugly asf
+        //combine(uncle);
+        //combine(sibling);
         combine(parent);
         combine(grandParent); //TODO is this actually needed
         fullSplaySize.fullSplayCombineCost += combineCost(parent);
@@ -361,6 +363,7 @@ public interface TopTreeInterface {
             }
             splayStep(top);
         }
+
     }
 
     default Node findConsumingNode(Vertex vert){
@@ -382,9 +385,15 @@ public interface TopTreeInterface {
         //System.out.println("Depth consuming " + nodes.size());
         for (int i = nodes.size() - 1; i >= 0; i--){
             split(nodes.get(i));
+            if (getSibling(nodes.get(i)) != null){
+                split(getSibling(nodes.get(i)));
+            }
         }
         for (int i = 0; i < nodes.size(); i++){
             combine(nodes.get(i));
+            if (getSibling(nodes.get(i)) != null){
+                combine(getSibling(nodes.get(i)));
+            }
         }
 
         start = vert.firstEdge;
@@ -460,7 +469,7 @@ public interface TopTreeInterface {
                     int uncleIndex = grandParent.children.get(1) == uncle ? 1 : 0;
 
                     if (sibling_index == uncleIndex){
-                        // (e)
+                        // case (e)
                         rotateUp(node);
                     } else {
                         // case (f)
