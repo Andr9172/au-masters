@@ -12,17 +12,19 @@ public class Main {
     static PrintWriter pw;
 
     public static void main(String[] args) {
-        testFailure(30, 100, 0);
         // Normal debugging of top tree
         debug = false;
         // This is tracking statements for longer runs
         debug2 = false;
 
-        boolean test = false;
+        //testFailure(10, 30, 1);
+
+
+        boolean test = true;
 
         boolean specific = false;
-        int numberOfVertices = 100;
-        int numberOfEdge = 400;
+        int numberOfVertices = 10;
+        int numberOfEdge = 30;
         int seed = 0;
         int repeats = 0;
         int numberOfEdgeToDelete = numberOfVertices*2;
@@ -261,7 +263,7 @@ public class Main {
                 System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
             }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
-            //System.out.println(a + " " + b);
+            System.out.println(a + " " + b);
             i++;
         }
         if (debug2){
@@ -626,8 +628,12 @@ public class Main {
 
         if (id == 0){
             edges = fixedGraph();
-        } else {
+        } else if (id == 1){
             edges = fixedGraph2();
+        } else if (id == 2) {
+            edges = fixedGraph3();
+        } else {
+            edges = fixedGraph4();
         }
 
         for (ArrayList<Integer> list : edges){
@@ -650,9 +656,9 @@ public class Main {
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             if (g1.count == -1) {
-                return;
+                //return;
                 // This case the graph is disconnected
-                //topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else if (g1.count != 0){
                 // Find bridge and check it is there
                 topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
@@ -811,6 +817,95 @@ public class Main {
         list.add(	2	);	list.add(	9	);
         list.add(	3	);	list.add(	5	);
         list.add(	7	);	list.add(	9	);
+        for (int i = 0; i < 30; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
+
+    private static ArrayList<ArrayList<Integer>> fixedGraph3() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	0	);	list.add(	7	);
+        list.add(	7	);	list.add(	8	);
+        list.add(	1	);	list.add(	2	);
+        list.add(	0	);	list.add(	6	);
+        list.add(	3	);	list.add(	4	);
+        list.add(	4	);	list.add(	7	);
+        list.add(	5	);	list.add(	8	);
+        list.add(	4	);	list.add(	5	);
+        list.add(	0	);	list.add(	1	);
+        list.add(	0	);	list.add(	5	);
+        list.add(	2	);	list.add(	6	);
+        list.add(	2	);	list.add(	4	);
+        list.add(	0	);	list.add(	9	);
+        list.add(	1	);	list.add(	7	);
+        list.add(	0	);	list.add(	3	);
+        list.add(	7	);	list.add(	9	);
+        list.add(	1	);	list.add(	6	);
+        list.add(	1	);	list.add(	9	);
+        list.add(	2	);	list.add(	9	);
+        list.add(	3	);	list.add(	9	);
+        list.add(	0	);	list.add(	4	);
+        list.add(	5	);	list.add(	7	);
+        list.add(	2	);	list.add(	3	);
+        list.add(	1	);	list.add(	4	);
+        list.add(	3	);	list.add(	5	);
+        list.add(	4	);	list.add(	6	);
+        list.add(	2	);	list.add(	7	);
+        list.add(	5	);	list.add(	9	);
+        list.add(	3	);	list.add(	8	);
+        list.add(	2	);	list.add(	5	);
+
+        for (int i = 0; i < 30; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
+
+    private static ArrayList<ArrayList<Integer>> fixedGraph4() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	0	);	list.add(	2	);
+        list.add(	0	);	list.add(	9	);
+        list.add(	0	);	list.add(	8	);
+        list.add(	8	);	list.add(	9	);
+        list.add(	0	);	list.add(	3	);
+        list.add(	2	);	list.add(	5	);
+        list.add(	2	);	list.add(	3	);
+        list.add(	3	);	list.add(	8	);
+        list.add(	5	);	list.add(	7	);
+        list.add(	0	);	list.add(	5	);
+        list.add(	4	);	list.add(	8	);
+        list.add(	1	);	list.add(	9	);
+        list.add(	4	);	list.add(	9	);
+        list.add(	4	);	list.add(	6	);
+        list.add(	4	);	list.add(	7	);
+        list.add(	1	);	list.add(	2	);
+        list.add(	5	);	list.add(	9	);
+        list.add(	6	);	list.add(	9	);
+        list.add(	7	);	list.add(	8	);
+        list.add(	3	);	list.add(	7	);
+        list.add(	1	);	list.add(	3	);
+        list.add(	1	);	list.add(	6	);
+        list.add(	1	);	list.add(	8	);
+        list.add(	7	);	list.add(	9	);
+        list.add(	6	);	list.add(	7	);
+        list.add(	2	);	list.add(	8	);
+        list.add(	4	);	list.add(	5	);
+        list.add(	3	);	list.add(	9	);
+        list.add(	2	);	list.add(	6	);
+        list.add(	2	);	list.add(	4	);
         for (int i = 0; i < 30; i++){
             ArrayList<Integer> temp = new ArrayList<>();
             temp.add(list.get(i * 2));

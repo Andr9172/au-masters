@@ -280,9 +280,9 @@ public interface TopTreeInterface {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
-        //combine(node); // These additional combines fixes stuff, but like it is ugly asf
-        //combine(uncle);
-        //combine(sibling);
+        combine(node); // These additional combines fixes stuff, but like it is ugly asf
+        combine(uncle);
+        combine(sibling);
         combine(parent);
         combine(grandParent); //TODO is this actually needed
         fullSplaySize.fullSplayCombineCost += combineCost(parent);
@@ -385,13 +385,13 @@ public interface TopTreeInterface {
         for (int i = nodes.size() - 1; i >= 0; i--){
             split(nodes.get(i));
             if (getSibling(nodes.get(i)) != null){
-                split(getSibling(nodes.get(i)));
+                //split(getSibling(nodes.get(i)));
             }
         }
         for (int i = 0; i < nodes.size(); i++){
             combine(nodes.get(i));
             if (getSibling(nodes.get(i)) != null){
-                combine(getSibling(nodes.get(i)));
+                //combine(getSibling(nodes.get(i)));
             }
         }
 
