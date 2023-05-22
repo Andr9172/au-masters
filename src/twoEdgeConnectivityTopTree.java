@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class twoEdgeConnectivityTopTree implements TopTreeInterface {
@@ -7,8 +8,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     public boolean debug = false;
     public boolean debugTime = true;
 
-    int numberOfVertices = 0;
-    int maxLevel = 0;
+    int numberOfVertices;
+    int maxLevel;
 
     public twoEdgeConnectivityTopTree(int numberOfVertices, boolean debug) {
         this.debug = debug;
@@ -35,9 +36,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             Edge e = leaf.edge;
             if (t.numBoundary == 2){
                 ArrayList<Vertex> boundaryVertices = new ArrayList<>();
-                for (Vertex v : e.endpoints){
-                    boundaryVertices.add(v);
-                }
+                Collections.addAll(boundaryVertices, e.endpoints);
+
                 userInfo.boundaryVertices = boundaryVertices;
                 if (t.numBoundary != boundaryVertices.size()){
                     throw new RuntimeException();
