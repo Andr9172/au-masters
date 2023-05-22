@@ -25,29 +25,6 @@ public interface TopTreeInterface {
 
     // Remove edge from tree
      default void cut(Edge edge){
-         // TODO test
-         // Find the entire path to the root and call split, should be fine runtime wise
-         /*Edge start = edge;
-
-         if (start == null){
-             return;
-         }
-         Node n = start.userData;
-
-         // List in oppsite order
-         ArrayList<Node> nodes = new ArrayList<>();
-         while (n != null){
-             nodes.add(n);
-             n = n.parent;
-         }
-         for (int i = nodes.size() - 1; i >= 0; i--){
-             split(nodes.get(i));
-             if (getSibling(nodes.get(i))!= null){
-                 split(getSibling(nodes.get(i)));
-             }
-         }*/
-
-
         Node node = edge.userData;
 
         Vertex u = edge.endpoints[0];
@@ -103,7 +80,7 @@ public interface TopTreeInterface {
             tu.parent = tuNew;
             t = tuNew;
 
-            // TODO TEMP
+            // For 2-edge connectivity
             combine(tu);
 
             combine(t);
@@ -117,7 +94,7 @@ public interface TopTreeInterface {
             tv.parent = tvNew;
             t = tvNew;
 
-            // TODO TEMP
+            // For 2-edge connectivity
             combine(tv);
 
             combine(t);
@@ -128,32 +105,6 @@ public interface TopTreeInterface {
 
     // Deexpose vertex in underlying tree
     default Node deExpose(Vertex v){
-        //System.out.println("deExpose ");
-        // TODO test
-        // Find the entire path to the root and call split, should be fine runtime wise
-        /*Edge start = v.firstEdge;
-
-        if (start == null){
-            return null;
-        }
-        Node n = start.userData;
-        //pushDown(findRoot(n));
-
-        // List in oppsite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        for (int i = nodes.size() - 1; i >= 0; i--){
-            //System.out.println("Information pushed down from " + nodes.get(i) + "  2");
-            split(nodes.get(i));
-            if (getSibling(nodes.get(i))!= null){
-                split(getSibling(nodes.get(i)));
-                //System.out.println("Information pushed down from " + getSibling(nodes.get(i)) + "  2");
-            }
-        }*/
-
         Node root = null;
         Node node = findConsumingNode(v);
         v.isExposed = false;
@@ -169,36 +120,11 @@ public interface TopTreeInterface {
 
     // Expose version 1
     default Node expose(Vertex v){
-        // TODO test
-        // Find the entire path to the root and call split, should be fine runtime wise
-        /*Edge start = v.firstEdge;
-
-        if (start == null){
-            return null;
-        }
-        Node n = start.userData;
-        //pushDown(findRoot(n));
-
-        // List in oppsite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        for (int i = nodes.size() - 1; i >= 0; i--){
-            split(nodes.get(i));
-            if (getSibling(nodes.get(i))!= null){
-                split(getSibling(nodes.get(i)));
-            }
-        }*/
-
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
             v.isExposed = true;
             return null;
         }
-        //checkCombineFromRoot(node);
-        test(v);
 
         while (isPath(node)) { // rotateUp until consuming node is a point cluster
             InternalNode internalNode = (InternalNode) node;
@@ -221,35 +147,11 @@ public interface TopTreeInterface {
                 System.out.println("Trying to increase numBoundary beyond 2 :)");
             }
             root.numBoundary = root.numBoundary + 1;
-            if (getSibling(node) != null){
-                //combine(getSibling(node));
-            }
             combine(node);
             node = root.parent;
         }
         return root;
     }
-
-    default void test(Vertex v){
-        Edge[] edges = Tree.adjacencyList[v.id];
-        for (int i = 0; i < edges.length; i++){
-            if (edges[i] != null){
-                combineRoot(edges[i].userData);
-            }
-        }
-    }
-
-    default void combineRoot(Node userData){
-        Node n = userData;
-
-
-        while (n != null){
-            combine(n);
-            n = n.parent;
-        }
-
-    }
-
 
     // Expose version 2 (from appendix)
     default Node expose2(Vertex v){
@@ -264,8 +166,6 @@ public interface TopTreeInterface {
             return null;
         }
     }
-
-
 
     default boolean hasLeftBoundary(Node node){
         if (node.isLeaf){
@@ -330,7 +230,6 @@ public interface TopTreeInterface {
         split(uncle);
         split(node);
         split(sibling);
-        //System.out.println("Split called");
 
         pushFlip(grandParent);
         pushFlip(parent);
@@ -437,23 +336,6 @@ public interface TopTreeInterface {
     }
 
     default void semiSplay(Node node){
-        // TODO test
-        // Find the entire path to the root and call split, should be fine runtime wise
-        /*Node n = node;
-
-        // List in oppsite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        for (int i = nodes.size() - 1; i >= 0; i--){
-            split(nodes.get(i));
-            if (getSibling(nodes.get(i)) != null){
-                split(getSibling(nodes.get(i)));
-            }
-        }*/
-
         fullSplaySize.fullSplayCombineCost = 0;
         Node top = node;
         while(top != null){
@@ -467,23 +349,6 @@ public interface TopTreeInterface {
     }
 
     default void fullSplay(Node node){
-        // TODO test
-        // Find the entire path to the root and call split, should be fine runtime wise
-        /*Node n = node;
-
-        // List in oppsite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        for (int i = nodes.size() - 1; i >= 0; i--){
-            split(nodes.get(i));
-            if (getSibling(nodes.get(i)) != null){
-                split(getSibling(nodes.get(i)));
-            }
-        }*/
-
         fullSplaySize.fullSplayCombineCost = 0;
         while (true){
             Node top = splayStep(node);
@@ -508,7 +373,7 @@ public interface TopTreeInterface {
         }
         Node n = start.userData;
 
-        // List in oppsite order
+        // List in opposite order
         ArrayList<Node> nodes = new ArrayList<>();
         while (n != null){
             nodes.add(n);
@@ -521,7 +386,6 @@ public interface TopTreeInterface {
         for (int i = 0; i < nodes.size(); i++){
             combine(nodes.get(i));
         }
-
 
         start = vert.firstEdge;
 
@@ -562,9 +426,6 @@ public interface TopTreeInterface {
                 lastMiddleNode = node;
             }
         }
-
-        //checkCombineFromRoot(lastMiddleNode);
-        //checkCombine(lastMiddleNode);
 
         return lastMiddleNode;
     }
@@ -657,7 +518,6 @@ public interface TopTreeInterface {
         return node.numBoundary == 2;
     }
 
-
     default void pushFlip(InternalNode node) {
         if (node.flip){
             node.flip = false;
@@ -702,9 +562,8 @@ public interface TopTreeInterface {
         fullSplaySize.test();
     }
 
-
     void split(Node n);
 
     void pushDown(Node n);
 
-    }
+}
