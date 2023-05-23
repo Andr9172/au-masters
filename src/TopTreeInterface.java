@@ -31,6 +31,23 @@ public interface TopTreeInterface {
         Vertex u = edge.endpoints[0];
         Vertex v = edge.endpoints[1];
         fullSplay(node);
+
+         Node n = node;
+
+         // List in opposite order
+         ArrayList<Node> nodes = new ArrayList<>();
+         while (n != null){
+             nodes.add(n);
+             n = n.parent;
+         }
+         //System.out.println("Depth consuming " + nodes.size());
+         for (int i = nodes.size() - 1; i >= 0; i--){
+             split(nodes.get(i));
+             if (getSibling(nodes.get(i)) != null){
+                 split(getSibling(nodes.get(i)));
+             }
+         }
+
         // Now depth <= 2, and if e is a leaf edge, depth(e) <= 1
         deleteAllAncestors(node);
         Tree.destroyEdge(edge);
@@ -288,9 +305,9 @@ public interface TopTreeInterface {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
-        //combine(node); // These additional combines fixes stuff, but like it is ugly asf
-        //combine(uncle);
-        //combine(sibling);
+        combine(node); // These additional combines fixes stuff, but like it is ugly asf
+        combine(uncle);
+        combine(sibling);
         combine(parent);
         lazyEvaluation(parent);
         combine(grandParent); //TODO is this actually needed
@@ -399,8 +416,8 @@ public interface TopTreeInterface {
             }
         }
         for (int i = 0; i < nodes.size(); i++){
-            combine(nodes.get(i));
-            lazyEvaluation(nodes.get(i));
+            //combine(nodes.get(i));
+            //lazyEvaluation(nodes.get(i));
             if (getSibling(nodes.get(i)) != null){
                 //combine(getSibling(nodes.get(i)));
             }

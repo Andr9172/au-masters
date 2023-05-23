@@ -702,6 +702,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         if (((twoEdgeConnectivityUserInfo)c.userInfo).toBeComputed){
             combine(c);
         }
+        computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
@@ -1003,7 +1004,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         Node root = expose(v);
         // A bit scuffed way of getting the edge
         cover(root, i, graphs.get(i).getEdge(u,v));
-
+        //pushDownInfo(root);
         deExpose(v);
         deExpose(u);
     }
@@ -1040,6 +1041,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             System.out.println("u and v are not in the same tree");
         }
         uncover(root2, i);
+        //pushDownInfo(root2);
         deExpose(v);
         deExpose(u);
     }
