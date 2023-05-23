@@ -3,6 +3,8 @@ import java.util.HashMap;
 
 public class twoEdgeConnectivityUserInfo implements UserInfo {
 
+    public boolean toBeComputed;
+
     public int coverC;
     public int coverCPlus;
     public int coverCMinus;
@@ -31,6 +33,7 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
         coverCMinus = -1;
         coverEdgeC = null;
         coverEdgeCPlus = null;
+        toBeComputed = true;
     }
 
 

@@ -13,14 +13,14 @@ public class Main {
 
     public static void main(String[] args) {
         // Normal debugging of top tree
-        debug = false;
+        debug = true;
         // This is tracking statements for longer runs
         debug2 = false;
 
-        //testFailure(10, 30, 1);
+        testFailure(10, 30, 3);
 
 
-        boolean test = true;
+        boolean test = false;
 
         boolean specific = false;
         int numberOfVertices = 10;

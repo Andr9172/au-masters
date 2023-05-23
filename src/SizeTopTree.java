@@ -32,6 +32,11 @@ public class SizeTopTree implements TopTreeInterface {
     }
 
     @Override
+    public void lazyEvaluation(Node t) {
+
+    }
+
+    @Override
     public int combineCost(Node node) {
         return ((SizeUserInfo) node.userInfo).size;
     }

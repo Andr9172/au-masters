@@ -12,6 +12,8 @@ public interface TopTreeInterface {
 
     Size fullSplaySize = new Size(0);
 
+    void lazyEvaluation(Node t);
+
     // Find root
     default Node findRoot(Node node){
         Node tempNode = node;
@@ -68,6 +70,7 @@ public interface TopTreeInterface {
         tEdge = new LeafNode(null, newUserInfo(), edge, (tu != null ? 1 : 0) + (tv != null ? 1 : 0));
         Node t = tEdge;
         combine(t);
+        lazyEvaluation(t);
         edge.userData = tEdge;
 
         if (tu != null){
@@ -81,8 +84,10 @@ public interface TopTreeInterface {
 
             // For 2-edge connectivity
             combine(tu);
-
+            lazyEvaluation(tu);
             combine(t);
+            lazyEvaluation(t);
+
         }
         if (tv != null){
             ArrayList<Node> children = new ArrayList<>();
@@ -95,8 +100,9 @@ public interface TopTreeInterface {
 
             // For 2-edge connectivity
             combine(tv);
-
+            lazyEvaluation(tv);
             combine(t);
+            lazyEvaluation(t);
         }
 
         return t;
@@ -112,6 +118,7 @@ public interface TopTreeInterface {
             root = node;
             root.numBoundary = root.numBoundary - 1;
             combine(root);
+            lazyEvaluation(root);
             node = root.parent;
         }
         return root;
@@ -147,6 +154,7 @@ public interface TopTreeInterface {
             }
             root.numBoundary = root.numBoundary + 1;
             combine(node);
+            lazyEvaluation(node);
             node = root.parent;
         }
         return root;
@@ -280,11 +288,13 @@ public interface TopTreeInterface {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
-        combine(node); // These additional combines fixes stuff, but like it is ugly asf
-        combine(uncle);
-        combine(sibling);
+        //combine(node); // These additional combines fixes stuff, but like it is ugly asf
+        //combine(uncle);
+        //combine(sibling);
         combine(parent);
+        lazyEvaluation(parent);
         combine(grandParent); //TODO is this actually needed
+        lazyEvaluation(grandParent);
         fullSplaySize.fullSplayCombineCost += combineCost(parent);
 
         node.parent = grandParent;
@@ -390,6 +400,7 @@ public interface TopTreeInterface {
         }
         for (int i = 0; i < nodes.size(); i++){
             combine(nodes.get(i));
+            lazyEvaluation(nodes.get(i));
             if (getSibling(nodes.get(i)) != null){
                 //combine(getSibling(nodes.get(i)));
             }
@@ -491,6 +502,7 @@ public interface TopTreeInterface {
             }
             node.numBoundary += 1;
             combine(node);
+            lazyEvaluation(node);
             InternalNode parent = node.parent;
             if(parent == null){
                 return node;
