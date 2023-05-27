@@ -127,10 +127,10 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         if (t.isLeaf){
+            t.userInfo = new twoEdgeConnectivityUserInfo(t.userInfo);
             updateBoundaries(t);
             // TODO I think this is the desired values, but may have to be redone
             twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
-            ((twoEdgeConnectivityUserInfo) t.userInfo).toBeComputed = false;
             ArrayList<Vertex> boundary = userInfo.boundaryVertices;
 
             if (isPath(t)){
@@ -179,23 +179,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         InternalNode n = (InternalNode) t;
         ArrayList<Node> children = n.children;
 
-        if (((twoEdgeConnectivityUserInfo) children.get(0).userInfo).toBeComputed){
-            combine(children.get(0));
-        }
-        if (((twoEdgeConnectivityUserInfo) children.get(1).userInfo).toBeComputed) {
-            combine(children.get(1));
-        }
-        if (((twoEdgeConnectivityUserInfo) t.userInfo).toBeComputed){
-            //combine(children.get(0));
-            //combine(children.get(1));
-        }
-
         // Handle internal nodes as described on page 67 of https://di.ku.dk/forskning/Publikationer/tekniske_rapporter/tekniske-rapporter-1998/98-17.pdf
         t.userInfo = new twoEdgeConnectivityUserInfo();
         updateBoundaries(t);
 
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) t.userInfo;
-        ((twoEdgeConnectivityUserInfo) t.userInfo).toBeComputed = false;
 
         // update counters
         if (isPath(t)){
@@ -484,20 +472,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     @Override
-    public void lazyEvaluation(Node t) {
-        ((twoEdgeConnectivityUserInfo) t.userInfo).toBeComputed = true;
-        //t.userInfo = newUserInfo();
-    }
-
-    @Override
     public int combineCost(Node grandParent) {
         return 0;
     }
 
     private void cover(Node n, int i, Edge e){
-        if (((twoEdgeConnectivityUserInfo) n.userInfo).toBeComputed){
-            combine(n);
-        }
 
         twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
 
@@ -531,9 +510,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     private void uncover(Node n, int i){
-        if (((twoEdgeConnectivityUserInfo) n.userInfo).toBeComputed){
-            combine(n);
-        }
         twoEdgeConnectivityUserInfo info = (twoEdgeConnectivityUserInfo) n.userInfo;
 
         if (info.coverC <= i){
@@ -699,10 +675,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         //Node n = findRoot(v.firstEdge.userData);
         expose(v);
         Node c = expose(w);
-        if (((twoEdgeConnectivityUserInfo)c.userInfo).toBeComputed){
-            combine(c);
-        }
-        computeAllCombine(c);
+        //computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         // deExpose, so we can expose new vertices in the while loop
@@ -718,9 +691,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             Node a = expose(q);
             Node d = expose(r);
-            if (((twoEdgeConnectivityUserInfo)d.userInfo).toBeComputed){
-                combine(d);
-            }
+
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
             //computeAllCombine(d);
             if (dinfo.size4.get(q).get(-1).get(i+1) + 2 > numberOfVertices/Math.pow(2, i+1)){
@@ -757,9 +728,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             // ???
             expose(v);
             c = expose(w);
-            if (((twoEdgeConnectivityUserInfo)c.userInfo).toBeComputed){
-                combine(c);
-            }
+
             cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
 
         }
@@ -786,9 +755,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     private int swap(Vertex u, Vertex v){
         expose(u);
         Node c = expose(v);
-        if (((twoEdgeConnectivityUserInfo)c.userInfo).toBeComputed){
-            combine(c);
-        }
+
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         int i = userInfo.coverC;
         Edge coverEdge = userInfo.coverEdgeC;
@@ -888,9 +855,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         twoEdgeConnectivityUserInfo userInfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         expose(u);
         Node a = expose(v);
-        if (((twoEdgeConnectivityUserInfo) a.userInfo).toBeComputed){
-            combine(a);
-        }
+
         userInfo = (twoEdgeConnectivityUserInfo) a.userInfo;
         int i = userInfo.coverC;
         deExpose(v);
