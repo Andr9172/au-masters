@@ -17,14 +17,16 @@ public class Main {
         // This is tracking statements for longer runs
         debug2 = false;
 
-        testFailure(10, 30, 5);
+        testFailure(10, 30, 6);
+
+
 
 
         boolean test = false;
 
         boolean specific = false;
-        int numberOfVertices = 10;
-        int numberOfEdge = 30;
+        int numberOfVertices = 30;
+        int numberOfEdge = 100;
         int seed = 0;
         int repeats = 0;
         int numberOfEdgeToDelete = numberOfVertices*2;
@@ -637,8 +639,10 @@ public class Main {
             edges = fixedGraph4();
         } else if (id == 4) {
             edges = fixedGraph5();
-        } else {
+        } else if (id == 5) {
             edges = fixedGraph6();
+        } else {
+            edges = fixedGraph7();
         }
 
         for (ArrayList<Integer> list : edges){
@@ -653,25 +657,35 @@ public class Main {
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
         }
         System.out.println("Deletes");
-        for (int k = 0; k < numberOfVertices * 2; k++){
-            System.out.println("Delete nr " + k);
+        for (int k = 0; k < numberOfVertices * 2; k++) {
+            System.out.println("Delete nr " + k + " of edge " + edges.get(k).get(0) + " " + edges.get(k).get(1));
             g1.removeEdge(t.vertex.get(edges.get(k).get(0)).id, t.vertex.get(edges.get(k).get(1)).id);
             g1.bridge();
             System.out.println("There is " + g1.count + " bridges");
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
+
+            boolean topTreeConnected;
+            boolean topTreeConnected2;
             if (g1.count == -1) {
                 //return;
                 // This case the graph is disconnected
-                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
-            } else if (g1.count != 0){
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+            } else if (g1.count != 0) {
                 // Find bridge and check it is there
-                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else {
-                topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+            }
+
+            if ((g1.count == 0 & topTreeConnected)
+                    || ((!(g1.count == 0)) & (!topTreeConnected))) {
+                System.out.println("Agreement");
+            } else {
+                System.out.println("Something went wrong");
+                throw new RuntimeException();
             }
         }
-
     }
 
     private static ArrayList<ArrayList<Integer>> fixedGraph() {
@@ -1000,6 +1014,51 @@ public class Main {
         list.add(	1	);	list.add(	8	);
         list.add(	8	);	list.add(	5	);
         list.add(	8	);	list.add(	9	);
+
+        for (int i = 0; i < 30; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
+
+    private static ArrayList<ArrayList<Integer>> fixedGraph7() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	4	);	list.add(	5	);
+        list.add(	7	);	list.add(	8	);
+        list.add(	0	);	list.add(	5	);
+        list.add(	5	);	list.add(	8	);
+        list.add(	0	);	list.add(	1	);
+        list.add(	2	);	list.add(	5	);
+        list.add(	1	);	list.add(	9	);
+        list.add(	8	);	list.add(	9	);
+        list.add(	3	);	list.add(	4	);
+        list.add(	6	);	list.add(	7	);
+        list.add(	0	);	list.add(	4	);
+        list.add(	2	);	list.add(	8	);
+        list.add(	1	);	list.add(	7	);
+        list.add(	2	);	list.add(	9	);
+        list.add(	3	);	list.add(	7	);
+        list.add(	3	);	list.add(	6	);
+        list.add(	0	);	list.add(	7	);
+        list.add(	6	);	list.add(	9	);
+        list.add(	1	);	list.add(	5	);
+        list.add(	4	);	list.add(	6	);
+        list.add(	2	);	list.add(	6	);
+        list.add(	2	);	list.add(	3	);
+        list.add(	2	);	list.add(	4	);
+        list.add(	7	);	list.add(	9	);
+        list.add(	0	);	list.add(	2	);
+        list.add(	3	);	list.add(	8	);
+        list.add(	0	);	list.add(	6	);
+        list.add(	6	);	list.add(	8	);
+        list.add(	5	);	list.add(	9	);
+        list.add(	0	);	list.add(	8	);
 
         for (int i = 0; i < 30; i++){
             ArrayList<Integer> temp = new ArrayList<>();

@@ -65,13 +65,13 @@ public interface TopTreeInterface {
         Edge edge;
 
 
-        Node tu = expose(u);
+        Node tu = expose2(u);
         if (tu != null && hasLeftBoundary(tu)){
             tu.flip = !tu.flip;
         }
         u.isExposed = false;
 
-        Node tv = expose(v);
+        Node tv = expose2(v);
         if (tv != null && hasRightBoundary(tv)){
             tv.flip = !tv.flip;
         }
@@ -123,13 +123,24 @@ public interface TopTreeInterface {
         Node node = findConsumingNode(v);
         v.isExposed = false;
 
+        ArrayList<Node> list = new ArrayList<>();
         while (node != null) {
-            root = node;
-            root.numBoundary = root.numBoundary - 1;
-            combine(root);
-            node = root.parent;
+            list.add(node);
+            node = node.parent;
         }
-        return root;
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+            split(list.get(i));
+            if (getSibling(list.get(i)) != null){
+                split(getSibling(list.get(i)));
+            }
+        }
+
+        for (int i = 0; i < list.size(); i++){
+            list.get(i).numBoundary = list.get(i).numBoundary - 1;
+            combine(list.get(i));
+        }
+        return list.size() > 0 ? list.get(list.size() - 1) : null;
     }
 
     // Expose version 1
@@ -172,8 +183,8 @@ public interface TopTreeInterface {
         Node consumingNode = findConsumingNode(v);
         if (consumingNode != null) {
             consumingNode = prepareExpose(consumingNode);
-            Node root = exposePrepared(consumingNode);
             v.isExposed = true;
+            Node root = exposePrepared(consumingNode);
             return root;
         } else {
             v.isExposed = true;
@@ -241,11 +252,11 @@ public interface TopTreeInterface {
         Node uncle = getSibling(parent);
 
         //TODO temp
-        /*split(grandParent);
+        split(grandParent);
         split(parent);
         split(uncle);
         split(node);
-        split(sibling);*/
+        split(sibling);
 
         pushFlip(grandParent);
         pushFlip(parent);
@@ -381,37 +392,7 @@ public interface TopTreeInterface {
     }
 
     default Node findConsumingNode(Vertex vert){
-        // TODO test
-        // Find the entire path to the root and call split, should be fine runtime wise
         Edge start = vert.firstEdge;
-
-        if (start == null){
-            return null;
-        }
-        Node n = start.userData;
-
-        // List in opposite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        //System.out.println("Depth consuming " + nodes.size());
-        for (int i = nodes.size() - 1; i >= 0; i--){
-            split(nodes.get(i));
-            if (getSibling(nodes.get(i)) != null){
-                //split(getSibling(nodes.get(i)));
-            }
-        }
-        for (int i = 0; i < nodes.size(); i++){
-            //combine(nodes.get(i));
-            //(nodes.get(i));
-            if (getSibling(nodes.get(i)) != null){
-                //combine(getSibling(nodes.get(i)));
-            }
-        }
-
-        start = vert.firstEdge;
 
         if (start == null){
             return null;

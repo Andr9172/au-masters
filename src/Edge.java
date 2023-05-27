@@ -8,6 +8,7 @@ public class Edge{
     public Vertex[] endpoints;
     public Edge[] prev;
     public Edge[] next;
+    public boolean covered = false;
 
     public Edge(int weight, Node userData, Vertex[] endpoints, Edge[] prev, Edge[] next) {
         this.weight = weight;
