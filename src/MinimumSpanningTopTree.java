@@ -55,13 +55,23 @@ public class MinimumSpanningTopTree implements TopTreeInterface{
     }
 
     @Override
-    public void lazyEvaluation(Node t) {
+    public void lazyCombine(Node n) {
+
+    }
+
+    @Override
+    public void computeCombines(Node n) {
 
     }
 
     @Override
     public int combineCost(Node grandParent) {
         return 0;
+    }
+
+    @Override
+    public void checkUserInfo(Node real, Node copy) {
+
     }
 
     @Override

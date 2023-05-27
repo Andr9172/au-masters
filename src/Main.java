@@ -19,12 +19,11 @@ public class Main {
 
         testFailure(10, 30, 1);
 
-
-        boolean test = false;
+        boolean test = true;
 
         boolean specific = false;
-        int numberOfVertices = 10;
-        int numberOfEdge = 30;
+        int numberOfVertices = 30;
+        int numberOfEdge = 100;
         int seed = 0;
         int repeats = 0;
         int numberOfEdgeToDelete = numberOfVertices*2;
@@ -240,7 +239,7 @@ public class Main {
         Tree t = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
         // Generate edges
-        ArrayList<ArrayList<Integer>> edges = generateEdges(numberOfVertices, numberOfEdge, seed);
+        ArrayList<ArrayList<Integer>> edges = generateEdges2(numberOfVertices, numberOfEdge, seed, t);
 
         for (ArrayList<Integer> list : edges){
             g1.addEdge(list.get(0), list.get(1));
@@ -263,7 +262,7 @@ public class Main {
                 System.out.print("Edge " + i + " " );//+ t.vertex.get(a).id + " " + t.vertex.get(b).id);
             }
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
-            System.out.println(a + " " + b);
+            //System.out.println(a + " " + b);
             i++;
         }
         if (debug2){
@@ -282,9 +281,8 @@ public class Main {
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             if (g1.count == -1) {
-                return;
                 // This case the graph is disconnected
-                //topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else if (g1.count != 0){
                 // Find bridge and check it is there
                 topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
@@ -360,7 +358,7 @@ public class Main {
         return chosenEdges;
     }
 
-    private static ArrayList<ArrayList<Integer>> generateEdges2(int numberOfVertices, int numberOfEdge, int seed) {
+    private static ArrayList<ArrayList<Integer>> generateEdges2(int numberOfVertices, int numberOfEdge, int seed, Tree t) {
         System.out.println("Generating edges");
         Random rnd = new Random();
 
@@ -373,7 +371,7 @@ public class Main {
             if (i == j){
                 continue;
             }
-            edgeSet.add(new Edge(i, j));
+            edgeSet.add(new Edge(i, j, t));
         }
 
         ArrayList<Edge> convertList = new ArrayList<>(edgeSet);
@@ -623,7 +621,9 @@ public class Main {
 
         // Test of 2-edge connectivity top tree
         Tree t = Tree.createTree(numberOfVertices);
+        Tree t2 = Tree.createTree(numberOfVertices);
         twoEdgeConnectivityTopTree topTree = new twoEdgeConnectivityTopTree(numberOfVertices, debug);
+        twoEdgeConnectivityTopTree2 topTree2 = new twoEdgeConnectivityTopTree2(numberOfVertices, debug);
         // Generate edges
         ArrayList<ArrayList<Integer>> edges;
 
@@ -635,8 +635,10 @@ public class Main {
             edges = fixedGraph3();
         } else if (id == 3) {
             edges = fixedGraph4();
-        } else {
+        } else if (id == 4) {
             edges = fixedGraph5();
+        } else {
+            edges = fixedGraph6();
         }
 
         for (ArrayList<Integer> list : edges){
@@ -649,7 +651,14 @@ public class Main {
             int b = list.get(1);
 
             topTree.insert(t.vertex.get(a),t.vertex.get(b));
+            topTree2.insert(t2.vertex.get(a), t2.vertex.get(b));
         }
+        /*topTree.insert(t.vertex.get(1),t.vertex.get(5));
+        topTree.insert(t.vertex.get(0),t.vertex.get(1));
+
+        g1.addEdge(1, 5);
+        g1.addEdge(0,1);*/
+
         System.out.println("Deletes");
         for (int k = 0; k < numberOfVertices * 2; k++){
             System.out.println("Delete nr " + k);
@@ -658,15 +667,64 @@ public class Main {
             System.out.println("There is " + g1.count + " bridges");
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
+            topTree2.delete(t2.vertex.get(edges.get(k).get(0)), t2.vertex.get(edges.get(k).get(1)));
+
+            boolean topTreeConnected;
+            boolean topTreeConnected2;
             if (g1.count == -1) {
                 //return;
                 // This case the graph is disconnected
-                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTreeConnected2 = topTree2.twoEdgeConnected(t2.vertex.get(g1.e1), t2.vertex.get(g1.e2));
             } else if (g1.count != 0){
                 // Find bridge and check it is there
-                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTreeConnected2 = topTree2.twoEdgeConnected(t2.vertex.get(g1.e1), t2.vertex.get(g1.e2));
             } else {
-                topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+                topTreeConnected2 = topTree2.twoEdgeConnected(t2.vertex.get(0), t2.vertex.get(1));
+            }
+            checkCombines(topTree, topTree2, t.vertex.get(edges.get(k).get(0)), t2.vertex.get(edges.get(k).get(0)));
+
+            if ((g1.count == 0 & topTreeConnected)
+                    || ((!(g1.count == 0)) & (!topTreeConnected))) {
+                System.out.println("Agreement");
+            } else {
+                System.out.println("Something went wrong");
+                throw new RuntimeException();
+            }
+        }
+
+    }
+
+    private static void checkCombines(twoEdgeConnectivityTopTree topTree, twoEdgeConnectivityTopTree2 topTree2, Vertex v1, Vertex v2) {
+        Node root1 = topTree.findRoot(v1.firstEdge.userData);
+        Node root2 = topTree2.findRoot(v2.firstEdge.userData);
+
+        checkUserInfo(root1, root2);
+    }
+
+    private static void checkUserInfo(Node root1, Node root2) {
+        if (root1.isLeaf != root2.isLeaf){
+            throw new RuntimeException("Something is wrong with the structure");
+        }
+
+        compareUserInfo(root1, root2);
+
+
+    }
+
+    private static void compareUserInfo(Node root1, Node root2) {
+        twoEdgeConnectivityUserInfo info1 = (twoEdgeConnectivityUserInfo) root1.userInfo;
+        twoEdgeConnectivityUserInfo info2 = (twoEdgeConnectivityUserInfo) root2.userInfo;
+
+        if (root1.numBoundary < 2){
+            if ((!info1.size3.equals(info2.size3)) || (!info1.incident3.equals(info2.incident3))){
+                throw new RuntimeException("Something is wrong");
+            }
+        } else {
+            if ((!info1.size4.equals(info2.size4)) || (!info1.incident4.equals(info2.incident4))){
+                throw new RuntimeException("Something is wrong");
             }
         }
 
@@ -964,4 +1022,48 @@ public class Main {
         return edges;
     }
 
+    private static ArrayList<ArrayList<Integer>> fixedGraph6() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	3	);	list.add(	2	);
+        list.add(	2	);	list.add(	9	);
+        list.add(	1	);	list.add(	2	);
+        list.add(	8	);	list.add(	0	);
+        list.add(	6	);	list.add(	8	);
+        list.add(	7	);	list.add(	4	);
+        list.add(	6	);	list.add(	1	);
+        list.add(	6	);	list.add(	0	);
+        list.add(	8	);	list.add(	3	);
+        list.add(	2	);	list.add(	8	);
+        list.add(	5	);	list.add(	6	);
+        list.add(	5	);	list.add(	0	);
+        list.add(	9	);	list.add(	3	);
+        list.add(	1	);	list.add(	0	);
+        list.add(	6	);	list.add(	2	);
+        list.add(	5	);	list.add(	1	);
+        list.add(	3	);	list.add(	5	);
+        list.add(	8	);	list.add(	7	);
+        list.add(	4	);	list.add(	1	);
+        list.add(	4	);	list.add(	9	);
+        list.add(	3	);	list.add(	4	);
+        list.add(	4	);	list.add(	0	);
+        list.add(	9	);	list.add(	5	);
+        list.add(	3	);	list.add(	7	);
+        list.add(	3	);	list.add(	0	);
+        list.add(	1	);	list.add(	9	);
+        list.add(	5	);	list.add(	7	);
+        list.add(	1	);	list.add(	8	);
+        list.add(	8	);	list.add(	5	);
+        list.add(	8	);	list.add(	9	);
+
+        for (int i = 0; i < 30; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
 }

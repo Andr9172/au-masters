@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class twoEdgeConnectivityTopTree implements TopTreeInterface {
+public class twoEdgeConnectivityTopTree2 implements TopTreeInterface {
 
     public HashMap<Integer, Graph> graphs;
     public boolean debug = false;
@@ -13,7 +13,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     ArrayList<Node> list = new ArrayList<>();
 
-    public twoEdgeConnectivityTopTree(int numberOfVertices, boolean debug) {
+    public twoEdgeConnectivityTopTree2(int numberOfVertices, boolean debug) {
         this.debug = debug;
         this.numberOfVertices = numberOfVertices;
         this.maxLevel = (int) Math.ceil(Math.log(numberOfVertices)/Math.log(2));
@@ -51,7 +51,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 if (Tree.hasAtMostOneIncidentEdge(v) && !v.isExposed){
                     continue;
                 } else {
-                 boundaryVertices.add(v);
+                    boundaryVertices.add(v);
                 }
             }
             userInfo.boundaryVertices = boundaryVertices;
@@ -794,8 +794,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
 
     /*
-    * Method to change the level of edges, and update the graphs
-    */
+     * Method to change the level of edges, and update the graphs
+     */
     private void increaseLevel(Edge e, int levelFrom, int levelTo) {
         graphs.get(levelFrom).removeEdge(e);
         graphs.get(levelTo).addEdge(e);

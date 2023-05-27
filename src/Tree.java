@@ -6,7 +6,7 @@ public class Tree {
     // This is the underlying tree!
 
     public int size;
-    public static ArrayList<Vertex> vertex;
+    public ArrayList<Vertex> vertex;
 
     public static Edge[][] adjacencyList;
 
@@ -90,7 +90,7 @@ public class Tree {
         }
     }
 
-    public static Vertex getEdge(int i) {
+    public Vertex getEdge(int i) {
         return vertex.get(i);
     }
 

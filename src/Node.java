@@ -6,11 +6,14 @@ public class Node {
     public boolean flip;
     public int numBoundary;
 
+    public boolean toBeComputed;
+
     public Node(InternalNode parent, UserInfo userInfo, boolean isLeaf, boolean flip, int numBoundary) {
         this.parent = parent;
         this.userInfo = userInfo;
         this.isLeaf = isLeaf;
         this.flip = flip;
         this.numBoundary = numBoundary;
+        this.toBeComputed = true;
     }
 }

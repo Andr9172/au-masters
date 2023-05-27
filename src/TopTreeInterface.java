@@ -12,7 +12,9 @@ public interface TopTreeInterface {
 
     Size fullSplaySize = new Size(0);
 
-    void lazyEvaluation(Node t);
+    void lazyCombine(Node n);
+
+    void computeCombines(Node n);
 
     // Find root
     default Node findRoot(Node node){
@@ -32,22 +34,6 @@ public interface TopTreeInterface {
         Vertex v = edge.endpoints[1];
         fullSplay(node);
 
-         Node n = node;
-
-         // List in opposite order
-         ArrayList<Node> nodes = new ArrayList<>();
-         while (n != null){
-             nodes.add(n);
-             n = n.parent;
-         }
-         //System.out.println("Depth consuming " + nodes.size());
-         for (int i = nodes.size() - 1; i >= 0; i--){
-             split(nodes.get(i));
-             if (getSibling(nodes.get(i)) != null){
-                 split(getSibling(nodes.get(i)));
-             }
-         }
-
         // Now depth <= 2, and if e is a leaf edge, depth(e) <= 1
         deleteAllAncestors(node);
         Tree.destroyEdge(edge);
@@ -66,17 +52,31 @@ public interface TopTreeInterface {
         InternalNode tvNew;
         Edge edge;
 
-
         Node tu = expose(u);
+        Node tv = expose(v);
+
+        if (tv != null && tv == tu){
+            deExpose(v);
+            deExpose(u);
+            System.out.println("Something went wrong, these nodes can not be connected");
+            return null;
+        }
+
         if (tu != null && hasLeftBoundary(tu)){
             tu.flip = !tu.flip;
         }
-        u.isExposed = false;
 
-        Node tv = expose(v);
         if (tv != null && hasRightBoundary(tv)){
             tv.flip = !tv.flip;
         }
+
+        if (tu != null && tu.toBeComputed){
+            computeCombines(tu);
+        }
+        if (tv != null && tv.toBeComputed){
+            computeCombines(tv);
+        }
+        u.isExposed = false;
         v.isExposed = false;
 
         // Create edge, values currently get overwritten later anyway
@@ -86,8 +86,10 @@ public interface TopTreeInterface {
         Tree.addEdge(edge, u, v, weight);
         tEdge = new LeafNode(null, newUserInfo(), edge, (tu != null ? 1 : 0) + (tv != null ? 1 : 0));
         Node t = tEdge;
-        combine(t);
-        lazyEvaluation(t);
+        //combine(t);
+        checkCombine(t);
+
+        lazyCombine(t);
         edge.userData = tEdge;
 
         if (tu != null){
@@ -100,10 +102,12 @@ public interface TopTreeInterface {
             t = tuNew;
 
             // For 2-edge connectivity
-            combine(tu);
-            lazyEvaluation(tu);
-            combine(t);
-            lazyEvaluation(t);
+            //combine(tu);
+            checkCombine(tu);
+            //combine(t);
+            checkCombine(t);
+            lazyCombine(tu);
+            lazyCombine(t);
 
         }
         if (tv != null){
@@ -116,10 +120,12 @@ public interface TopTreeInterface {
             t = tvNew;
 
             // For 2-edge connectivity
-            combine(tv);
-            lazyEvaluation(tv);
-            combine(t);
-            lazyEvaluation(t);
+            //combine(tv);
+            checkCombine(tv);
+            //combine(t);
+            checkCombine(t);
+            lazyCombine(tv);
+            lazyCombine(t);
         }
 
         return t;
@@ -131,14 +137,26 @@ public interface TopTreeInterface {
         Node node = findConsumingNode(v);
         v.isExposed = false;
 
+        ArrayList<Node> list = new ArrayList<>();
         while (node != null) {
-            root = node;
-            root.numBoundary = root.numBoundary - 1;
-            combine(root);
-            lazyEvaluation(root);
-            node = root.parent;
+            list.add(node);
+            node = node.parent;
         }
-        return root;
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+            split(list.get(i));
+            if (getSibling(list.get(i)) != null){
+                split(getSibling(list.get(i)));
+            }
+        }
+
+        for (int i = 0; i < list.size(); i++){
+            list.get(i).numBoundary = list.get(i).numBoundary - 1;
+            //combine(list.get(i));
+            checkCombine(list.get(i));
+            lazyCombine(list.get(i));
+        }
+        return list.size() > 0 ? list.get(list.size() - 1) : null;
     }
 
     // Expose version 1
@@ -152,6 +170,7 @@ public interface TopTreeInterface {
         while (isPath(node)) { // rotateUp until consuming node is a point cluster
             InternalNode internalNode = (InternalNode) node;
             InternalNode parent = node.parent;
+            pushFlip(parent);
             pushFlip(internalNode);
             int nodeIndex = parent.children.get(1) == node ? 1 : 0;
             rotateUp(internalNode.children.get(nodeIndex));
@@ -160,18 +179,24 @@ public interface TopTreeInterface {
 
         fullSplay(node);
 
+        if (node.parent != null){
+            split(node.parent);
+        }
+        split(node);
+
         // Now depth(node) <= 1, and node is the consuming point cluster
         v.isExposed = true;
 
-        Node root = null;
+        Node root = node;
         while (node != null) {
             root = node;
             if (root.numBoundary == 2){
                 System.out.println("Trying to increase numBoundary beyond 2 :)");
             }
             root.numBoundary = root.numBoundary + 1;
-            combine(node);
-            lazyEvaluation(node);
+            //combine(node);
+            checkCombine(node);
+            lazyCombine(node);
             node = root.parent;
         }
         return root;
@@ -182,8 +207,8 @@ public interface TopTreeInterface {
         Node consumingNode = findConsumingNode(v);
         if (consumingNode != null) {
             consumingNode = prepareExpose(consumingNode);
-            Node root = exposePrepared(consumingNode);
             v.isExposed = true;
+            Node root = exposePrepared(consumingNode);
             return root;
         } else {
             v.isExposed = true;
@@ -250,15 +275,15 @@ public interface TopTreeInterface {
         Node sibling = getSibling(node);
         Node uncle = getSibling(parent);
 
+        pushFlip(grandParent);
+        pushFlip(parent);
+
         //TODO temp
-        /*split(grandParent);
+        split(grandParent);
         split(parent);
         split(uncle);
         split(node);
-        split(sibling);*/
-
-        pushFlip(grandParent);
-        pushFlip(parent);
+        split(sibling);
 
         boolean uncleIsLeftChild = grandParent.children.get(0) == uncle;
         boolean siblingIsLeftChild = parent.children.get(0) == sibling;
@@ -283,6 +308,7 @@ public interface TopTreeInterface {
             }
         } else {
             // Rotation on star
+            // Rotation on star
             if (!toSameSides){
                 newParentIsPath = siblingIsPath || uncleIsPath;
                 flipNewParent = siblingIsPath;
@@ -305,17 +331,22 @@ public interface TopTreeInterface {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
-        combine(node); // These additional combines fixes stuff, but like it is ugly asf
-        combine(uncle);
-        combine(sibling);
-        combine(parent);
-        lazyEvaluation(parent);
-        combine(grandParent); //TODO is this actually needed
-        lazyEvaluation(grandParent);
-        fullSplaySize.fullSplayCombineCost += combineCost(parent);
-
         node.parent = grandParent;
         uncle.parent = parent;
+
+        //combine(node); // These additional combines fixes stuff, but like it is ugly asf
+        //combine(uncle);
+        //combine(sibling);
+        //combine(parent);
+        checkCombine(parent);
+        //combine(grandParent); //TODO is this actually needed
+        checkCombine(grandParent);
+        lazyCombine(node);
+        lazyCombine(uncle);
+        lazyCombine(sibling);
+        lazyCombine(parent);
+        lazyCombine(grandParent);
+        fullSplaySize.fullSplayCombineCost += combineCost(parent);
     }
 
     int combineCost(Node grandParent);
@@ -341,6 +372,7 @@ public interface TopTreeInterface {
                 return null;
             }
             if (isPath(parent) && (isPath(grandParent) || isPoint(greatGrandParent))){
+                pushFlip(greatGrandParent);
                 pushFlip(grandParent);
                 pushFlip(parent);
                 boolean nodeIsLeft = parent.children.get(0) == node;
@@ -393,37 +425,7 @@ public interface TopTreeInterface {
     }
 
     default Node findConsumingNode(Vertex vert){
-        // TODO test
-        // Find the entire path to the root and call split, should be fine runtime wise
         Edge start = vert.firstEdge;
-
-        if (start == null){
-            return null;
-        }
-        Node n = start.userData;
-
-        // List in opposite order
-        ArrayList<Node> nodes = new ArrayList<>();
-        while (n != null){
-            nodes.add(n);
-            n = n.parent;
-        }
-        //System.out.println("Depth consuming " + nodes.size());
-        for (int i = nodes.size() - 1; i >= 0; i--){
-            split(nodes.get(i));
-            if (getSibling(nodes.get(i)) != null){
-                //split(getSibling(nodes.get(i)));
-            }
-        }
-        for (int i = 0; i < nodes.size(); i++){
-            //combine(nodes.get(i));
-            //lazyEvaluation(nodes.get(i));
-            if (getSibling(nodes.get(i)) != null){
-                //combine(getSibling(nodes.get(i)));
-            }
-        }
-
-        start = vert.firstEdge;
 
         if (start == null){
             return null;
@@ -518,8 +520,9 @@ public interface TopTreeInterface {
                 System.out.println("Trying to increase the number of boundary beyond 2");
             }
             node.numBoundary += 1;
-            combine(node);
-            lazyEvaluation(node);
+            //combine(node);
+            checkCombine(node);
+            lazyCombine(node);
             InternalNode parent = node.parent;
             if(parent == null){
                 return node;
@@ -543,8 +546,8 @@ public interface TopTreeInterface {
             Node sibling = getSibling(node);
             deleteAllAncestors(parent);
             sibling.parent = null;
-
         }
+        split(node);
     }
 
     default boolean isPoint(Node node) {
@@ -573,15 +576,26 @@ public interface TopTreeInterface {
     Checks that all userInfos are correct
     Some may be checked multiple times
      */
-    default void checkCombine(Node v) {
-        UserInfo userInfo = computeCombine(v);
-        if (!(v.userInfo.equals(userInfo))){
-            System.out.println("There was a userinfo that wasn't the same??");
-        }
-        if (v.parent != null){
-            checkCombine(v.parent);
+    default void checkCombine(Node n) {
+        // Ensure information is pushed down for recomputation
+        split(n);
+
+        if (n.isLeaf){
+            LeafNode nleaf = (LeafNode) n;
+            LeafNode leaf = new LeafNode(n.parent, newUserInfo(), nleaf.edge, nleaf.numBoundary);
+            //combine(leaf);
+
+            checkUserInfo(nleaf, leaf);
+        } else {
+            InternalNode nInternal = (InternalNode) n;
+            InternalNode internalNode = new InternalNode(n.parent, newUserInfo(), nInternal.children, n.numBoundary);
+            //(internalNode);
+
+            checkUserInfo(nInternal, internalNode);
         }
     }
+
+    void checkUserInfo(Node real, Node copy);
 
     default void checkCombineFromRoot(Node v) {
         UserInfo userInfo = computeCombine(v);

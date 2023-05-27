@@ -25,7 +25,7 @@ public class Edge{
         this.next = new Edge[2];
     }
 
-    public Edge(int i, int j) {
+    public Edge(int i, int j, Tree t) {
         this.endpoints = new Vertex[2];
         this.endpoints[0] = Tree.getEdge(i);
         this.endpoints[1] = Tree.getEdge(j);
