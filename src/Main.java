@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         // Normal debugging of top tree
-        debug = true;
+        debug = false;
         // This is tracking statements for longer runs
         debug2 = false;
 
@@ -25,10 +25,10 @@ public class Main {
         boolean test = false;
 
         boolean specific = false;
-        int numberOfVertices = 30;
-        int numberOfEdge = 100;
+        int numberOfVertices = 10;
+        int numberOfEdge = 30;
         int seed = 0;
-        int repeats = 0;
+        int repeats = 10000;
         int numberOfEdgeToDelete = numberOfVertices*2;
 
         /* for (int i = 0; i <= repeats; i++){

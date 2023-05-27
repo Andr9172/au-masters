@@ -511,8 +511,8 @@ public interface TopTreeInterface {
             Node sibling = getSibling(node);
             deleteAllAncestors(parent);
             sibling.parent = null;
-
         }
+        split(node);
     }
 
     default boolean isPoint(Node node) {

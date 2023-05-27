@@ -544,8 +544,11 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             }
 
             clean(c);
+            //combine(c);
             InternalNode internalNode = (InternalNode) c;
             ArrayList<Node> children = internalNode.children;
+            //combine(children.get(0));
+            //combine(children.get(1));
 
             twoEdgeConnectivityUserInfo c0 = (twoEdgeConnectivityUserInfo) children.get(0).userInfo;
             twoEdgeConnectivityUserInfo c1 = (twoEdgeConnectivityUserInfo) children.get(1).userInfo;
@@ -660,7 +663,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         // expose2 v, w and retrieve the root
         expose2(v);
         Node c = expose2(w);
-        computeAllCombine(c);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
         boolean notStopped = true;
@@ -713,7 +715,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         deExpose(w);
         deExpose(v);
     }
-
 
     /*
     * Method to change the level of edges, and update the graphs
