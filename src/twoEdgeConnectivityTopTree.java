@@ -512,7 +512,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
         }
 
         // For X in {size, incident} and for all ...
-        for (int j = -1; j <= i; j++){
+        for (int j = 0; j <= i; j++){
             for (int k = -1; k <= maxLevel; k++){
                 // For v in boundary nodes
                 for (Vertex v : info.boundaryVertices){
@@ -661,7 +661,8 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
     private void recoverInner(Vertex v, Vertex w, Vertex u, int i){
         // expose2 v, w and retrieve the root
-        expose2(v);
+        Node b = expose2(v);
+        //computeAllCombine(b);
         Node c = expose2(w);
         twoEdgeConnectivityUserInfo cinfo = (twoEdgeConnectivityUserInfo) c.userInfo;
         twoEdgeVertexUserInfo uinfo = (twoEdgeVertexUserInfo) u.userInfo;
@@ -676,6 +677,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             Node a = expose2(q);
             Node d = expose2(r);
+            //computeAllCombine(d);
             twoEdgeConnectivityUserInfo dinfo = (twoEdgeConnectivityUserInfo) d.userInfo;
             if (dinfo.size4.get(q).get(-1).get(i+1) + 2 > numberOfVertices/Math.pow(2, i+1)){
                 cover(d, i, e);
@@ -703,7 +705,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
                 }
 
             }
-
             deExpose(r);
             deExpose(q);
             // ???

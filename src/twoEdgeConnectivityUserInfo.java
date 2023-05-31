@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class twoEdgeConnectivityUserInfo implements UserInfo {
 
@@ -9,6 +10,7 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
 
     public Edge coverEdgeC;
     public Edge coverEdgeCPlus;
+    public HashSet<Edge> coverEdgeCMinus;
 
     public ArrayList<Vertex> boundaryVertices;
 
@@ -31,6 +33,7 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
         coverCMinus = -1;
         coverEdgeC = null;
         coverEdgeCPlus = null;
+        coverEdgeCMinus = new HashSet<>();
     }
 
     public twoEdgeConnectivityUserInfo(UserInfo info){
@@ -46,6 +49,7 @@ public class twoEdgeConnectivityUserInfo implements UserInfo {
         this.coverCMinus = uinfo.coverCMinus;
         this.coverEdgeC = uinfo.coverEdgeC;
         this.coverEdgeCPlus = uinfo.coverEdgeCPlus;
+        this.coverEdgeCMinus = uinfo.coverEdgeCMinus;
     }
 
 

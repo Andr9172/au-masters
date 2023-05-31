@@ -25,10 +25,10 @@ public class Main {
         boolean test = false;
 
         boolean specific = false;
-        int numberOfVertices = 10;
-        int numberOfEdge = 30;
+        int numberOfVertices = 5000;
+        int numberOfEdge = 15000;
         int seed = 0;
-        int repeats = 10000;
+        int repeats = 10;
         int numberOfEdgeToDelete = numberOfVertices*2;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -284,9 +284,9 @@ public class Main {
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
             if (g1.count == -1) {
-                return;
+                //return;
                 // This case the graph is disconnected
-                //topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else if (g1.count != 0){
                 // Find bridge and check it is there
                 topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
@@ -402,7 +402,7 @@ public class Main {
         for (int i = 4; i <= 16; i = i * 2){
             for (int j = 50; j < 4000; j = j * 2){
                 System.out.println("Run: " + j + " " + i);
-                testRuntime(j, i * j, j, j*i);
+                testRuntime(j, i * j, j, 0);
             }
         }
 
@@ -641,8 +641,10 @@ public class Main {
             edges = fixedGraph5();
         } else if (id == 5) {
             edges = fixedGraph6();
-        } else {
+        } else if (id == 6){
             edges = fixedGraph7();
+        } else {
+            edges = fixedGraph8();
         }
 
         for (ArrayList<Integer> list : edges){
@@ -1058,9 +1060,42 @@ public class Main {
         list.add(	0	);	list.add(	6	);
         list.add(	6	);	list.add(	8	);
         list.add(	5	);	list.add(	9	);
-        list.add(	0	);	list.add(	8	);
 
-        for (int i = 0; i < 30; i++){
+
+        for (int i = 0; i < list.size()/2; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
+
+    private static ArrayList<ArrayList<Integer>> fixedGraph8() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	0	);	list.add(	1	);
+        list.add(	1	);	list.add(	9	);
+        list.add(	6	);	list.add(	7	);
+        list.add(	0	);	list.add(	4	);
+        list.add(	2	);	list.add(	8	);
+        list.add(	1	);	list.add(	7	);
+        list.add(	2	);	list.add(	9	);
+        list.add(	3	);	list.add(	7	);
+        list.add(	3	);	list.add(	6	);
+        list.add(	0	);	list.add(	7	);
+        list.add(	6	);	list.add(	9	);
+        list.add(	1	);	list.add(	5	);
+        list.add(	4	);	list.add(	6	);
+        list.add(	2	);	list.add(	6	);
+        list.add(	2	);	list.add(	4	);
+        list.add(	0	);	list.add(	6	);
+        list.add(	5	);	list.add(	9	);
+
+
+        for (int i = 0; i < list.size()/2; i++){
             ArrayList<Integer> temp = new ArrayList<>();
             temp.add(list.get(i * 2));
             temp.add(list.get((i * 2) + 1));

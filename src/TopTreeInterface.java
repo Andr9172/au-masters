@@ -397,6 +397,9 @@ public interface TopTreeInterface {
         if (start == null){
             return null;
         }
+
+
+
         Node node = start.userData;
         semiSplay(node);
         if (Tree.hasAtMostOneIncidentEdge(vert)) {
