@@ -104,6 +104,11 @@ public class twoEdgeComparison {
         int[] low = new int[V];
         int[] parent = new int[V];
 
+        time = 0;
+
+        e1 = 0;
+        e2 = 0;
+
         // Initialize parent and visited, and
         // ap(articulation point) arrays
         for (int i = 0; i < V; i++) {

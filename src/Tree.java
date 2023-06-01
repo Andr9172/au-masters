@@ -8,12 +8,19 @@ public class Tree {
     public int size;
     public static ArrayList<Vertex> vertex;
 
-    public static Edge[][] adjacencyList;
+    //public static Edge[][] adjacencyList;
+    public static ArrayList<HashMap<Integer, Edge>> adjacencyList;
+
 
     public Tree(int size, ArrayList<Vertex> vertex) {
         this.size = size;
         this.vertex = vertex;
-        adjacencyList = new Edge[size][size];
+
+        adjacencyList = new ArrayList<>();
+        for (int i = 0; i < size; i++){
+            adjacencyList.add(new HashMap<>());
+        }
+        //adjacencyList = new Edge[size][size];
     }
 
     // Create the tree with the "correct" number of vertexes
@@ -30,8 +37,11 @@ public class Tree {
         destroyEdgeInner(edge.endpoints[0], edge.prev[0], edge.next[0]);
         destroyEdgeInner(edge.endpoints[1], edge.prev[1], edge.next[1]);
 
-        adjacencyList[edge.endpoints[0].id][edge.endpoints[1].id] = null;
-        adjacencyList[edge.endpoints[1].id][edge.endpoints[0].id] = null;
+        adjacencyList.get(edge.endpoints[0].id).remove(edge.endpoints[1].id, edge);
+        adjacencyList.get(edge.endpoints[1].id).remove(edge.endpoints[0].id, edge);
+
+        //adjacencyList[edge.endpoints[0].id][edge.endpoints[1].id] = null;
+        //adjacencyList[edge.endpoints[1].id][edge.endpoints[0].id] = null;
     }
 
     // Remove edge from one linked list
@@ -76,8 +86,10 @@ public class Tree {
         edge.next[0] = tempLeft;
         edge.next[1] = tempRight;
 
-        adjacencyList[left.id][right.id] = edge;
-        adjacencyList[right.id][left.id] = edge;
+        adjacencyList.get(left.id).put(right.id, edge);
+        adjacencyList.get(right.id).put(left.id, edge);
+        //adjacencyList[left.id][right.id] = edge;
+        //adjacencyList[right.id][left.id] = edge;
     }
 
     public static boolean hasAtMostOneIncidentEdge(Vertex vertex){
@@ -90,9 +102,16 @@ public class Tree {
         }
     }
 
-    public static Vertex getEdge(int i) {
+    public static Vertex getVertex(int i) {
         return vertex.get(i);
     }
 
 
+    public static Edge getEdge(int a, int b) {
+        return adjacencyList.get(a).get(b);
+    }
+
+    public static Edge getEdge(Vertex a, Vertex b) {
+        return adjacencyList.get(a.id).get(b.id);
+    }
 }

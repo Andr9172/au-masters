@@ -39,12 +39,12 @@ public interface TopTreeInterface {
              n = n.parent;
          }
          //System.out.println("Depth consuming " + nodes.size());
-         for (int i = nodes.size() - 1; i >= 0; i--){
-             split(nodes.get(i));
-             if (getSibling(nodes.get(i)) != null){
-                 split(getSibling(nodes.get(i)));
-             }
-         }
+         //for (int i = nodes.size() - 1; i >= 0; i--){
+         //    split(nodes.get(i));
+         //    if (getSibling(nodes.get(i)) != null){
+         //        split(getSibling(nodes.get(i)));
+         //    }
+         //}
 
         // Now depth <= 2, and if e is a leaf edge, depth(e) <= 1
         deleteAllAncestors(node);
@@ -97,7 +97,7 @@ public interface TopTreeInterface {
             t = tuNew;
 
             // For 2-edge connectivity
-            combine(tu);
+            //combine(tu);
             combine(t);
         }
         if (tv != null){
@@ -110,7 +110,7 @@ public interface TopTreeInterface {
             t = tvNew;
 
             // For 2-edge connectivity
-            combine(tv);
+            //combine(tv);
             combine(t);
         }
 
@@ -129,12 +129,12 @@ public interface TopTreeInterface {
             node = node.parent;
         }
 
-        for (int i = list.size() - 1; i >= 0; i--) {
+        /*for (int i = list.size() - 1; i >= 0; i--) {
             split(list.get(i));
             if (getSibling(list.get(i)) != null){
                 split(getSibling(list.get(i)));
             }
-        }
+        }*/
 
         for (int i = 0; i < list.size(); i++){
             list.get(i).numBoundary = list.get(i).numBoundary - 1;
@@ -252,11 +252,11 @@ public interface TopTreeInterface {
         Node uncle = getSibling(parent);
 
         //TODO temp
-        split(grandParent);
-        split(parent);
-        split(uncle);
-        split(node);
-        split(sibling);
+        //split(grandParent);
+        //split(parent);
+        //split(uncle);
+        //split(node);
+        //split(sibling);
 
         pushFlip(grandParent);
         pushFlip(parent);
@@ -306,11 +306,11 @@ public interface TopTreeInterface {
         grandParent.children.set(!uncleIsLeftChild ? 1 : 0, parent);
         grandParent.flip = flipGrandparent;
 
-        combine(node); // These additional combines fixes stuff, but like it is ugly asf
-        combine(uncle);
-        combine(sibling);
+        //combine(node); // These additional combines fixes stuff, but like it is ugly asf
+        //combine(uncle);
+        //combine(sibling);
         combine(parent);
-        combine(grandParent); //TODO is this actually needed
+        //combine(grandParent); //TODO is this actually needed
         fullSplaySize.fullSplayCombineCost += combineCost(parent);
 
         node.parent = grandParent;
@@ -398,9 +398,22 @@ public interface TopTreeInterface {
             return null;
         }
 
-
-
         Node node = start.userData;
+
+        ArrayList<Node> list = new ArrayList<>();
+        while (node != null) {
+            list.add(node);
+            node = node.parent;
+        }
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+            split(list.get(i));
+            if (getSibling(list.get(i)) != null){
+                //split(getSibling(list.get(i)));
+            }
+        }
+
+        node = start.userData;
         semiSplay(node);
         if (Tree.hasAtMostOneIncidentEdge(vert)) {
             return node;
@@ -515,7 +528,7 @@ public interface TopTreeInterface {
             deleteAllAncestors(parent);
             sibling.parent = null;
         }
-        split(node);
+        //split(node);
     }
 
     default boolean isPoint(Node node) {

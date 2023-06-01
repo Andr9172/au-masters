@@ -25,10 +25,10 @@ public class Main {
         boolean test = false;
 
         boolean specific = false;
-        int numberOfVertices = 5000;
-        int numberOfEdge = 15000;
+        int numberOfVertices = 1000;
+        int numberOfEdge = 4000;
         int seed = 0;
-        int repeats = 10;
+        int repeats = 1000;
         int numberOfEdgeToDelete = numberOfVertices*2;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -283,15 +283,23 @@ public class Main {
             //System.out.println("There is " + g1.count + " bridges");
 
             topTree.delete(t.vertex.get(edges.get(k).get(0)), t.vertex.get(edges.get(k).get(1)));
+            boolean topTreeConnected = false;
             if (g1.count == -1) {
-                //return;
                 // This case the graph is disconnected
-                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else if (g1.count != 0){
                 // Find bridge and check it is there
-                topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(g1.e1), t.vertex.get(g1.e2));
             } else {
-                topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+                topTreeConnected = topTree.twoEdgeConnected(t.vertex.get(0), t.vertex.get(1));
+            }
+
+            if ((g1.count == 0 & topTreeConnected)
+                    || ((!(g1.count == 0)) & (!topTreeConnected))) {
+                System.out.println("Agreement");
+            } else {
+                System.out.println("Something went wrong");
+                throw new RuntimeException();
             }
         }
 
@@ -591,7 +599,7 @@ public class Main {
             deExposeTime +=  (stop - start);
             if(cut){
                 start = System.nanoTime();
-                Edge e = t.adjacencyList[a][b];
+                Edge e = t.getEdge(a,b);
                 topTree.cut(e);
                 stop = System.nanoTime();
                 operationsPerformed.set(3, operationsPerformed.get(3) + 1);

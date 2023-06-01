@@ -760,7 +760,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
             qinfo.incident2.put(i, qinfo.incident2.get(i) - 1);
             rinfo.incident2.put(i, rinfo.incident2.get(i) - 1);
 
-            Edge e = Tree.adjacencyList[u.id][v.id];
+            Edge e = Tree.getEdge(u,v);
             cut(e);
 
             //System.out.println("Swapped edge " + u.id + " " + v.id + " with " + coverEdge.endpoints[0].id + " " + coverEdge.endpoints[1].id + " at level " + i);
@@ -814,10 +814,9 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
     }
 
     public void delete(Vertex u, Vertex v){
-        Edge e = null;
+        Edge e = Tree.getEdge(u, v);
         //System.out.println("Edge " + u.id + " " + v.id + " is deleted");
-        if (Tree.adjacencyList[u.id][v.id] != null) {
-            e = Tree.adjacencyList[u.id][v.id];
+        if (e != null) {
         } else {
             if (debug){
                 System.out.println("Edge " + u.id + " " + v.id + " was deleted");

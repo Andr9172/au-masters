@@ -5,13 +5,13 @@ public class Graph {
 
     int numberOfVertices;
 
-    public Edge[][] adjacencyList;
+    //public Edge[][] adjacencyList;
     public ArrayList<HashMap<Integer, Edge>> list;
 
     public Graph(int numberOfVertices){
         this.numberOfVertices = numberOfVertices;
 
-        adjacencyList = new Edge[numberOfVertices][numberOfVertices];
+        //adjacencyList = new Edge[numberOfVertices][numberOfVertices];
         list = new ArrayList<>();
         for (int i = 0; i < numberOfVertices; i++){
             list.add(new HashMap<>());
@@ -27,8 +27,8 @@ public class Graph {
         list.get(i).put(j, e);
         list.get(j).put(i, e);
 
-        adjacencyList[i][j] = e;
-        adjacencyList[j][i] = e;
+        //adjacencyList[i][j] = e;
+        //adjacencyList[j][i] = e;
     }
 
     public void addEdge(int i, int j){
@@ -37,8 +37,8 @@ public class Graph {
         list.get(i).put(j, e);
         list.get(j).put(i, e);
 
-        adjacencyList[i][j] = e;
-        adjacencyList[j][i] = e;
+        //adjacencyList[i][j] = e;
+        //adjacencyList[j][i] = e;
     }
 
     public void removeEdge(Edge e){
@@ -48,8 +48,8 @@ public class Graph {
         list.get(i).remove(j);
         list.get(j).remove(i);
 
-        adjacencyList[i][j] = null;
-        adjacencyList[j][i] = null;
+        //adjacencyList[i][j] = null;
+        //adjacencyList[j][i] = null;
     }
 
     public void removeEdge(int i, int j){
@@ -58,8 +58,8 @@ public class Graph {
         list.get(i).remove(j);
         list.get(j).remove(i);
 
-        adjacencyList[i][j] = null;
-        adjacencyList[j][i] = null;
+        //adjacencyList[i][j] = null;
+        //adjacencyList[j][i] = null;
     }
 
     public Edge getEdge(Vertex u, Vertex v){
