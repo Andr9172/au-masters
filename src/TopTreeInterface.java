@@ -119,6 +119,10 @@ public interface TopTreeInterface {
 
     // Deexpose vertex in underlying tree
     default Node deExpose(Vertex v){
+        if (!v.isExposed){
+            throw new RuntimeException("deExpose called on node already deExposed");
+        }
+
         Node root = null;
         Node node = findConsumingNode(v);
         v.isExposed = false;
@@ -145,6 +149,10 @@ public interface TopTreeInterface {
 
     // Expose version 1
     default Node expose(Vertex v){
+        if (v.isExposed){
+            throw new RuntimeException("Expose called on node already exposed");
+        }
+
         Node node = findConsumingNode(v); // contains a semi splay
         if (node == null){
             v.isExposed = true;

@@ -933,7 +933,6 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
             return e.covered;
         }*/
-
         Node root1 = expose2(u);
         Node root2 = expose2(v);
 
