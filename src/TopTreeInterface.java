@@ -28,25 +28,26 @@ public interface TopTreeInterface {
 
         Vertex u = edge.endpoints[0];
         Vertex v = edge.endpoints[1];
-        fullSplay(node);
 
-         Node n = node;
+        Node n = node;
 
-         // List in opposite order
-         ArrayList<Node> nodes = new ArrayList<>();
-         while (n != null){
+        // List in opposite order
+        ArrayList<Node> nodes = new ArrayList<>();
+        while (n != null){
              nodes.add(n);
              n = n.parent;
-         }
-         //System.out.println("Depth consuming " + nodes.size());
-         //for (int i = nodes.size() - 1; i >= 0; i--){
-         //    split(nodes.get(i));
-         //    if (getSibling(nodes.get(i)) != null){
-         //        split(getSibling(nodes.get(i)));
-         //    }
-         //}
+        }
+        //System.out.println("Depth consuming " + nodes.size());
+        for (int i = nodes.size() - 1; i >= 0; i--){
+             split(nodes.get(i));
+             if (getSibling(nodes.get(i)) != null){
+                 //split(getSibling(nodes.get(i)));
+             }
+        }
+        fullSplay(node);
 
-        // Now depth <= 2, and if e is a leaf edge, depth(e) <= 1
+
+         // Now depth <= 2, and if e is a leaf edge, depth(e) <= 1
         deleteAllAncestors(node);
         Tree.destroyEdge(edge);
 
@@ -422,6 +423,7 @@ public interface TopTreeInterface {
         }
 
         node = start.userData;
+        combine(node);
         semiSplay(node);
         if (Tree.hasAtMostOneIncidentEdge(vert)) {
             return node;
@@ -536,7 +538,7 @@ public interface TopTreeInterface {
             deleteAllAncestors(parent);
             sibling.parent = null;
         }
-        //split(node);
+        split(node);
     }
 
     default boolean isPoint(Node node) {

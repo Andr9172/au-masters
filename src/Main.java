@@ -13,11 +13,11 @@ public class Main {
 
     public static void main(String[] args) {
         // Normal debugging of top tree
-        debug = false;
+        debug = true;
         // This is tracking statements for longer runs
         debug2 = false;
 
-        testFailure(10, 30, 6);
+        testFailure(10, 30, 8);
 
 
 
@@ -25,10 +25,10 @@ public class Main {
         boolean test = false;
 
         boolean specific = false;
-        int numberOfVertices = 1000;
-        int numberOfEdge = 4000;
+        int numberOfVertices = 10;
+        int numberOfEdge = 30;
         int seed = 0;
-        int repeats = 1000;
+        int repeats = 10000;
         int numberOfEdgeToDelete = numberOfVertices*2;
 
         /* for (int i = 0; i <= repeats; i++){
@@ -651,8 +651,10 @@ public class Main {
             edges = fixedGraph6();
         } else if (id == 6){
             edges = fixedGraph7();
-        } else {
+        } else if (id == 7){
             edges = fixedGraph8();
+        } else {
+            edges = fixedGraph9();
         }
 
         for (ArrayList<Integer> list : edges){
@@ -1102,6 +1104,51 @@ public class Main {
         list.add(	0	);	list.add(	6	);
         list.add(	5	);	list.add(	9	);
 
+
+        for (int i = 0; i < list.size()/2; i++){
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(list.get(i * 2));
+            temp.add(list.get((i * 2) + 1));
+            edges.add(temp);
+        }
+
+        return edges;
+    }
+
+    private static ArrayList<ArrayList<Integer>> fixedGraph9() {
+        ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(	6	);	list.add(	7	);
+        list.add(	2	);	list.add(	6	);
+        list.add(	2	);	list.add(	3	);
+        list.add(	0	);	list.add(	9	);
+        list.add(	4	);	list.add(	9	);
+        list.add(	1	);	list.add(	5	);
+        list.add(	6	);	list.add(	9	);
+        list.add(	5	);	list.add(	7	);
+        list.add(	1	);	list.add(	9	);
+        list.add(	0	);	list.add(	8	);
+        list.add(	3	);	list.add(	9	);
+        list.add(	4	);	list.add(	7	);
+        list.add(	0	);	list.add(	4	);
+        list.add(	4	);	list.add(	5	);
+        list.add(	2	);	list.add(	7	);
+        list.add(	1	);	list.add(	2	);
+        list.add(	8	);	list.add(	9	);
+        list.add(	3	);	list.add(	6	);
+        list.add(	7	);	list.add(	8	);
+        list.add(	4	);	list.add(	6	);
+        list.add(	3	);	list.add(	7	);
+        list.add(	1	);	list.add(	3	);
+        list.add(	2	);	list.add(	5	);
+        list.add(	3	);	list.add(	8	);
+        list.add(	2	);	list.add(	9	);
+        list.add(	0	);	list.add(	2	);
+        list.add(	3	);	list.add(	4	);
+        list.add(	0	);	list.add(	5	);
+        list.add(	5	);	list.add(	9	);
+        list.add(	1	);	list.add(	8	);
 
         for (int i = 0; i < list.size()/2; i++){
             ArrayList<Integer> temp = new ArrayList<>();

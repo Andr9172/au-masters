@@ -513,7 +513,7 @@ public class twoEdgeConnectivityTopTree implements TopTreeInterface {
 
         // For X in {size, incident} and for all ...
         for (int j = 0; j <= i; j++){
-            for (int k = -1; k <= maxLevel; k++){
+            for (int k = 0; k <= maxLevel; k++){
                 // For v in boundary nodes
                 for (Vertex v : info.boundaryVertices){
                     if (i+1 > maxLevel){
