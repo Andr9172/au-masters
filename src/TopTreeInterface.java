@@ -189,6 +189,9 @@ public interface TopTreeInterface {
 
     // Expose version 2 (from appendix)
     default Node expose2(Vertex v){
+        if (v.isExposed){
+            throw new RuntimeException("Exposing vertex already exposed");
+        }
         Node consumingNode = findConsumingNode(v);
         if (consumingNode != null) {
             consumingNode = prepareExpose(consumingNode);
